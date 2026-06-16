@@ -1,6 +1,6 @@
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
 import {
-  Plane, Globe, Shield, BookOpen, Wind, Radio, Users, Award,
+  Plane, Globe, Shield, BookOpen, Radio, Users, Award,
   ChevronDown, MapPin, Phone, Mail, Menu, X, Star, CheckCircle,
   Navigation, Cloud, Compass, Zap, GraduationCap, Briefcase,
   Building, ChevronRight, ArrowRight
@@ -16,7 +16,54 @@ const LangContext = createContext<{ lang: Lang; t: (k: keyof typeof translations
 
 function useLang() { return useContext(LangContext); }
 
-// ── Stars background ──────────────────────────────────────────────────────────
+// ── 3D Mouse-Tracking Tilt Hook ───────────────────────────────────────────────
+function useTilt(intensity = 12) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const handleMove = useCallback((e: MouseEvent) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    el.style.transform = `perspective(800px) rotateY(${x * intensity}deg) rotateX(${-y * intensity}deg) scale3d(1.03,1.03,1.03)`;
+    el.style.boxShadow = `${-x * 20}px ${y * 20}px 60px rgba(0,0,0,0.5), 0 0 30px rgba(212,175,55,0.12)`;
+  }, [intensity]);
+
+  const handleLeave = useCallback(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.transform = 'perspective(800px) rotateY(0deg) rotateX(0deg) scale3d(1,1,1)';
+    el.style.boxShadow = '';
+  }, []);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.transition = 'transform 0.15s ease-out, box-shadow 0.3s ease-out';
+    el.style.transformStyle = 'preserve-3d';
+    el.addEventListener('mousemove', handleMove);
+    el.addEventListener('mouseleave', handleLeave);
+    return () => {
+      el.removeEventListener('mousemove', handleMove);
+      el.removeEventListener('mouseleave', handleLeave);
+    };
+  }, [handleMove, handleLeave]);
+
+  return ref;
+}
+
+// ── 3D Tilt Card Wrapper ──────────────────────────────────────────────────────
+function TiltCard({ children, className, style, intensity }: { children: React.ReactNode; className?: string; style?: React.CSSProperties; intensity?: number }) {
+  const tiltRef = useTilt(intensity);
+  return (
+    <div ref={tiltRef} className={className} style={style}>
+      {children}
+    </div>
+  );
+}
+
+// ── Stars + Floating Particles Background ─────────────────────────────────────
 function StarsBackground() {
   const stars = Array.from({ length: 120 }, (_, i) => ({
     id: i,
@@ -27,23 +74,51 @@ function StarsBackground() {
     delay: `${Math.random() * 4}s`,
   }));
 
+  const particles = Array.from({ length: 18 }, (_, i) => ({
+    id: i,
+    left: `${Math.random() * 100}%`,
+    size: Math.random() * 80 + 20,
+    duration: `${Math.random() * 20 + 15}s`,
+    delay: `${Math.random() * 10}s`,
+    depth: Math.random() * 0.15 + 0.03,
+  }));
+
   return (
-    <div className="stars-bg">
-      {stars.map(s => (
-        <div
-          key={s.id}
-          className="star"
-          style={{
-            left: s.left,
-            top: s.top,
-            width: `${s.size}px`,
-            height: `${s.size}px`,
-            '--duration': s.duration,
-            '--delay': s.delay,
-          } as React.CSSProperties}
-        />
-      ))}
-    </div>
+    <>
+      <div className="stars-bg">
+        {stars.map(s => (
+          <div
+            key={s.id}
+            className="star"
+            style={{
+              left: s.left,
+              top: s.top,
+              width: `${s.size}px`,
+              height: `${s.size}px`,
+              '--duration': s.duration,
+              '--delay': s.delay,
+            } as React.CSSProperties}
+          />
+        ))}
+      </div>
+      {/* 3D floating depth particles */}
+      <div className="particles-bg">
+        {particles.map(p => (
+          <div
+            key={p.id}
+            className="depth-particle"
+            style={{
+              left: p.left,
+              width: `${p.size}px`,
+              height: `${p.size}px`,
+              '--float-dur': p.duration,
+              '--float-delay': p.delay,
+              '--depth': p.depth,
+            } as React.CSSProperties}
+          />
+        ))}
+      </div>
+    </>
   );
 }
 
@@ -215,8 +290,23 @@ function Navbar() {
 // ── Hero ──────────────────────────────────────────────────────────────────────
 function Hero() {
   const { t } = useLang();
+  const heroRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = heroRef.current;
+    if (!el) return;
+    const onMove = (e: MouseEvent) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+      el.style.setProperty('--mx', `${x}`);
+      el.style.setProperty('--my', `${y}`);
+    };
+    window.addEventListener('mousemove', onMove);
+    return () => window.removeEventListener('mousemove', onMove);
+  }, []);
+
   return (
-    <section id="hero" className="hero-bg relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-4 pt-20">
+    <section id="hero" ref={heroRef} className="hero-bg hero-3d relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-4 pt-20">
       {/* Animated horizon lines */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {[20, 40, 60, 80].map((p, i) => (
@@ -228,32 +318,38 @@ function Hero() {
               style={{ animationDelay: `${i * 0.2}s` }} />
           ))}
         </div>
+        {/* 3D floating orbs */}
+        <div className="hero-orb hero-orb-1" />
+        <div className="hero-orb hero-orb-2" />
+        <div className="hero-orb hero-orb-3" />
       </div>
 
-      {/* Logo */}
-      <div className="perspective-container mb-10 relative">
+      {/* Logo with 3D depth */}
+      <div className="perspective-container-extended mb-10 relative">
         <div className="absolute inset-0 rounded-full pulse-ring border-2 border-yellow-500/30 scale-110" />
         <div className="absolute inset-0 rounded-full pulse-ring border border-yellow-500/20 scale-125" style={{ animationDelay: '0.7s' }} />
+        <div className="absolute inset-0 rounded-full pulse-ring border border-yellow-500/10 scale-140" style={{ animationDelay: '1.4s' }} />
+        <div className="logo-3d-shadow" />
         <img
           src="/logo-removebg-preview.png"
           alt="Stratosphere Aeronautics"
-          className="logo-float w-44 h-44 md:w-56 md:h-56 object-contain relative z-10"
+          className="logo-float-3d w-44 h-44 md:w-56 md:h-56 object-contain relative z-10"
         />
       </div>
 
-      {/* Text */}
-      <div className="max-w-4xl mx-auto">
+      {/* Text with depth layers */}
+      <div className="max-w-4xl mx-auto hero-text-depth">
         <p className="cinzel text-xs md:text-sm tracking-[0.4em] text-yellow-500/80 uppercase mb-4 animate-fade-in">
           {t('hero_tagline')}
         </p>
-        <h1 className="cinzel text-4xl sm:text-5xl md:text-7xl font-black gold-gradient-text leading-[1.1] mb-4 animate-slide-up">
+        <h1 className="cinzel text-4xl sm:text-5xl md:text-7xl font-black gold-gradient-text-3d leading-[1.1] mb-4 animate-slide-up">
           Stratosphere<br />
-          <span className="text-blue-100/90">Aeronautics</span>
+          <span className="text-blue-100/90 text-shadow-3d">Aeronautics</span>
         </h1>
         <p className="cinzel text-base md:text-xl text-yellow-500/90 tracking-widest mb-3 animate-slide-up delay-200">
           {t('hero_school')}
         </p>
-        <div className="gold-divider w-64 mx-auto mb-8" />
+        <div className="gold-divider-3d w-64 mx-auto mb-8" />
         <p className="text-blue-200/70 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-4 animate-fade-in delay-300">
           {t('hero_desc')}
         </p>
@@ -262,10 +358,10 @@ function Hero() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up delay-500">
-          <a href="#training" className="btn-primary px-10 py-4 rounded-sm text-sm inline-flex items-center gap-2 justify-center">
+          <a href="#training" className="btn-3d-primary px-10 py-4 rounded-sm text-sm inline-flex items-center gap-2 justify-center">
             {t('hero_explore')} <ArrowRight size={16} />
           </a>
-          <a href="#contact" className="btn-outline px-10 py-4 rounded-sm text-sm inline-flex items-center gap-2 justify-center">
+          <a href="#contact" className="btn-3d-outline px-10 py-4 rounded-sm text-sm inline-flex items-center gap-2 justify-center">
             {t('hero_enroll')} <ChevronRight size={16} />
           </a>
         </div>
@@ -334,12 +430,12 @@ function About() {
             </div>
           </div>
 
-          {/* Right — 3D card */}
-          <div className="perspective-container">
+          {/* Right — 3D tilt card */}
+          <TiltCard intensity={10} className="perspective-container">
             <div className="card-3d gold-border-glow rounded-2xl bg-gradient-to-br from-navy-800/60 to-navy-900/80 p-8 backdrop-blur-sm"
               style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
-              <div className="flex items-center gap-4 mb-6">
-                <img src="/logo-removebg-preview.png" alt="Stratosphere Aeronautics" className="w-20 h-20 object-contain" />
+              <div className="card-inner-depth flex items-center gap-4 mb-6">
+                <img src="/logo-removebg-preview.png" alt="Stratosphere Aeronautics" className="w-20 h-20 object-contain floating-icon" />
                 <div>
                   <p className="cinzel text-lg font-bold gold-gradient-text-static">Stratosphere</p>
                   <p className="cinzel text-sm text-yellow-500/80">Aeronautics</p>
@@ -362,7 +458,7 @@ function About() {
                 ))}
               </div>
             </div>
-          </div>
+          </TiltCard>
         </div>
       </div>
     </Section>
@@ -382,7 +478,7 @@ function Mission() {
         <SectionTitle label={t('mission_label')} title={t('mission_title')} />
 
         <div ref={ref} className="reveal perspective-container">
-          <div className="card-3d relative gold-border-glow rounded-2xl overflow-hidden animated-border"
+          <TiltCard intensity={6} className="relative gold-border-glow rounded-2xl overflow-hidden animated-border"
             style={{ background: 'linear-gradient(135deg, rgba(19,41,80,0.95), rgba(30,62,114,0.5), rgba(13,35,71,0.95))' }}>
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent" />
             <div className="p-10 md:p-16 text-center relative">
@@ -415,7 +511,7 @@ function Mission() {
               </div>
             </div>
             <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent" />
-          </div>
+          </TiltCard>
         </div>
       </div>
     </Section>
@@ -456,15 +552,17 @@ function Training() {
           {trainingKeys.map((keys, i) => {
             const ref = useReveal();
             return (
-              <div key={i} ref={ref} className="reveal card-3d gold-border-glow rounded-xl p-6 flex flex-col gap-4"
-                style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.8), rgba(13,35,71,0.9))', animationDelay: `${i * 0.05}s` }}>
-                <div className="training-icon-wrap w-12 h-12 rounded-xl flex items-center justify-center text-yellow-400 shrink-0">
-                  {trainingIcons[i]}
-                </div>
-                <div>
-                  <h3 className="cinzel text-sm font-bold text-yellow-400/90 mb-2 leading-snug">{t(keys.title)}</h3>
-                  <p className="text-blue-200/60 text-xs leading-relaxed">{t(keys.desc)}</p>
-                </div>
+              <div key={i} ref={ref} className="reveal perspective-container" style={{ animationDelay: `${i * 0.05}s` }}>
+                <TiltCard intensity={8} className="card-3d gold-border-glow rounded-xl p-6 flex flex-col gap-4"
+                  style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.8), rgba(13,35,71,0.9))' }}>
+                  <div className="training-icon-wrap w-12 h-12 rounded-xl flex items-center justify-center text-yellow-400 shrink-0">
+                    {trainingIcons[i]}
+                  </div>
+                  <div>
+                    <h3 className="cinzel text-sm font-bold text-yellow-400/90 mb-2 leading-snug">{t(keys.title)}</h3>
+                    <p className="text-blue-200/60 text-xs leading-relaxed">{t(keys.desc)}</p>
+                  </div>
+                </TiltCard>
               </div>
             );
           })}
@@ -515,8 +613,9 @@ function Careers() {
           {careerGroupCategories.map((category, i) => {
             const ref = useReveal();
             return (
-              <div key={i} ref={ref} className="reveal card-3d gold-border-glow rounded-xl overflow-hidden"
-                style={{ background: 'linear-gradient(160deg, rgba(30,62,114,0.6), rgba(13,35,71,0.9))' }}>
+              <div key={i} ref={ref} className="reveal perspective-container">
+                <TiltCard intensity={8} className="card-3d gold-border-glow rounded-xl overflow-hidden"
+                  style={{ background: 'linear-gradient(160deg, rgba(30,62,114,0.6), rgba(13,35,71,0.9))' }}>
                 <div className="p-6">
                   <div className="flex items-center gap-3 mb-5">
                     <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-yellow-400">
@@ -534,6 +633,7 @@ function Careers() {
                   </div>
                 </div>
                 <div className="h-0.5 bg-gradient-to-r from-transparent via-yellow-600/40 to-transparent" />
+                </TiltCard>
               </div>
             );
           })}
@@ -567,21 +667,23 @@ function WhyUs() {
           {reasonKeys.map((keys, i) => {
             const ref = useReveal();
             return (
-              <div key={i} ref={ref} className="reveal card-3d text-center p-8 rounded-2xl gold-border-glow"
-                style={{ background: 'linear-gradient(180deg, rgba(30,62,114,0.5), rgba(13,35,71,0.8))', transitionDelay: `${i * 0.1}s` }}>
-                <div className="w-16 h-16 rounded-full mx-auto mb-5 flex items-center justify-center text-yellow-400"
-                  style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.15), rgba(212,175,55,0.03))' }}>
-                  {reasonIcons[i]}
-                </div>
-                <h3 className="cinzel text-sm font-bold text-yellow-400/90 mb-3 leading-snug">{t(keys.title)}</h3>
-                <p className="text-blue-200/65 text-sm leading-relaxed">{t(keys.desc)}</p>
+              <div key={i} ref={ref} className="reveal perspective-container" style={{ transitionDelay: `${i * 0.1}s` }}>
+                <TiltCard intensity={10} className="card-3d text-center p-8 rounded-2xl gold-border-glow"
+                  style={{ background: 'linear-gradient(180deg, rgba(30,62,114,0.5), rgba(13,35,71,0.8))' }}>
+                  <div className="w-16 h-16 rounded-full mx-auto mb-5 flex items-center justify-center text-yellow-400 icon-orb-3d"
+                    style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.15), rgba(212,175,55,0.03))' }}>
+                    {reasonIcons[i]}
+                  </div>
+                  <h3 className="cinzel text-sm font-bold text-yellow-400/90 mb-3 leading-snug">{t(keys.title)}</h3>
+                  <p className="text-blue-200/65 text-sm leading-relaxed">{t(keys.desc)}</p>
+                </TiltCard>
               </div>
             );
           })}
         </div>
 
         {/* CTA Banner */}
-        <div className="relative rounded-2xl overflow-hidden gold-border-glow animated-border"
+        <TiltCard intensity={4} className="relative rounded-2xl overflow-hidden gold-border-glow animated-border"
           style={{ background: 'linear-gradient(135deg, rgba(30,62,114,0.8), rgba(19,41,80,0.95))' }}>
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent" />
           <div className="px-8 py-14 text-center">
@@ -600,7 +702,7 @@ function WhyUs() {
             </div>
           </div>
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent" />
-        </div>
+        </TiltCard>
       </div>
     </Section>
   );
@@ -627,7 +729,7 @@ function Certificate() {
 
         <div ref={ref} className="reveal">
           <div className="perspective-container mb-12">
-            <div className="card-3d relative rounded-2xl overflow-hidden gold-border-glow animated-border p-3"
+            <TiltCard intensity={6} className="relative rounded-2xl overflow-hidden gold-border-glow animated-border p-3"
               style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.6), rgba(13,35,71,0.9))' }}>
               <div className="absolute top-2 left-2 w-8 h-8 border-t-2 border-l-2 border-yellow-500/60 rounded-tl-lg" />
               <div className="absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-yellow-500/60 rounded-tr-lg" />
@@ -639,20 +741,22 @@ function Certificate() {
                 className="w-full rounded-xl shadow-2xl"
                 style={{ boxShadow: '0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(212,175,55,0.08)' }}
               />
-            </div>
+            </TiltCard>
           </div>
 
           <div className="grid sm:grid-cols-3 gap-5">
             {certCards.map((item, i) => {
               const cardRef = useReveal();
               return (
-                <div key={i} ref={cardRef} className="reveal card-3d gold-border-glow rounded-xl p-6 text-center"
-                  style={{ background: 'linear-gradient(160deg, rgba(30,62,114,0.6), rgba(13,35,71,0.9))' }}>
-                  <div className="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center text-yellow-400 training-icon-wrap">
-                    {item.icon}
-                  </div>
-                  <h3 className="cinzel text-sm font-bold text-yellow-400/90 mb-2">{t(item.title)}</h3>
-                  <p className="text-blue-200/65 text-sm leading-relaxed">{t(item.desc)}</p>
+                <div key={i} ref={cardRef} className="reveal perspective-container">
+                  <TiltCard intensity={8} className="card-3d gold-border-glow rounded-xl p-6 text-center"
+                    style={{ background: 'linear-gradient(160deg, rgba(30,62,114,0.6), rgba(13,35,71,0.9))' }}>
+                    <div className="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center text-yellow-400 training-icon-wrap">
+                      {item.icon}
+                    </div>
+                    <h3 className="cinzel text-sm font-bold text-yellow-400/90 mb-2">{t(item.title)}</h3>
+                    <p className="text-blue-200/65 text-sm leading-relaxed">{t(item.desc)}</p>
+                  </TiltCard>
                 </div>
               );
             })}
@@ -688,7 +792,7 @@ function Contact() {
         <div ref={ref} className="reveal grid md:grid-cols-2 gap-10">
           {/* Info */}
           <div className="space-y-8">
-            <div className="card-3d p-8 rounded-2xl gold-border-glow"
+            <TiltCard intensity={5} className="p-8 rounded-2xl gold-border-glow"
               style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
               <h3 className="cinzel text-lg font-bold gold-gradient-text-static mb-6">{t('contact_info')}</h3>
 
@@ -742,10 +846,10 @@ function Contact() {
                   </div>
                 </div>
               </div>
-            </div>
+            </TiltCard>
 
             {/* Accreditation */}
-            <div className="p-6 rounded-xl gold-border-glow"
+            <TiltCard intensity={4} className="p-6 rounded-xl gold-border-glow"
               style={{ background: 'rgba(30,62,114,0.3)' }}>
               <p className="cinzel text-xs tracking-[0.3em] text-yellow-600/80 uppercase mb-3">{t('contact_accreditation')}</p>
               <div className="space-y-2">
@@ -756,20 +860,20 @@ function Contact() {
                   </div>
                 ))}
               </div>
-            </div>
+            </TiltCard>
           </div>
 
           {/* Form */}
           <div>
             {sent ? (
-              <div className="h-full flex flex-col items-center justify-center text-center p-12 gold-border-glow rounded-2xl"
+              <TiltCard intensity={5} className="h-full flex flex-col items-center justify-center text-center p-12 gold-border-glow rounded-2xl"
                 style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
                 <CheckCircle className="text-yellow-400 mb-4" size={52} />
                 <h3 className="cinzel text-xl font-bold gold-gradient-text-static mb-3">{t('form_success_title')}</h3>
                 <p className="text-blue-200/65 text-sm leading-relaxed max-w-sm">{t('form_success_desc')}</p>
-              </div>
+              </TiltCard>
             ) : (
-              <form onSubmit={handleSubmit} action="mailto:yahye.dahir1@outlook.com" method="post" encType="text/plain" className="space-y-5 p-8 rounded-2xl gold-border-glow"
+              <TiltCard intensity={4} className="space-y-5 p-8 rounded-2xl gold-border-glow"
                 style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
                 <h3 className="cinzel text-lg font-bold gold-gradient-text-static mb-2">{t('form_title')}</h3>
                 <p className="text-blue-200/55 text-sm mb-6">{t('form_desc')}</p>
@@ -810,7 +914,7 @@ function Contact() {
                 <button type="submit" className="btn-primary w-full py-4 rounded-lg text-sm tracking-widest cinzel flex items-center justify-center gap-2">
                   {t('form_submit')} <ArrowRight size={16} />
                 </button>
-              </form>
+              </TiltCard>
             )}
           </div>
         </div>
