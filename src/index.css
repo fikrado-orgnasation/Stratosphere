@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --navy-950: #020c1b;
-  --navy-900: #0a1628;
-  --navy-800: #0d1f3c;
-  --navy-700: #112950;
-  --navy-600: #1a3a6b;
+  --navy-950: #0d2347;
+  --navy-900: #1a3460;
+  --navy-800: #1e3e72;
+  --navy-700: #244a87;
+  --navy-600: #2d5c9e;
   --gold-400: #f0c040;
   --gold-500: #d4af37;
   --gold-600: #c9a84c;
@@ -26,10 +26,29 @@ html {
 }
 
 body {
-  font-family: 'Raleway', sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   background-color: var(--navy-950);
   color: #e8d5a3;
   overflow-x: hidden;
+}
+
+/* RTL support for Arabic */
+[dir="rtl"] body,
+[dir="rtl"] * {
+  font-family: Arial, 'Segoe UI', Tahoma, sans-serif;
+}
+
+[dir="rtl"] .cinzel {
+  font-family: 'Cinzel', Georgia, serif;
+  letter-spacing: 0.05em;
+}
+
+[dir="rtl"] .flex {
+  flex-direction: row-reverse;
+}
+
+[dir="rtl"] .space-y-6 > * + * {
+  margin-top: 1.5rem;
 }
 
 /* Stars background */
@@ -59,7 +78,7 @@ body {
 
 /* Navigation */
 .nav-glass {
-  background: rgba(2, 12, 27, 0.85);
+  background: rgba(13, 35, 71, 0.88);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(212, 175, 55, 0.2);
@@ -117,8 +136,8 @@ body {
 /* Hero section */
 .hero-bg {
   background:
-    radial-gradient(ellipse at 20% 50%, rgba(17, 41, 80, 0.8) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 50%, rgba(10, 22, 40, 0.9) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 50%, rgba(36, 74, 135, 0.8) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 50%, rgba(26, 52, 96, 0.9) 0%, transparent 60%),
     linear-gradient(180deg, var(--navy-950) 0%, var(--navy-900) 50%, var(--navy-950) 100%);
 }
 
@@ -259,7 +278,7 @@ body {
 
 /* Mobile menu */
 .mobile-menu {
-  background: rgba(2, 12, 27, 0.98);
+  background: rgba(13, 35, 71, 0.98);
   backdrop-filter: blur(20px);
 }
 

@@ -1,10 +1,20 @@
-import { useEffect, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import {
   Plane, Globe, Shield, BookOpen, Wind, Radio, Users, Award,
-  ChevronDown, MapPin, Phone, Menu, X, Star, CheckCircle,
+  ChevronDown, MapPin, Phone, Mail, Menu, X, Star, CheckCircle,
   Navigation, Cloud, Compass, Zap, GraduationCap, Briefcase,
   Building, ChevronRight, ArrowRight
 } from 'lucide-react';
+import { translations, Lang } from './translations';
+
+// ── Language context ──────────────────────────────────────────────────────────
+const LangContext = createContext<{ lang: Lang; t: (k: keyof typeof translations['en']) => string; setLang: (l: Lang) => void }>({
+  lang: 'en',
+  t: (k) => translations.en[k],
+  setLang: () => {},
+});
+
+function useLang() { return useContext(LangContext); }
 
 // ── Stars background ──────────────────────────────────────────────────────────
 function StarsBackground() {
@@ -78,8 +88,60 @@ function SectionTitle({ label, title, subtitle }: { label?: string; title: strin
   );
 }
 
+// ── Language Switcher ─────────────────────────────────────────────────────────
+const langLabels: Record<Lang, { flag: string; label: string }> = {
+  en: { flag: '🇬🇧', label: 'EN' },
+  so: { flag: '🇸🇴', label: 'SO' },
+  ar: { flag: '🇸🇦', label: 'AR' },
+};
+
+function LangSwitcher() {
+  const { lang, setLang } = useLang();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => setOpen(o => !o)}
+        className="flex items-center gap-1.5 px-3 py-1.5 border border-yellow-600/40 rounded-md bg-yellow-500/5 hover:bg-yellow-500/10 hover:border-yellow-500/60 transition-all duration-200 cinzel text-xs text-yellow-400 tracking-wider"
+        aria-label="Change language"
+      >
+        <Globe size={13} />
+        {langLabels[lang].label}
+        <ChevronDown size={11} className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+      </button>
+
+      {open && (
+        <div className="absolute right-0 top-full mt-2 w-36 rounded-lg border border-yellow-600/25 shadow-2xl overflow-hidden z-50"
+          style={{ background: 'rgba(13,35,71,0.98)', backdropFilter: 'blur(16px)' }}>
+          {(['en', 'so', 'ar'] as Lang[]).map(l => (
+            <button
+              key={l}
+              onClick={() => { setLang(l); setOpen(false); }}
+              className={`w-full flex items-center gap-3 px-4 py-3 text-left cinzel text-xs tracking-wider transition-colors duration-150 ${lang === l ? 'text-yellow-400 bg-yellow-500/10' : 'text-blue-100/70 hover:text-yellow-400 hover:bg-yellow-500/5'}`}
+            >
+              <span>{langLabels[l].flag}</span>
+              <span>{l === 'en' ? 'English' : l === 'so' ? 'Soomaali' : 'العربية'}</span>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Navigation ────────────────────────────────────────────────────────────────
 function Navbar() {
+  const { t } = useLang();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -90,19 +152,20 @@ function Navbar() {
   }, []);
 
   const links = [
-    { href: '#about', label: 'About' },
-    { href: '#mission', label: 'Mission' },
-    { href: '#training', label: 'Training' },
-    { href: '#careers', label: 'Careers' },
-    { href: '#why-us', label: 'Why Us' },
-    { href: '#contact', label: 'Contact' },
+    { href: '#about', label: t('nav_about') },
+    { href: '#mission', label: t('nav_mission') },
+    { href: '#training', label: t('nav_training') },
+    { href: '#careers', label: t('nav_careers') },
+    { href: '#why-us', label: t('nav_why_us') },
+    { href: '#certificate', label: t('nav_certificate') },
+    { href: '#contact', label: t('nav_contact') },
   ];
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'nav-glass shadow-lg shadow-black/40' : 'bg-transparent'}`}>
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between h-18 py-3">
         <a href="#hero" className="flex items-center gap-3 group">
-          <img src="/logo.png" alt="Stratosphere Aeronautics" className="w-12 h-12 object-contain transition-transform duration-300 group-hover:scale-110" />
+          <img src="/logo-removebg-preview.png" alt="Stratosphere Aeronautics" className="w-12 h-12 object-contain transition-transform duration-300 group-hover:scale-110" />
           <div className="hidden sm:block">
             <p className="cinzel text-sm font-bold gold-gradient-text leading-tight">Stratosphere</p>
             <p className="cinzel text-[10px] text-yellow-600/80 tracking-widest uppercase">Aeronautics</p>
@@ -110,21 +173,25 @@ function Navbar() {
         </a>
 
         {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden md:flex items-center gap-6">
           {links.map(l => (
             <a key={l.href} href={l.href} className="nav-link cinzel text-xs tracking-wider text-blue-100/80 hover:text-yellow-400 uppercase transition-colors duration-300">
               {l.label}
             </a>
           ))}
+          <LangSwitcher />
           <a href="#contact" className="btn-primary cinzel text-xs px-5 py-2.5 rounded-sm tracking-wider">
-            Enroll Now
+            {t('nav_enroll')}
           </a>
         </div>
 
         {/* Mobile toggle */}
-        <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden text-yellow-400 p-2">
-          {menuOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        <div className="md:hidden flex items-center gap-3">
+          <LangSwitcher />
+          <button onClick={() => setMenuOpen(!menuOpen)} className="text-yellow-400 p-2">
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile menu */}
@@ -137,7 +204,7 @@ function Navbar() {
             </a>
           ))}
           <a href="#contact" onClick={() => setMenuOpen(false)} className="btn-primary cinzel text-sm px-6 py-3 rounded-sm text-center tracking-widest">
-            Enroll Now
+            {t('nav_enroll')}
           </a>
         </div>
       )}
@@ -147,6 +214,7 @@ function Navbar() {
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
 function Hero() {
+  const { t } = useLang();
   return (
     <section id="hero" className="hero-bg relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-4 pt-20">
       {/* Animated horizon lines */}
@@ -154,7 +222,6 @@ function Hero() {
         {[20, 40, 60, 80].map((p, i) => (
           <div key={i} className="absolute w-full horizon-glow" style={{ top: `${p}%`, animationDelay: `${i * 0.5}s` }} />
         ))}
-        {/* Runway lights */}
         <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex gap-8">
           {Array.from({ length: 9 }).map((_, i) => (
             <div key={i} className="runway-dot w-1.5 h-1.5 rounded-full bg-yellow-500/60"
@@ -168,7 +235,7 @@ function Hero() {
         <div className="absolute inset-0 rounded-full pulse-ring border-2 border-yellow-500/30 scale-110" />
         <div className="absolute inset-0 rounded-full pulse-ring border border-yellow-500/20 scale-125" style={{ animationDelay: '0.7s' }} />
         <img
-          src="/logo.png"
+          src="/logo-removebg-preview.png"
           alt="Stratosphere Aeronautics"
           className="logo-float w-44 h-44 md:w-56 md:h-56 object-contain relative z-10"
         />
@@ -177,29 +244,29 @@ function Hero() {
       {/* Text */}
       <div className="max-w-4xl mx-auto">
         <p className="cinzel text-xs md:text-sm tracking-[0.4em] text-yellow-500/80 uppercase mb-4 animate-fade-in">
-          ERNAM · ICAO Recognized · Regional Aviation Training Center
+          {t('hero_tagline')}
         </p>
         <h1 className="cinzel text-4xl sm:text-5xl md:text-7xl font-black gold-gradient-text leading-[1.1] mb-4 animate-slide-up">
           Stratosphere<br />
           <span className="text-blue-100/90">Aeronautics</span>
         </h1>
         <p className="cinzel text-base md:text-xl text-yellow-500/90 tracking-widest mb-3 animate-slide-up delay-200">
-          School for Air Navigation & Management
+          {t('hero_school')}
         </p>
         <div className="gold-divider w-64 mx-auto mb-8" />
         <p className="text-blue-200/70 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-4 animate-fade-in delay-300">
-          Mastering the Skies. Managing the Future. Precision in Navigation.
+          {t('hero_desc')}
         </p>
         <p className="cinzel text-yellow-600/60 text-xs tracking-[0.3em] uppercase mb-10 animate-fade-in delay-400">
-          "Precision in Theory. Excellence in Flight."
+          {t('hero_motto')}
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up delay-500">
           <a href="#training" className="btn-primary px-10 py-4 rounded-sm text-sm inline-flex items-center gap-2 justify-center">
-            Explore Programs <ArrowRight size={16} />
+            {t('hero_explore')} <ArrowRight size={16} />
           </a>
           <a href="#contact" className="btn-outline px-10 py-4 rounded-sm text-sm inline-flex items-center gap-2 justify-center">
-            Enroll Today <ChevronRight size={16} />
+            {t('hero_enroll')} <ChevronRight size={16} />
           </a>
         </div>
       </div>
@@ -240,21 +307,18 @@ function StatsBanner() {
 
 // ── About ─────────────────────────────────────────────────────────────────────
 function About() {
+  const { t } = useLang();
   const ref = useReveal();
   return (
     <Section id="about" className="section-navy">
       <div className="max-w-6xl mx-auto">
-        <SectionTitle label="Who We Are" title="Your Gateway to the Skies" subtitle="Elite theoretical knowledge instruction for the next generation of aviation professionals." />
+        <SectionTitle label={t('about_label')} title={t('about_title')} subtitle={t('about_subtitle')} />
 
         <div ref={ref} className="reveal grid md:grid-cols-2 gap-12 items-center">
           {/* Left */}
           <div className="space-y-6">
-            <p className="text-blue-100/80 text-base leading-relaxed">
-              Stratosphere Aeronautics offers elite private tuition designed to transform your passion for aviation into a professional reality. We provide the essential theoretical foundation every pilot and aviation professional needs.
-            </p>
-            <p className="text-blue-100/80 text-base leading-relaxed">
-              Led by a specialist trained at the <span className="text-yellow-400 font-semibold">Regional School of Air Navigation and Management (ERNAM)</span>, our program delivers an internationally recognized curriculum that aligns with global aviation standards.
-            </p>
+            <p className="text-blue-100/80 text-base leading-relaxed">{t('about_p1')}</p>
+            <p className="text-blue-100/80 text-base leading-relaxed">{t('about_p2')}</p>
             <div className="grid grid-cols-2 gap-4 mt-8">
               {[
                 { icon: <Shield size={18} />, text: 'ICAO Compliant Syllabus' },
@@ -273,9 +337,9 @@ function About() {
           {/* Right — 3D card */}
           <div className="perspective-container">
             <div className="card-3d gold-border-glow rounded-2xl bg-gradient-to-br from-navy-800/60 to-navy-900/80 p-8 backdrop-blur-sm"
-              style={{ background: 'linear-gradient(135deg, rgba(13,31,60,0.9), rgba(2,12,27,0.95))' }}>
+              style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
               <div className="flex items-center gap-4 mb-6">
-                <img src="/logo.png" alt="Stratosphere Aeronautics" className="w-20 h-20 object-contain" />
+                <img src="/logo-removebg-preview.png" alt="Stratosphere Aeronautics" className="w-20 h-20 object-contain" />
                 <div>
                   <p className="cinzel text-lg font-bold gold-gradient-text-static">Stratosphere</p>
                   <p className="cinzel text-sm text-yellow-500/80">Aeronautics</p>
@@ -307,37 +371,45 @@ function About() {
 
 // ── Mission ───────────────────────────────────────────────────────────────────
 function Mission() {
+  const { t } = useLang();
   const ref = useReveal();
+
+  const descParts = t('mission_desc').split(/<gold>|<\/gold>/);
+
   return (
     <Section id="mission" className="section-navy-alt">
       <div className="max-w-5xl mx-auto">
-        <SectionTitle label="Our Purpose" title="Our Mission" />
+        <SectionTitle label={t('mission_label')} title={t('mission_title')} />
 
         <div ref={ref} className="reveal perspective-container">
           <div className="card-3d relative gold-border-glow rounded-2xl overflow-hidden animated-border"
-            style={{ background: 'linear-gradient(135deg, rgba(10,22,40,0.95), rgba(17,41,80,0.5), rgba(2,12,27,0.95))' }}>
+            style={{ background: 'linear-gradient(135deg, rgba(19,41,80,0.95), rgba(30,62,114,0.5), rgba(13,35,71,0.95))' }}>
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent" />
             <div className="p-10 md:p-16 text-center relative">
               <div className="quote-marks relative inline-block pl-8 mb-8">
                 <Plane className="text-yellow-500/30 mx-auto mb-4" size={48} />
               </div>
               <blockquote className="cinzel text-lg md:text-2xl font-semibold text-blue-100/90 leading-relaxed mb-8 italic">
-                "To empower the next generation of aviation leaders through rigorous air navigation training and comprehensive systems management education."
+                {t('mission_quote')}
               </blockquote>
               <p className="text-blue-200/65 text-base leading-relaxed max-w-3xl mx-auto">
-                At Stratosphere Aeronautics, we bridge the gap between <span className="text-yellow-400">technical mastery</span> and <span className="text-yellow-400">organizational excellence</span>, ensuring our graduates navigate the complexities of the modern airspace with precision, safety, and professional integrity.
+                {descParts.map((part, i) =>
+                  i % 2 === 1
+                    ? <span key={i} className="text-yellow-400">{part}</span>
+                    : part
+                )}
               </p>
               <div className="gold-divider w-40 mx-auto mt-10 mb-6" />
               <div className="flex flex-wrap justify-center gap-6 text-center">
-                {[
-                  { label: 'Precision', icon: <Navigation size={16} /> },
-                  { label: 'Safety', icon: <Shield size={16} /> },
-                  { label: 'Integrity', icon: <Star size={16} /> },
-                  { label: 'Excellence', icon: <Award size={16} /> },
-                ].map((v, i) => (
+                {([
+                  { key: 'val_precision' as const, icon: <Navigation size={16} /> },
+                  { key: 'val_safety' as const, icon: <Shield size={16} /> },
+                  { key: 'val_integrity' as const, icon: <Star size={16} /> },
+                  { key: 'val_excellence' as const, icon: <Award size={16} /> },
+                ] as const).map((v, i) => (
                   <div key={i} className="flex items-center gap-2 cinzel text-xs tracking-widest text-yellow-500/80 uppercase">
                     <span className="text-yellow-600">{v.icon}</span>
-                    {v.label}
+                    {t(v.key)}
                   </div>
                 ))}
               </div>
@@ -351,40 +423,47 @@ function Mission() {
 }
 
 // ── Training Areas ────────────────────────────────────────────────────────────
-const trainingAreas = [
-  { icon: <BookOpen size={22} />, title: 'Air Law', desc: 'Rules of the air, international regulations, and operational procedures governing global airspace.' },
-  { icon: <Plane size={22} />, title: 'Principles of Flight', desc: 'Deep-dive into aerodynamics, aircraft systems, performance, and the physics of flight.' },
-  { icon: <Cloud size={22} />, title: 'Meteorology', desc: 'Understanding weather patterns, atmospheric science, and making safe go/no-go decisions.' },
-  { icon: <Navigation size={22} />, title: 'Navigation & Flight Planning', desc: 'Master the mathematics and technology behind precision navigation and route planning.' },
-  { icon: <Zap size={22} />, title: 'Aircraft General Knowledge', desc: 'Comprehensive understanding of aircraft systems, powerplants, and airframe components.' },
-  { icon: <Users size={22} />, title: 'Human Performance', desc: 'Physiological and psychological factors affecting pilot performance and decision-making.' },
-  { icon: <Radio size={22} />, title: 'Radio Communications', desc: 'Standard phraseology, communication procedures, and frequency management in all phases of flight.' },
-  { icon: <Compass size={22} />, title: 'Air Traffic Control & AIM', desc: 'ATC procedures, airspace structure, and aeronautical information management essentials.' },
-  { icon: <Shield size={22} />, title: 'Safety Management Systems', desc: 'SMS frameworks, risk assessment, hazard identification, and safety culture development.' },
-  { icon: <Globe size={22} />, title: 'Language Proficiency Testing', desc: 'ICAO language proficiency requirements and preparation for operational level testing.' },
+const trainingIcons = [
+  <BookOpen size={22} />, <Plane size={22} />, <Cloud size={22} />,
+  <Navigation size={22} />, <Zap size={22} />, <Users size={22} />,
+  <Radio size={22} />, <Compass size={22} />, <Shield size={22} />, <Globe size={22} />,
 ];
 
 function Training() {
+  const { t } = useLang();
+  const trainingKeys = [
+    { title: 't1_title' as const, desc: 't1_desc' as const },
+    { title: 't2_title' as const, desc: 't2_desc' as const },
+    { title: 't3_title' as const, desc: 't3_desc' as const },
+    { title: 't4_title' as const, desc: 't4_desc' as const },
+    { title: 't5_title' as const, desc: 't5_desc' as const },
+    { title: 't6_title' as const, desc: 't6_desc' as const },
+    { title: 't7_title' as const, desc: 't7_desc' as const },
+    { title: 't8_title' as const, desc: 't8_desc' as const },
+    { title: 't9_title' as const, desc: 't9_desc' as const },
+    { title: 't10_title' as const, desc: 't10_desc' as const },
+  ];
+
   return (
     <Section id="training" className="section-navy">
       <div className="max-w-7xl mx-auto">
         <SectionTitle
-          label="Curriculum"
-          title="Key Training Areas"
-          subtitle="Ten core pillars of aeronautical theory, delivered through personalized, high-impact private sessions aligned with ICAO standards."
+          label={t('training_label')}
+          title={t('training_title')}
+          subtitle={t('training_subtitle')}
         />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
-          {trainingAreas.map((area, i) => {
+          {trainingKeys.map((keys, i) => {
             const ref = useReveal();
             return (
               <div key={i} ref={ref} className="reveal card-3d gold-border-glow rounded-xl p-6 flex flex-col gap-4"
-                style={{ background: 'linear-gradient(135deg, rgba(13,31,60,0.8), rgba(2,12,27,0.9))', animationDelay: `${i * 0.05}s` }}>
+                style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.8), rgba(13,35,71,0.9))', animationDelay: `${i * 0.05}s` }}>
                 <div className="training-icon-wrap w-12 h-12 rounded-xl flex items-center justify-center text-yellow-400 shrink-0">
-                  {area.icon}
+                  {trainingIcons[i]}
                 </div>
                 <div>
-                  <h3 className="cinzel text-sm font-bold text-yellow-400/90 mb-2 leading-snug">{area.title}</h3>
-                  <p className="text-blue-200/60 text-xs leading-relaxed">{area.desc}</p>
+                  <h3 className="cinzel text-sm font-bold text-yellow-400/90 mb-2 leading-snug">{t(keys.title)}</h3>
+                  <p className="text-blue-200/60 text-xs leading-relaxed">{t(keys.desc)}</p>
                 </div>
               </div>
             );
@@ -394,7 +473,7 @@ function Training() {
         {/* ASECNA / ICAO badge */}
         <div className="mt-16 text-center">
           <div className="inline-flex items-center gap-4 px-8 py-4 gold-border-glow rounded-full"
-            style={{ background: 'rgba(13,31,60,0.6)' }}>
+            style={{ background: 'rgba(26,52,96,0.6)' }}>
             <Globe className="text-yellow-500" size={20} />
             <span className="cinzel text-sm tracking-widest text-yellow-400/90 uppercase">ASECNA | ICAO WACAF Office Partner</span>
             <Globe className="text-yellow-500" size={20} />
@@ -406,58 +485,47 @@ function Training() {
 }
 
 // ── Careers ───────────────────────────────────────────────────────────────────
-const careerGroups = [
-  {
-    category: 'Flight Dispatch & Operations',
-    icon: <Plane size={22} />,
-    roles: ['Flight Dispatcher / Flight Operations Officer', 'Flight Follower'],
-  },
-  {
-    category: 'Logistics & Ground Handling',
-    icon: <Building size={22} />,
-    roles: ['Loadmaster / Weight and Balance Officer', 'Aviation Logistics Coordinator', 'Ramp Operations Supervisor'],
-  },
-  {
-    category: 'Safety & Regulatory Compliance',
-    icon: <Shield size={22} />,
-    roles: ['Safety Assistant (SMS)', 'Compliance Coordinator'],
-  },
-  {
-    category: 'Technical & Administrative Support',
-    icon: <Briefcase size={22} />,
-    roles: ['Technical Records Specialist', 'Meteorological Assistant', 'Crew Scheduler'],
-  },
-  {
-    category: 'Education & Further Training',
-    icon: <GraduationCap size={22} />,
-    roles: ['Pathway to PPL & CPL Licensing', 'Aviation Training Foundation'],
-  },
+const careerGroupIcons = [<Plane size={22} />, <Building size={22} />, <Shield size={22} />, <Briefcase size={22} />, <GraduationCap size={22} />];
+const careerGroupCategories = [
+  'Flight Dispatch & Operations',
+  'Logistics & Ground Handling',
+  'Safety & Regulatory Compliance',
+  'Technical & Administrative Support',
+  'Education & Further Training',
+];
+const careerGroupRoles = [
+  ['Flight Dispatcher / Flight Operations Officer', 'Flight Follower'],
+  ['Loadmaster / Weight and Balance Officer', 'Aviation Logistics Coordinator', 'Ramp Operations Supervisor'],
+  ['Safety Assistant (SMS)', 'Compliance Coordinator'],
+  ['Technical Records Specialist', 'Meteorological Assistant', 'Crew Scheduler'],
+  ['Pathway to PPL & CPL Licensing', 'Aviation Training Foundation'],
 ];
 
 function Careers() {
+  const { t } = useLang();
   return (
     <Section id="careers" className="section-navy-alt">
       <div className="max-w-6xl mx-auto">
         <SectionTitle
-          label="Career Outcomes"
-          title="Career Pathways"
-          subtitle="Our ICAO-compliant graduates are prepared for a wide range of roles across the global aviation industry."
+          label={t('careers_label')}
+          title={t('careers_title')}
+          subtitle={t('careers_subtitle')}
         />
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {careerGroups.map((group, i) => {
+          {careerGroupCategories.map((category, i) => {
             const ref = useReveal();
             return (
               <div key={i} ref={ref} className="reveal card-3d gold-border-glow rounded-xl overflow-hidden"
-                style={{ background: 'linear-gradient(160deg, rgba(17,41,80,0.6), rgba(2,12,27,0.9))' }}>
+                style={{ background: 'linear-gradient(160deg, rgba(30,62,114,0.6), rgba(13,35,71,0.9))' }}>
                 <div className="p-6">
                   <div className="flex items-center gap-3 mb-5">
                     <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-yellow-400">
-                      {group.icon}
+                      {careerGroupIcons[i]}
                     </div>
-                    <h3 className="cinzel text-sm font-bold text-yellow-400/90 leading-snug">{group.category}</h3>
+                    <h3 className="cinzel text-sm font-bold text-yellow-400/90 leading-snug">{category}</h3>
                   </div>
                   <div className="space-y-2.5">
-                    {group.roles.map((role, j) => (
+                    {careerGroupRoles[i].map((role, j) => (
                       <div key={j} className="flex items-start gap-2.5">
                         <ChevronRight size={12} className="text-yellow-600 mt-0.5 shrink-0" />
                         <span className="text-blue-100/70 text-sm leading-snug">{role}</span>
@@ -476,51 +544,37 @@ function Careers() {
 }
 
 // ── Why Choose Us ─────────────────────────────────────────────────────────────
-const reasons = [
-  {
-    icon: <Shield size={28} />,
-    title: 'Pathway to Licensing',
-    desc: "We prepare you for the specific regulatory requirements of the PPL and CPL pathways — not just theoretical knowledge.",
-  },
-  {
-    icon: <GraduationCap size={28} />,
-    title: 'Expert Instruction',
-    desc: 'Learn from an ERNAM-trained specialist with deep technical knowledge in air navigation and management.',
-  },
-  {
-    icon: <Star size={28} />,
-    title: 'Ab-Initio Specialists',
-    desc: 'We excel at taking students with zero experience and building them into knowledgeable aviation candidates.',
-  },
-  {
-    icon: <Globe size={28} />,
-    title: 'International Standards',
-    desc: 'Our syllabus is based on ICAO-compliant frameworks, making your knowledge valid and recognized worldwide.',
-  },
+const reasonIcons = [<Shield size={28} />, <GraduationCap size={28} />, <Star size={28} />, <Globe size={28} />];
+const reasonKeys = [
+  { title: 'w1_title' as const, desc: 'w1_desc' as const },
+  { title: 'w2_title' as const, desc: 'w2_desc' as const },
+  { title: 'w3_title' as const, desc: 'w3_desc' as const },
+  { title: 'w4_title' as const, desc: 'w4_desc' as const },
 ];
 
 function WhyUs() {
+  const { t } = useLang();
   return (
     <Section id="why-us" className="section-navy">
       <div className="max-w-6xl mx-auto">
         <SectionTitle
-          label="Our Advantage"
-          title="Why Choose Stratosphere?"
-          subtitle="We don't just teach theory — we build aviation professionals ready for the global stage."
+          label={t('why_label')}
+          title={t('why_title')}
+          subtitle={t('why_subtitle')}
         />
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
-          {reasons.map((r, i) => {
+          {reasonKeys.map((keys, i) => {
             const ref = useReveal();
             return (
               <div key={i} ref={ref} className="reveal card-3d text-center p-8 rounded-2xl gold-border-glow"
-                style={{ background: 'linear-gradient(180deg, rgba(17,41,80,0.5), rgba(2,12,27,0.8))', transitionDelay: `${i * 0.1}s` }}>
+                style={{ background: 'linear-gradient(180deg, rgba(30,62,114,0.5), rgba(13,35,71,0.8))', transitionDelay: `${i * 0.1}s` }}>
                 <div className="w-16 h-16 rounded-full mx-auto mb-5 flex items-center justify-center text-yellow-400"
                   style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.15), rgba(212,175,55,0.03))' }}>
-                  {r.icon}
+                  {reasonIcons[i]}
                 </div>
-                <h3 className="cinzel text-sm font-bold text-yellow-400/90 mb-3 leading-snug">{r.title}</h3>
-                <p className="text-blue-200/65 text-sm leading-relaxed">{r.desc}</p>
+                <h3 className="cinzel text-sm font-bold text-yellow-400/90 mb-3 leading-snug">{t(keys.title)}</h3>
+                <p className="text-blue-200/65 text-sm leading-relaxed">{t(keys.desc)}</p>
               </div>
             );
           })}
@@ -528,7 +582,7 @@ function WhyUs() {
 
         {/* CTA Banner */}
         <div className="relative rounded-2xl overflow-hidden gold-border-glow animated-border"
-          style={{ background: 'linear-gradient(135deg, rgba(17,41,80,0.8), rgba(10,22,40,0.95))' }}>
+          style={{ background: 'linear-gradient(135deg, rgba(30,62,114,0.8), rgba(19,41,80,0.95))' }}>
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent" />
           <div className="px-8 py-14 text-center">
             <p className="cinzel text-xs tracking-[0.4em] text-yellow-600/80 uppercase mb-4">Training The Sky Professionals of Tomorrow</p>
@@ -552,8 +606,66 @@ function WhyUs() {
   );
 }
 
+// ── Certificate ───────────────────────────────────────────────────────────────
+function Certificate() {
+  const { t } = useLang();
+  const ref = useReveal();
+  const certCards = [
+    { icon: <Award size={22} />, title: 'cert_icao_title' as const, desc: 'cert_icao_desc' as const },
+    { icon: <GraduationCap size={22} />, title: 'cert_ernam_title' as const, desc: 'cert_ernam_desc' as const },
+    { icon: <Shield size={22} />, title: 'cert_ppl_title' as const, desc: 'cert_ppl_desc' as const },
+  ];
+
+  return (
+    <Section id="certificate" className="section-navy">
+      <div className="max-w-5xl mx-auto">
+        <SectionTitle
+          label={t('cert_label')}
+          title={t('cert_title')}
+          subtitle={t('cert_subtitle')}
+        />
+
+        <div ref={ref} className="reveal">
+          <div className="perspective-container mb-12">
+            <div className="card-3d relative rounded-2xl overflow-hidden gold-border-glow animated-border p-3"
+              style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.6), rgba(13,35,71,0.9))' }}>
+              <div className="absolute top-2 left-2 w-8 h-8 border-t-2 border-l-2 border-yellow-500/60 rounded-tl-lg" />
+              <div className="absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-yellow-500/60 rounded-tr-lg" />
+              <div className="absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-yellow-500/60 rounded-bl-lg" />
+              <div className="absolute bottom-2 right-2 w-8 h-8 border-b-2 border-r-2 border-yellow-500/60 rounded-br-lg" />
+              <img
+                src="/ST.png"
+                alt="Stratosphere Aeronautics Certificate of Completion"
+                className="w-full rounded-xl shadow-2xl"
+                style={{ boxShadow: '0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(212,175,55,0.08)' }}
+              />
+            </div>
+          </div>
+
+          <div className="grid sm:grid-cols-3 gap-5">
+            {certCards.map((item, i) => {
+              const cardRef = useReveal();
+              return (
+                <div key={i} ref={cardRef} className="reveal card-3d gold-border-glow rounded-xl p-6 text-center"
+                  style={{ background: 'linear-gradient(160deg, rgba(30,62,114,0.6), rgba(13,35,71,0.9))' }}>
+                  <div className="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center text-yellow-400 training-icon-wrap">
+                    {item.icon}
+                  </div>
+                  <h3 className="cinzel text-sm font-bold text-yellow-400/90 mb-2">{t(item.title)}</h3>
+                  <p className="text-blue-200/65 text-sm leading-relaxed">{t(item.desc)}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
 // ── Contact ───────────────────────────────────────────────────────────────────
 function Contact() {
+  const { t } = useLang();
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
   const [sent, setSent] = useState(false);
   const ref = useReveal();
@@ -566,17 +678,19 @@ function Contact() {
     setSent(true);
   };
 
+  const accKeys = ['acc1', 'acc2', 'acc3', 'acc4'] as const;
+
   return (
     <Section id="contact" className="section-navy-alt">
       <div className="max-w-6xl mx-auto">
-        <SectionTitle label="Get In Touch" title="Contact & Enrollment" subtitle="Secure your theoretical prerequisite and begin your journey toward the flight deck." />
+        <SectionTitle label={t('contact_label')} title={t('contact_title')} subtitle={t('contact_subtitle')} />
 
         <div ref={ref} className="reveal grid md:grid-cols-2 gap-10">
           {/* Info */}
           <div className="space-y-8">
             <div className="card-3d p-8 rounded-2xl gold-border-glow"
-              style={{ background: 'linear-gradient(135deg, rgba(13,31,60,0.9), rgba(2,12,27,0.95))' }}>
-              <h3 className="cinzel text-lg font-bold gold-gradient-text-static mb-6">Contact Information</h3>
+              style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
+              <h3 className="cinzel text-lg font-bold gold-gradient-text-static mb-6">{t('contact_info')}</h3>
 
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
@@ -584,12 +698,12 @@ function Contact() {
                     <MapPin size={16} />
                   </div>
                   <div>
-                    <p className="cinzel text-xs text-yellow-500/80 uppercase tracking-wider mb-1">Location</p>
+                    <p className="cinzel text-xs text-yellow-500/80 uppercase tracking-wider mb-1">{t('contact_address')}</p>
                     <p className="text-blue-100/75 text-sm leading-relaxed">
                       Bahsane Building, 2nd Floor, Room 213<br />
                       Western Entrance (Facing West)<br />
                       Opposite Ex. National Cinema<br />
-                      <span className="text-yellow-400">Hargeisa, Somaliland</span>
+                      <span className="text-yellow-400">{t('contact_address_val')}</span>
                     </p>
                   </div>
                 </div>
@@ -601,7 +715,7 @@ function Contact() {
                     <Phone size={16} />
                   </div>
                   <div>
-                    <p className="cinzel text-xs text-yellow-500/80 uppercase tracking-wider mb-2">Mobile</p>
+                    <p className="cinzel text-xs text-yellow-500/80 uppercase tracking-wider mb-2">{t('contact_mobile')}</p>
                     <a href="tel:+252634482830" className="block text-yellow-400 hover:text-yellow-300 text-sm mb-1 transition-colors">
                       +252 (0) 63 4482830
                     </a>
@@ -613,18 +727,32 @@ function Contact() {
                     </a>
                   </div>
                 </div>
+
+                <div className="gold-divider" />
+
+                <div className="flex items-start gap-4">
+                  <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-yellow-400 shrink-0">
+                    <Mail size={16} />
+                  </div>
+                  <div>
+                    <p className="cinzel text-xs text-yellow-500/80 uppercase tracking-wider mb-2">{t('contact_email')}</p>
+                    <a href="mailto:yahye.dahir1@outlook.com" className="block text-yellow-400 hover:text-yellow-300 text-sm transition-colors break-all">
+                      yahye.dahir1@outlook.com
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* Accreditation */}
             <div className="p-6 rounded-xl gold-border-glow"
-              style={{ background: 'rgba(17,41,80,0.3)' }}>
-              <p className="cinzel text-xs tracking-[0.3em] text-yellow-600/80 uppercase mb-3">Accreditation & Affiliation</p>
+              style={{ background: 'rgba(30,62,114,0.3)' }}>
+              <p className="cinzel text-xs tracking-[0.3em] text-yellow-600/80 uppercase mb-3">{t('contact_accreditation')}</p>
               <div className="space-y-2">
-                {['ICAO – International Civil Aviation Organization', 'ERNAM – Regional School of Air Navigation', 'ASECNA – Agency for Aerial Navigation Safety', 'ICAO WACAF Regional Office Partner'].map((item, i) => (
+                {accKeys.map((key, i) => (
                   <div key={i} className="flex items-center gap-2.5">
                     <CheckCircle size={12} className="text-yellow-500 shrink-0" />
-                    <span className="text-blue-200/65 text-xs">{item}</span>
+                    <span className="text-blue-200/65 text-xs">{t(key)}</span>
                   </div>
                 ))}
               </div>
@@ -635,54 +763,52 @@ function Contact() {
           <div>
             {sent ? (
               <div className="h-full flex flex-col items-center justify-center text-center p-12 gold-border-glow rounded-2xl"
-                style={{ background: 'linear-gradient(135deg, rgba(13,31,60,0.9), rgba(2,12,27,0.95))' }}>
+                style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
                 <CheckCircle className="text-yellow-400 mb-4" size={52} />
-                <h3 className="cinzel text-xl font-bold gold-gradient-text-static mb-3">Enrollment Request Sent!</h3>
-                <p className="text-blue-200/65 text-sm leading-relaxed max-w-sm">
-                  Thank you for your interest in Stratosphere Aeronautics. We will contact you shortly to complete your enrollment.
-                </p>
+                <h3 className="cinzel text-xl font-bold gold-gradient-text-static mb-3">{t('form_success_title')}</h3>
+                <p className="text-blue-200/65 text-sm leading-relaxed max-w-sm">{t('form_success_desc')}</p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-5 p-8 rounded-2xl gold-border-glow"
-                style={{ background: 'linear-gradient(135deg, rgba(13,31,60,0.9), rgba(2,12,27,0.95))' }}>
-                <h3 className="cinzel text-lg font-bold gold-gradient-text-static mb-2">Enrollment Inquiry</h3>
-                <p className="text-blue-200/55 text-sm mb-6">Enrollment is open for aspiring pilots and aviation enthusiasts.</p>
+              <form onSubmit={handleSubmit} action="mailto:yahye.dahir1@outlook.com" method="post" encType="text/plain" className="space-y-5 p-8 rounded-2xl gold-border-glow"
+                style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
+                <h3 className="cinzel text-lg font-bold gold-gradient-text-static mb-2">{t('form_title')}</h3>
+                <p className="text-blue-200/55 text-sm mb-6">{t('form_desc')}</p>
 
-                {[
-                  { name: 'name', label: 'Full Name', type: 'text', placeholder: 'Your full name' },
-                  { name: 'email', label: 'Email Address', type: 'email', placeholder: 'your@email.com' },
-                  { name: 'phone', label: 'Phone Number', type: 'tel', placeholder: '+252 ...' },
-                ].map(field => (
+                {([
+                  { name: 'name', labelKey: 'form_name' as const, type: 'text', phKey: 'form_name_ph' as const },
+                  { name: 'email', labelKey: 'form_email' as const, type: 'email', phKey: 'form_email_ph' as const },
+                  { name: 'phone', labelKey: 'form_phone' as const, type: 'tel', phKey: 'form_phone_ph' as const },
+                ]).map(field => (
                   <div key={field.name}>
-                    <label className="cinzel text-xs text-yellow-500/70 tracking-wider uppercase block mb-1.5">{field.label}</label>
+                    <label className="cinzel text-xs text-yellow-500/70 tracking-wider uppercase block mb-1.5">{t(field.labelKey)}</label>
                     <input
                       type={field.type}
                       name={field.name}
                       required
                       value={(form as Record<string, string>)[field.name]}
                       onChange={handleChange}
-                      placeholder={field.placeholder}
+                      placeholder={t(field.phKey)}
                       className="w-full bg-navy-950/60 border border-yellow-600/25 rounded-lg px-4 py-3 text-blue-100/90 text-sm placeholder-blue-300/30 focus:outline-none focus:border-yellow-500/60 focus:ring-1 focus:ring-yellow-500/30 transition-all"
-                      style={{ background: 'rgba(2,12,27,0.6)' }}
+                      style={{ background: 'rgba(13,35,71,0.7)' }}
                     />
                   </div>
                 ))}
 
                 <div>
-                  <label className="cinzel text-xs text-yellow-500/70 tracking-wider uppercase block mb-1.5">Message</label>
+                  <label className="cinzel text-xs text-yellow-500/70 tracking-wider uppercase block mb-1.5">{t('form_message')}</label>
                   <textarea
                     name="message"
                     rows={4}
                     value={form.message}
                     onChange={handleChange}
-                    placeholder="Tell us about your aviation goals..."
+                    placeholder={t('form_message_ph')}
                     className="w-full bg-navy-950/60 border border-yellow-600/25 rounded-lg px-4 py-3 text-blue-100/90 text-sm placeholder-blue-300/30 focus:outline-none focus:border-yellow-500/60 focus:ring-1 focus:ring-yellow-500/30 transition-all resize-none"
-                    style={{ background: 'rgba(2,12,27,0.6)' }}
+                    style={{ background: 'rgba(13,35,71,0.7)' }}
                   />
                 </div>
 
                 <button type="submit" className="btn-primary w-full py-4 rounded-lg text-sm tracking-widest cinzel flex items-center justify-center gap-2">
-                  Submit Enrollment Request <ArrowRight size={16} />
+                  {t('form_submit')} <ArrowRight size={16} />
                 </button>
               </form>
             )}
@@ -695,23 +821,33 @@ function Contact() {
 
 // ── Footer ────────────────────────────────────────────────────────────────────
 function Footer() {
+  const { t } = useLang();
+  const footerLinks = [
+    { href: '#about', key: 'nav_about' as const },
+    { href: '#mission', key: 'nav_mission' as const },
+    { href: '#training', key: 'nav_training' as const },
+    { href: '#careers', key: 'nav_careers' as const },
+    { href: '#why-us', key: 'nav_why_us' as const },
+    { href: '#contact', key: 'nav_contact' as const },
+  ];
+
   return (
     <footer className="relative z-10 border-t border-yellow-600/15 py-12 px-4"
-      style={{ background: 'linear-gradient(180deg, rgba(2,12,27,0.95), #020c1b)' }}>
+      style={{ background: 'linear-gradient(180deg, rgba(13,35,71,0.95), #0d2347)' }}>
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-8">
           <div className="flex items-center gap-4">
-            <img src="/logo.png" alt="Stratosphere Aeronautics" className="w-14 h-14 object-contain" />
+            <img src="/logo-removebg-preview.png" alt="Stratosphere Aeronautics" className="w-14 h-14 object-contain" />
             <div>
               <p className="cinzel font-bold text-base gold-gradient-text-static">Stratosphere Aeronautics</p>
-              <p className="cinzel text-xs text-yellow-600/70 tracking-widest">School for Air Navigation & Management</p>
+              <p className="cinzel text-xs text-yellow-600/70 tracking-widest">{t('footer_school')}</p>
             </div>
           </div>
 
           <div className="flex flex-wrap justify-center gap-6">
-            {['#about', '#mission', '#training', '#careers', '#why-us', '#contact'].map((href, i) => (
-              <a key={i} href={href} className="cinzel text-xs tracking-widest text-blue-200/50 hover:text-yellow-400 uppercase transition-colors">
-                {href.replace('#', '')}
+            {footerLinks.map((item, i) => (
+              <a key={i} href={item.href} className="cinzel text-xs tracking-widest text-blue-200/50 hover:text-yellow-400 uppercase transition-colors">
+                {t(item.key)}
               </a>
             ))}
           </div>
@@ -720,13 +856,9 @@ function Footer() {
         <div className="gold-divider mb-6" />
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-          <p className="text-blue-200/35 text-xs">
-            &copy; {new Date().getFullYear()} Stratosphere Aeronautics. All rights reserved. Hargeisa, Somaliland.
-          </p>
-          <p className="cinzel text-xs text-yellow-600/50 italic tracking-wider">
-            "Precision in Theory. Excellence in Flight."
-          </p>
-          <p className="text-blue-200/35 text-xs">ERNAM · ICAO Recognized · Est. 2026</p>
+          <p className="text-blue-200/35 text-xs">{t('footer_rights')}</p>
+          <p className="cinzel text-xs text-yellow-600/50 italic tracking-wider">{t('footer_tagline')}</p>
+          <p className="text-blue-200/35 text-xs">{t('footer_ernam')} · {t('footer_icao')} · Est. 2026</p>
         </div>
       </div>
     </footer>
@@ -735,19 +867,39 @@ function Footer() {
 
 // ── App ───────────────────────────────────────────────────────────────────────
 export default function App() {
+  const [lang, setLangState] = useState<Lang>('en');
+
+  const setLang = (l: Lang) => {
+    setLangState(l);
+    document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.lang = l;
+  };
+
+  useEffect(() => {
+    const browserLang = navigator.language.toLowerCase();
+    if (browserLang.startsWith('so')) setLang('so');
+    else if (browserLang.startsWith('ar')) setLang('ar');
+    else setLang('en');
+  }, []);
+
+  const t = (k: keyof typeof translations['en']) => translations[lang][k] ?? translations.en[k];
+
   return (
-    <div className="relative min-h-screen" style={{ background: '#020c1b' }}>
-      <StarsBackground />
-      <Navbar />
-      <Hero />
-      <StatsBanner />
-      <About />
-      <Mission />
-      <Training />
-      <Careers />
-      <WhyUs />
-      <Contact />
-      <Footer />
-    </div>
+    <LangContext.Provider value={{ lang, t, setLang }}>
+      <div className="relative min-h-screen" style={{ background: '#0d2347' }}>
+        <StarsBackground />
+        <Navbar />
+        <Hero />
+        <StatsBanner />
+        <About />
+        <Mission />
+        <Training />
+        <Careers />
+        <WhyUs />
+        <Certificate />
+        <Contact />
+        <Footer />
+      </div>
+    </LangContext.Provider>
   );
 }
