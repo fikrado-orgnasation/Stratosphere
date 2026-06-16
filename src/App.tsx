@@ -344,7 +344,7 @@ function Hero() {
         </p>
         <h1 className="cinzel text-4xl sm:text-5xl md:text-7xl font-black gold-gradient-text-3d leading-[1.1] mb-4 animate-slide-up">
           Stratosphere<br />
-          <span className="text-blue-100/90 text-shadow-3d">Aeronautics</span>
+          <span className="aeronautics-glow">Aeronautics</span>
         </h1>
         <p className="cinzel text-base md:text-xl text-yellow-500/90 tracking-widest mb-3 animate-slide-up delay-200">
           {t('hero_school')}
