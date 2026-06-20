@@ -906,7 +906,6 @@ function Contact() {
             ) : (
               <TiltCard intensity={4} className="space-y-5 p-8 rounded-2xl gold-border-glow"
                 style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
-                <h3 className="cinzel text-lg font-bold gold-gradient-text-static mb-2">{t('form_title')}</h3>
                 <p className="text-blue-200/55 text-sm mb-6">{t('form_desc')}</p>
 
                 {([
