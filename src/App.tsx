@@ -3,7 +3,7 @@ import {
   Plane, Globe, Shield, BookOpen, Radio, Users, Award,
   ChevronDown, MapPin, Phone, Mail, Menu, X, Star, CheckCircle,
   Navigation, Cloud, Compass, Zap, GraduationCap, Briefcase,
-  Building, ChevronRight, ArrowRight, Loader2
+  Building, ChevronRight, ArrowRight, MessageCircle
 } from 'lucide-react';
 import { translations, Lang } from './translations';
 
@@ -119,6 +119,29 @@ function StarsBackground() {
         ))}
       </div>
     </>
+  );
+}
+
+function AirplanesBackground() {
+  const planes = [
+    { cls: 'airplane-1', size: 44 },
+    { cls: 'airplane-2', size: 32 },
+    { cls: 'airplane-3', size: 52 },
+    { cls: 'airplane-4', size: 28 },
+    { cls: 'airplane-5', size: 40 },
+  ];
+  return (
+    <div className="airplane-bg-layer" aria-hidden="true">
+      {planes.map((p, i) => (
+        <Plane
+          key={i}
+          size={p.size}
+          strokeWidth={1.5}
+          className={`airplane-fly ${p.cls}`}
+          fill="currentColor"
+        />
+      ))}
+    </div>
   );
 }
 
@@ -770,45 +793,7 @@ function Certificate() {
 // ── Contact ───────────────────────────────────────────────────────────────────
 function Contact() {
   const { t } = useLang();
-  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
-  const [sent, setSent] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
   const ref = useReveal();
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setForm(f => ({ ...f, [e.target.name]: e.target.value }));
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setSubmitError(null);
-    try {
-      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-contact-inquiry`;
-      const headers = {
-        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-        'Content-Type': 'application/json',
-      };
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(form),
-      });
-      if (!response.ok) {
-        throw new Error(`Request failed (${response.status})`);
-      }
-      const data = await response.json();
-      if (data && data.error) throw new Error(data.error);
-      if (data && data.delivered === false && data.mailError) {
-        setSubmitError('Your submission was received, but there was a delay sending the notification email. We will still contact you.');
-      }
-      setSent(true);
-    } catch (err) {
-      setSubmitError(err instanceof Error ? err.message : 'Something went wrong. Please try again or email us directly.');
-    } finally {
-      setSubmitting(false);
-    }
-  };
 
   const accKeys = ['acc1', 'acc2', 'acc3', 'acc4'] as const;
 
@@ -894,73 +879,26 @@ function Contact() {
             </TiltCard>
           </div>
 
-          {/* Form */}
-          <div>
-            {sent ? (
-              <TiltCard intensity={5} className="h-full flex flex-col items-center justify-center text-center p-12 gold-border-glow rounded-2xl"
-                style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
-                <CheckCircle className="text-yellow-400 mb-4" size={52} />
-                <h3 className="cinzel text-xl font-bold gold-gradient-text-static mb-3">{t('form_success_title')}</h3>
-                <p className="text-blue-200/65 text-sm leading-relaxed max-w-sm">{t('form_success_desc')}</p>
-              </TiltCard>
-            ) : (
-              <TiltCard intensity={4} className="space-y-5 p-8 rounded-2xl gold-border-glow"
-                style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
-                <p className="text-blue-200/55 text-sm mb-6">{t('form_desc')}</p>
-
-                {([
-                  { name: 'name', labelKey: 'form_name' as const, type: 'text', phKey: 'form_name_ph' as const },
-                  { name: 'email', labelKey: 'form_email' as const, type: 'email', phKey: 'form_email_ph' as const },
-                  { name: 'phone', labelKey: 'form_phone' as const, type: 'tel', phKey: 'form_phone_ph' as const },
-                ]).map(field => (
-                  <div key={field.name}>
-                    <label className="cinzel text-xs text-yellow-500/70 tracking-wider uppercase block mb-1.5">{t(field.labelKey)}</label>
-                    <input
-                      type={field.type}
-                      name={field.name}
-                      required
-                      value={(form as Record<string, string>)[field.name]}
-                      onChange={handleChange}
-                      placeholder={t(field.phKey)}
-                      className="w-full bg-navy-950/60 border border-yellow-600/25 rounded-lg px-4 py-3 text-blue-100/90 text-sm placeholder-blue-300/30 focus:outline-none focus:border-yellow-500/60 focus:ring-1 focus:ring-yellow-500/30 transition-all"
-                      style={{ background: 'rgba(13,35,71,0.7)' }}
-                    />
-                  </div>
-                ))}
-
-                <div>
-                  <label className="cinzel text-xs text-yellow-500/70 tracking-wider uppercase block mb-1.5">{t('form_message')}</label>
-                  <textarea
-                    name="message"
-                    rows={4}
-                    value={form.message}
-                    onChange={handleChange}
-                    placeholder={t('form_message_ph')}
-                    className="w-full bg-navy-950/60 border border-yellow-600/25 rounded-lg px-4 py-3 text-blue-100/90 text-sm placeholder-blue-300/30 focus:outline-none focus:border-yellow-500/60 focus:ring-1 focus:ring-yellow-500/30 transition-all resize-none"
-                    style={{ background: 'rgba(13,35,71,0.7)' }}
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="btn-primary w-full py-4 rounded-lg text-sm tracking-widest cinzel flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  {submitting ? (
-                    <>
-                      <Loader2 size={16} className="animate-spin" /> Sending...
-                    </>
-                  ) : (
-                    <>
-                      {t('form_submit')} <ArrowRight size={16} />
-                    </>
-                  )}
-                </button>
-                {submitError && (
-                  <p className="text-red-400/80 text-xs text-center mt-2">{submitError}</p>
-                )}
-              </TiltCard>
-            )}
+          {/* WhatsApp CTA */}
+          <div className="flex items-center justify-center">
+            <TiltCard intensity={5} className="w-full p-10 rounded-2xl gold-border-glow flex flex-col items-center justify-center text-center"
+              style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
+                style={{ background: 'linear-gradient(135deg, #25D366, #128C7E)' }}>
+                <MessageCircle size={32} className="text-white" />
+              </div>
+              <h3 className="cinzel text-xl font-bold gold-gradient-text-static mb-3">{t('contact_whatsapp_title')}</h3>
+              <p className="text-blue-200/65 text-sm leading-relaxed mb-8 max-w-sm">{t('contact_whatsapp_desc')}</p>
+              <a
+                href="https://wa.me/252634482830"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary px-10 py-4 rounded-lg text-sm tracking-widest cinzel inline-flex items-center gap-3"
+                style={{ background: 'linear-gradient(135deg, #d4af37, #f0c040)' }}
+              >
+                <MessageCircle size={18} /> +252 63 4482830
+              </a>
+            </TiltCard>
           </div>
         </div>
       </div>
@@ -1037,6 +975,7 @@ export default function App() {
     <LangContext.Provider value={{ lang, t, setLang }}>
       <div className="relative min-h-screen" style={{ background: '#0d2347' }}>
         <StarsBackground />
+        <AirplanesBackground />
         <Navbar />
         <Hero />
         <StatsBanner />
@@ -1048,6 +987,15 @@ export default function App() {
         <Certificate />
         <Contact />
         <Footer />
+        <a
+          href="https://wa.me/252634482830"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Chat on WhatsApp"
+          className="whatsapp-fab"
+        >
+          <MessageCircle size={28} className="text-white" />
+        </a>
       </div>
     </LangContext.Provider>
   );

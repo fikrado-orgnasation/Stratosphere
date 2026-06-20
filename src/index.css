@@ -671,3 +671,70 @@ body {
   height: 1px;
   width: 100%;
 }
+
+/* Yellow airplanes flying across the background */
+.airplane-bg-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.airplane-fly {
+  position: absolute;
+  color: rgba(245, 208, 96, 0.18);
+  will-change: transform;
+}
+
+@keyframes flyRight {
+  0%   { transform: translateX(-15vw) translateY(0) rotate(0deg); }
+  50%  { transform: translateX(50vw) translateY(-12px) rotate(-2deg); }
+  100% { transform: translateX(115vw) translateY(0) rotate(0deg); }
+}
+
+@keyframes flyLeft {
+  0%   { transform: translateX(115vw) translateY(0) scaleX(-1); }
+  50%  { transform: translateX(50vw) translateY(-10px) scaleX(-1) rotate(-2deg); }
+  100% { transform: translateX(-15vw) translateY(0) scaleX(-1); }
+}
+
+.airplane-1 { animation: flyRight 28s linear infinite; animation-delay: 0s;   top: 14%; }
+.airplane-2 { animation: flyLeft  36s linear infinite; animation-delay: 4s;   top: 32%; }
+.airplane-3 { animation: flyRight 44s linear infinite; animation-delay: 10s;  top: 56%; }
+.airplane-4 { animation: flyLeft  32s linear infinite; animation-delay: 16s;  top: 72%; }
+.airplane-5 { animation: flyRight 52s linear infinite; animation-delay: 22s;  top: 44%; }
+
+/* Floating WhatsApp button */
+.whatsapp-fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 60;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #d4af37, #f0c040);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4), 0 0 0 0 rgba(212, 175, 55, 0.5);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: whatsappPulse 2.4s ease-out infinite;
+}
+
+.whatsapp-fab:hover {
+  transform: scale(1.08);
+}
+
+@keyframes whatsappPulse {
+  0%   { box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4), 0 0 0 0 rgba(212, 175, 55, 0.5); }
+  70%  { box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4), 0 0 0 16px rgba(212, 175, 55, 0); }
+  100% { box-shadow: 0 8px 24px rgba(212, 175, 55, 0.4), 0 0 0 0 rgba(212, 175, 55, 0); }
+}
+
+@media (max-width: 640px) {
+  .whatsapp-fab { bottom: 16px; right: 16px; width: 52px; height: 52px; }
+  .airplane-fly { transform: scale(0.75); }
+}
+
