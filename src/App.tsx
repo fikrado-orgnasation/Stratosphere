@@ -3,7 +3,7 @@ import {
   Plane, Globe, Shield, BookOpen, Radio, Users, Award,
   ChevronDown, MapPin, Phone, Mail, Menu, X, Star, CheckCircle,
   Navigation, Cloud, Compass, Zap, GraduationCap, Briefcase,
-  Building, ChevronRight, ArrowRight
+  Building, ChevronRight, ArrowRight, Loader2
 } from 'lucide-react';
 import { translations, Lang } from './translations';
 
@@ -772,14 +772,42 @@ function Contact() {
   const { t } = useLang();
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const ref = useReveal();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSent(true);
+    setSubmitting(true);
+    setSubmitError(null);
+    try {
+      const apiUrl = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-contact-inquiry`;
+      const headers = {
+        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+      };
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(form),
+      });
+      if (!response.ok) {
+        throw new Error(`Request failed (${response.status})`);
+      }
+      const data = await response.json();
+      if (data && data.error) throw new Error(data.error);
+      if (data && data.delivered === false && data.mailError) {
+        setSubmitError('Your submission was received, but there was a delay sending the notification email. We will still contact you.');
+      }
+      setSent(true);
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : 'Something went wrong. Please try again or email us directly.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const accKeys = ['acc1', 'acc2', 'acc3', 'acc4'] as const;
@@ -821,13 +849,13 @@ function Contact() {
                   <div>
                     <p className="cinzel text-xs text-yellow-500/80 uppercase tracking-wider mb-2">{t('contact_mobile')}</p>
                     <a href="tel:+252634482830" className="block text-yellow-400 hover:text-yellow-300 text-sm mb-1 transition-colors">
-                      +252 (0) 63 4482830
+                      +252 63 4482830
                     </a>
                     <a href="tel:+252654482830" className="block text-yellow-400 hover:text-yellow-300 text-sm transition-colors">
-                      +252 (0) 65 4482830
+                      +252 65 4482830
                     </a>
-                    <a href="tel:0633347512" className="block text-yellow-400/70 hover:text-yellow-300 text-sm mt-1 transition-colors">
-                      0633347512
+                    <a href="tel:+252633347512" className="block text-yellow-400 hover:text-yellow-300 text-sm transition-colors">
+                      +252 63 3347512
                     </a>
                   </div>
                 </div>
@@ -840,8 +868,11 @@ function Contact() {
                   </div>
                   <div>
                     <p className="cinzel text-xs text-yellow-500/80 uppercase tracking-wider mb-2">{t('contact_email')}</p>
-                    <a href="mailto:yahye.dahir1@outlook.com" className="block text-yellow-400 hover:text-yellow-300 text-sm transition-colors break-all">
-                      yahye.dahir1@outlook.com
+                    <a href="mailto:info@stratosphereaeronautics.com" className="block text-yellow-400 hover:text-yellow-300 text-sm transition-colors break-all">
+                      info@stratosphereaeronautics.com
+                    </a>
+                    <a href="mailto:abdirahman.dahir@stratosphereaeronautics.com" className="block text-yellow-400 hover:text-yellow-300 text-sm transition-colors break-all">
+                      abdirahman.dahir@stratosphereaeronautics.com
                     </a>
                   </div>
                 </div>
@@ -911,9 +942,24 @@ function Contact() {
                   />
                 </div>
 
-                <button type="submit" className="btn-primary w-full py-4 rounded-lg text-sm tracking-widest cinzel flex items-center justify-center gap-2">
-                  {t('form_submit')} <ArrowRight size={16} />
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="btn-primary w-full py-4 rounded-lg text-sm tracking-widest cinzel flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                >
+                  {submitting ? (
+                    <>
+                      <Loader2 size={16} className="animate-spin" /> Sending...
+                    </>
+                  ) : (
+                    <>
+                      {t('form_submit')} <ArrowRight size={16} />
+                    </>
+                  )}
                 </button>
+                {submitError && (
+                  <p className="text-red-400/80 text-xs text-center mt-2">{submitError}</p>
+                )}
               </TiltCard>
             )}
           </div>

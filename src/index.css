@@ -287,11 +287,7 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter:
-    drop-shadow(0 0 12px rgba(212,175,55,0.8))
-    drop-shadow(0 0 30px rgba(240,192,64,0.5))
-    drop-shadow(0 0 60px rgba(212,175,55,0.3))
-    drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
 }
 
 /* 3D text shadow for non-gold text */
@@ -303,17 +299,13 @@ body {
     0 4px 10px rgba(0,0,0,0.3);
 }
 
-/* Aeronautics golden glow text */
+/* Aeronautics golden text */
 .aeronautics-glow {
   background: linear-gradient(135deg, #f5d060 0%, #ffe066 30%, #f0c040 50%, #f5d060 70%, #ffe066 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  filter:
-    drop-shadow(0 0 10px rgba(212,175,55,0.7))
-    drop-shadow(0 0 25px rgba(240,192,64,0.4))
-    drop-shadow(0 0 50px rgba(212,175,55,0.2))
-    drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
 }
 
 /* 3D gold divider */
