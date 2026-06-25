@@ -1,11 +1,13 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, lazy, Suspense } from 'react';
 import {
   Plane, Globe, Shield, BookOpen, Radio, Users, Award,
   ChevronDown, MapPin, Phone, Mail, Menu, X, Star, CheckCircle,
   Navigation, Cloud, Compass, Zap, GraduationCap, Briefcase,
-  Building, ChevronRight, ArrowRight, MessageCircle
+  Building, ChevronRight, ArrowRight, MessageCircle, Sparkles,
 } from 'lucide-react';
 import { translations, Lang } from './translations';
+
+const Scene3D = lazy(() => import('./Scene3D'));
 
 // ── Language context ──────────────────────────────────────────────────────────
 const LangContext = createContext<{ lang: Lang; t: (k: keyof typeof translations['en']) => string; setLang: (l: Lang) => void }>({
@@ -15,135 +17,6 @@ const LangContext = createContext<{ lang: Lang; t: (k: keyof typeof translations
 });
 
 function useLang() { return useContext(LangContext); }
-
-// ── 3D Mouse-Tracking Tilt Hook ───────────────────────────────────────────────
-function useTilt(intensity = 12) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  const handleMove = useCallback((e: MouseEvent) => {
-    const el = ref.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    el.style.transform = `perspective(800px) rotateY(${x * intensity}deg) rotateX(${-y * intensity}deg) scale3d(1.03,1.03,1.03)`;
-    el.style.boxShadow = `${-x * 20}px ${y * 20}px 60px rgba(0,0,0,0.5), 0 0 30px rgba(212,175,55,0.12)`;
-  }, [intensity]);
-
-  const handleLeave = useCallback(() => {
-    const el = ref.current;
-    if (!el) return;
-    el.style.transform = 'perspective(800px) rotateY(0deg) rotateX(0deg) scale3d(1,1,1)';
-    el.style.boxShadow = '';
-  }, []);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    el.style.transition = 'transform 0.15s ease-out, box-shadow 0.3s ease-out';
-    el.style.transformStyle = 'preserve-3d';
-    el.addEventListener('mousemove', handleMove);
-    el.addEventListener('mouseleave', handleLeave);
-    return () => {
-      el.removeEventListener('mousemove', handleMove);
-      el.removeEventListener('mouseleave', handleLeave);
-    };
-  }, [handleMove, handleLeave]);
-
-  return ref;
-}
-
-// ── 3D Tilt Card Wrapper ──────────────────────────────────────────────────────
-function TiltCard({ children, className, style, intensity }: { children: React.ReactNode; className?: string; style?: React.CSSProperties; intensity?: number }) {
-  const tiltRef = useTilt(intensity);
-  return (
-    <div ref={tiltRef} className={className} style={style}>
-      {children}
-    </div>
-  );
-}
-
-// ── Stars + Floating Particles Background ─────────────────────────────────────
-function StarsBackground() {
-  const stars = Array.from({ length: 120 }, (_, i) => ({
-    id: i,
-    left: `${Math.random() * 100}%`,
-    top: `${Math.random() * 100}%`,
-    size: Math.random() * 2.5 + 0.5,
-    duration: `${Math.random() * 4 + 2}s`,
-    delay: `${Math.random() * 4}s`,
-  }));
-
-  const particles = Array.from({ length: 18 }, (_, i) => ({
-    id: i,
-    left: `${Math.random() * 100}%`,
-    size: Math.random() * 80 + 20,
-    duration: `${Math.random() * 20 + 15}s`,
-    delay: `${Math.random() * 10}s`,
-    depth: Math.random() * 0.15 + 0.03,
-  }));
-
-  return (
-    <>
-      <div className="stars-bg">
-        {stars.map(s => (
-          <div
-            key={s.id}
-            className="star"
-            style={{
-              left: s.left,
-              top: s.top,
-              width: `${s.size}px`,
-              height: `${s.size}px`,
-              '--duration': s.duration,
-              '--delay': s.delay,
-            } as React.CSSProperties}
-          />
-        ))}
-      </div>
-      {/* 3D floating depth particles */}
-      <div className="particles-bg">
-        {particles.map(p => (
-          <div
-            key={p.id}
-            className="depth-particle"
-            style={{
-              left: p.left,
-              width: `${p.size}px`,
-              height: `${p.size}px`,
-              '--float-dur': p.duration,
-              '--float-delay': p.delay,
-              '--depth': p.depth,
-            } as React.CSSProperties}
-          />
-        ))}
-      </div>
-    </>
-  );
-}
-
-function AirplanesBackground() {
-  const planes = [
-    { cls: 'airplane-1', size: 44 },
-    { cls: 'airplane-2', size: 32 },
-    { cls: 'airplane-3', size: 52 },
-    { cls: 'airplane-4', size: 28 },
-    { cls: 'airplane-5', size: 40 },
-  ];
-  return (
-    <div className="airplane-bg-layer" aria-hidden="true">
-      {planes.map((p, i) => (
-        <Plane
-          key={i}
-          size={p.size}
-          strokeWidth={1.5}
-          className={`airplane-fly ${p.cls}`}
-          fill="currentColor"
-        />
-      ))}
-    </div>
-  );
-}
 
 // ── Reveal on scroll hook ─────────────────────────────────────────────────────
 function useReveal() {
@@ -161,6 +34,48 @@ function useReveal() {
   return ref;
 }
 
+// ── 3D Mouse-Tracking Tilt Hook ───────────────────────────────────────────────
+function useTilt(intensity = 12) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    el.style.transition = 'transform 0.15s ease-out, box-shadow 0.3s ease-out';
+    el.style.transformStyle = 'preserve-3d';
+
+    const handleMove = (e: MouseEvent) => {
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      el.style.transform = `perspective(800px) rotateY(${x * intensity}deg) rotateX(${-y * intensity}deg) scale3d(1.03,1.03,1.03)`;
+    };
+    const handleLeave = () => {
+      if (!el) return;
+      el.style.transform = 'perspective(800px) rotateY(0deg) rotateX(0deg) scale3d(1,1,1)';
+    };
+
+    el.addEventListener('mousemove', handleMove);
+    el.addEventListener('mouseleave', handleLeave);
+    return () => {
+      el.removeEventListener('mousemove', handleMove);
+      el.removeEventListener('mouseleave', handleLeave);
+    };
+  }, [intensity]);
+
+  return ref;
+}
+
+function TiltCard({ children, className, style, intensity }: { children: React.ReactNode; className?: string; style?: React.CSSProperties; intensity?: number }) {
+  const tiltRef = useTilt(intensity);
+  return (
+    <div ref={tiltRef} className={className} style={style}>
+      {children}
+    </div>
+  );
+}
+
 // ── Section wrapper ───────────────────────────────────────────────────────────
 function Section({ id, className, children }: { id?: string; className?: string; children: React.ReactNode }) {
   return (
@@ -175,8 +90,8 @@ function SectionTitle({ label, title, subtitle }: { label?: string; title: strin
   return (
     <div ref={ref} className="reveal text-center mb-16">
       {label && (
-        <span className="inline-block text-xs cinzel tracking-[0.35em] text-yellow-500 uppercase mb-3 px-4 py-1.5 border border-yellow-600/30 rounded-full bg-yellow-500/5">
-          {label}
+        <span className="inline-flex items-center gap-2 text-xs cinzel tracking-[0.35em] text-yellow-500 uppercase mb-3 px-4 py-1.5 border border-yellow-600/30 rounded-full bg-yellow-500/5 backdrop-blur-sm">
+          <Sparkles size={12} /> {label}
         </span>
       )}
       <h2 className="cinzel text-4xl md:text-5xl font-bold gold-gradient-text-static mb-4">{title}</h2>
@@ -219,8 +134,7 @@ function LangSwitcher() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-36 rounded-lg border border-yellow-600/25 shadow-2xl overflow-hidden z-50"
-          style={{ background: 'rgba(13,35,71,0.98)', backdropFilter: 'blur(16px)' }}>
+        <div className="absolute right-0 top-full mt-2 w-36 rounded-lg border border-yellow-600/25 shadow-2xl overflow-hidden z-50 glass-card">
           {(['en', 'so', 'ar'] as Lang[]).map(l => (
             <button
               key={l}
@@ -270,7 +184,6 @@ function Navbar() {
           </div>
         </a>
 
-        {/* Desktop links */}
         <div className="hidden md:flex items-center gap-6">
           {links.map(l => (
             <a key={l.href} href={l.href} className="nav-link cinzel text-xs tracking-wider text-blue-100/80 hover:text-yellow-400 uppercase transition-colors duration-300">
@@ -283,7 +196,6 @@ function Navbar() {
           </a>
         </div>
 
-        {/* Mobile toggle */}
         <div className="md:hidden flex items-center gap-3">
           <LangSwitcher />
           <button onClick={() => setMenuOpen(!menuOpen)} className="text-yellow-400 p-2">
@@ -292,7 +204,6 @@ function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu */}
       {menuOpen && (
         <div className="mobile-menu md:hidden border-t border-yellow-600/20 px-6 py-6 flex flex-col gap-5">
           {links.map(l => (
@@ -313,54 +224,8 @@ function Navbar() {
 // ── Hero ──────────────────────────────────────────────────────────────────────
 function Hero() {
   const { t } = useLang();
-  const heroRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = heroRef.current;
-    if (!el) return;
-    const onMove = (e: MouseEvent) => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 2;
-      const y = (e.clientY / window.innerHeight - 0.5) * 2;
-      el.style.setProperty('--mx', `${x}`);
-      el.style.setProperty('--my', `${y}`);
-    };
-    window.addEventListener('mousemove', onMove);
-    return () => window.removeEventListener('mousemove', onMove);
-  }, []);
-
   return (
-    <section id="hero" ref={heroRef} className="hero-bg hero-3d relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-4 pt-20">
-      {/* Animated horizon lines */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[20, 40, 60, 80].map((p, i) => (
-          <div key={i} className="absolute w-full horizon-glow" style={{ top: `${p}%`, animationDelay: `${i * 0.5}s` }} />
-        ))}
-        <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex gap-8">
-          {Array.from({ length: 9 }).map((_, i) => (
-            <div key={i} className="runway-dot w-1.5 h-1.5 rounded-full bg-yellow-500/60"
-              style={{ animationDelay: `${i * 0.2}s` }} />
-          ))}
-        </div>
-        {/* 3D floating orbs */}
-        <div className="hero-orb hero-orb-1" />
-        <div className="hero-orb hero-orb-2" />
-        <div className="hero-orb hero-orb-3" />
-      </div>
-
-      {/* Logo with 3D depth */}
-      <div className="perspective-container-extended mb-10 relative">
-        <div className="absolute inset-0 rounded-full pulse-ring border-2 border-yellow-500/30 scale-110" />
-        <div className="absolute inset-0 rounded-full pulse-ring border border-yellow-500/20 scale-125" style={{ animationDelay: '0.7s' }} />
-        <div className="absolute inset-0 rounded-full pulse-ring border border-yellow-500/10 scale-140" style={{ animationDelay: '1.4s' }} />
-        <div className="logo-3d-shadow" />
-        <img
-          src="/logo-removebg-preview.png"
-          alt="Stratosphere Aeronautics"
-          className="logo-float-3d w-44 h-44 md:w-56 md:h-56 object-contain relative z-10"
-        />
-      </div>
-
-      {/* Text with depth layers */}
+    <section id="hero" className="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-4 pt-20">
       <div className="max-w-4xl mx-auto hero-text-depth">
         <p className="cinzel text-xs md:text-sm tracking-[0.4em] text-yellow-500/80 uppercase mb-4 animate-fade-in">
           {t('hero_tagline')}
@@ -390,7 +255,6 @@ function Hero() {
         </div>
       </div>
 
-      {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
         <p className="cinzel text-[10px] tracking-[0.3em] text-yellow-600/50 uppercase">Discover More</p>
         <ChevronDown className="scroll-indicator text-yellow-500/60" size={20} />
@@ -410,7 +274,7 @@ function StatsBanner() {
   ];
 
   return (
-    <div ref={ref} className="reveal relative z-10 bg-gradient-to-r from-yellow-900/10 via-yellow-800/5 to-yellow-900/10 border-y border-yellow-600/15">
+    <div ref={ref} className="reveal relative z-10 glass-banner border-y border-yellow-600/15">
       <div className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-2 md:grid-cols-4 gap-6">
         {stats.map((s, i) => (
           <div key={i} className="flex flex-col items-center text-center gap-2">
@@ -434,7 +298,6 @@ function About() {
         <SectionTitle label={t('about_label')} title={t('about_title')} subtitle={t('about_subtitle')} />
 
         <div ref={ref} className="reveal grid md:grid-cols-2 gap-12 items-center">
-          {/* Left */}
           <div className="space-y-6">
             <p className="text-blue-100/80 text-base leading-relaxed">{t('about_p1')}</p>
             <p className="text-blue-100/80 text-base leading-relaxed">{t('about_p2')}</p>
@@ -445,7 +308,7 @@ function About() {
                 { icon: <Users size={18} />, text: 'Ab-Initio Specialists' },
                 { icon: <Globe size={18} />, text: 'Internationally Valid Knowledge' },
               ].map((item, i) => (
-                <div key={i} className="flex items-center gap-3 p-3 gold-border-glow rounded-lg bg-blue-950/30">
+                <div key={i} className="flex items-center gap-3 p-3 glass-card rounded-lg">
                   <span className="text-yellow-500 shrink-0">{item.icon}</span>
                   <span className="text-blue-100/80 text-sm">{item.text}</span>
                 </div>
@@ -453,10 +316,8 @@ function About() {
             </div>
           </div>
 
-          {/* Right — 3D tilt card */}
           <TiltCard intensity={10} className="perspective-container">
-            <div className="card-3d gold-border-glow rounded-2xl bg-gradient-to-br from-navy-800/60 to-navy-900/80 p-8 backdrop-blur-sm"
-              style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
+            <div className="glass-card rounded-2xl p-8">
               <div className="card-inner-depth flex items-center gap-4 mb-6">
                 <img src="/logo-removebg-preview.png" alt="Stratosphere Aeronautics" className="w-20 h-20 object-contain floating-icon" />
                 <div>
@@ -492,7 +353,6 @@ function About() {
 function Mission() {
   const { t } = useLang();
   const ref = useReveal();
-
   const descParts = t('mission_desc').split(/<gold>|<\/gold>/);
 
   return (
@@ -501,13 +361,10 @@ function Mission() {
         <SectionTitle label={t('mission_label')} title={t('mission_title')} />
 
         <div ref={ref} className="reveal perspective-container">
-          <TiltCard intensity={6} className="relative gold-border-glow rounded-2xl overflow-hidden animated-border"
-            style={{ background: 'linear-gradient(135deg, rgba(19,41,80,0.95), rgba(30,62,114,0.5), rgba(13,35,71,0.95))' }}>
+          <TiltCard intensity={6} className="relative glass-card rounded-2xl overflow-hidden animated-border">
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent" />
             <div className="p-10 md:p-16 text-center relative">
-              <div className="quote-marks relative inline-block pl-8 mb-8">
-                <Plane className="text-yellow-500/30 mx-auto mb-4" size={48} />
-              </div>
+              <Plane className="text-yellow-500/30 mx-auto mb-4" size={48} />
               <blockquote className="cinzel text-lg md:text-2xl font-semibold text-blue-100/90 leading-relaxed mb-8 italic">
                 {t('mission_quote')}
               </blockquote>
@@ -566,18 +423,13 @@ function Training() {
   return (
     <Section id="training" className="section-navy">
       <div className="max-w-7xl mx-auto">
-        <SectionTitle
-          label={t('training_label')}
-          title={t('training_title')}
-          subtitle={t('training_subtitle')}
-        />
+        <SectionTitle label={t('training_label')} title={t('training_title')} subtitle={t('training_subtitle')} />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
           {trainingKeys.map((keys, i) => {
             const ref = useReveal();
             return (
               <div key={i} ref={ref} className="reveal perspective-container" style={{ animationDelay: `${i * 0.05}s` }}>
-                <TiltCard intensity={8} className="card-3d gold-border-glow rounded-xl p-6 flex flex-col gap-4"
-                  style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.8), rgba(13,35,71,0.9))' }}>
+                <TiltCard intensity={8} className="glass-card rounded-xl p-6 flex flex-col gap-4">
                   <div className="training-icon-wrap w-12 h-12 rounded-xl flex items-center justify-center text-yellow-400 shrink-0">
                     {trainingIcons[i]}
                   </div>
@@ -591,10 +443,8 @@ function Training() {
           })}
         </div>
 
-        {/* ASECNA / ICAO badge */}
         <div className="mt-16 text-center">
-          <div className="inline-flex items-center gap-4 px-8 py-4 gold-border-glow rounded-full"
-            style={{ background: 'rgba(26,52,96,0.6)' }}>
+          <div className="inline-flex items-center gap-4 px-8 py-4 glass-card rounded-full">
             <Globe className="text-yellow-500" size={20} />
             <span className="cinzel text-sm tracking-widest text-yellow-400/90 uppercase">ASECNA | ICAO WACAF Office Partner</span>
             <Globe className="text-yellow-500" size={20} />
@@ -627,35 +477,30 @@ function Careers() {
   return (
     <Section id="careers" className="section-navy-alt">
       <div className="max-w-6xl mx-auto">
-        <SectionTitle
-          label={t('careers_label')}
-          title={t('careers_title')}
-          subtitle={t('careers_subtitle')}
-        />
+        <SectionTitle label={t('careers_label')} title={t('careers_title')} subtitle={t('careers_subtitle')} />
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {careerGroupCategories.map((category, i) => {
             const ref = useReveal();
             return (
               <div key={i} ref={ref} className="reveal perspective-container">
-                <TiltCard intensity={8} className="card-3d gold-border-glow rounded-xl overflow-hidden"
-                  style={{ background: 'linear-gradient(160deg, rgba(30,62,114,0.6), rgba(13,35,71,0.9))' }}>
-                <div className="p-6">
-                  <div className="flex items-center gap-3 mb-5">
-                    <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-yellow-400">
-                      {careerGroupIcons[i]}
-                    </div>
-                    <h3 className="cinzel text-sm font-bold text-yellow-400/90 leading-snug">{category}</h3>
-                  </div>
-                  <div className="space-y-2.5">
-                    {careerGroupRoles[i].map((role, j) => (
-                      <div key={j} className="flex items-start gap-2.5">
-                        <ChevronRight size={12} className="text-yellow-600 mt-0.5 shrink-0" />
-                        <span className="text-blue-100/70 text-sm leading-snug">{role}</span>
+                <TiltCard intensity={8} className="glass-card rounded-xl overflow-hidden">
+                  <div className="p-6">
+                    <div className="flex items-center gap-3 mb-5">
+                      <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-yellow-400">
+                        {careerGroupIcons[i]}
                       </div>
-                    ))}
+                      <h3 className="cinzel text-sm font-bold text-yellow-400/90 leading-snug">{category}</h3>
+                    </div>
+                    <div className="space-y-2.5">
+                      {careerGroupRoles[i].map((role, j) => (
+                        <div key={j} className="flex items-start gap-2.5">
+                          <ChevronRight size={12} className="text-yellow-600 mt-0.5 shrink-0" />
+                          <span className="text-blue-100/70 text-sm leading-snug">{role}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-                <div className="h-0.5 bg-gradient-to-r from-transparent via-yellow-600/40 to-transparent" />
+                  <div className="h-0.5 bg-gradient-to-r from-transparent via-yellow-600/40 to-transparent" />
                 </TiltCard>
               </div>
             );
@@ -680,19 +525,14 @@ function WhyUs() {
   return (
     <Section id="why-us" className="section-navy">
       <div className="max-w-6xl mx-auto">
-        <SectionTitle
-          label={t('why_label')}
-          title={t('why_title')}
-          subtitle={t('why_subtitle')}
-        />
+        <SectionTitle label={t('why_label')} title={t('why_title')} subtitle={t('why_subtitle')} />
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
           {reasonKeys.map((keys, i) => {
             const ref = useReveal();
             return (
               <div key={i} ref={ref} className="reveal perspective-container" style={{ transitionDelay: `${i * 0.1}s` }}>
-                <TiltCard intensity={10} className="card-3d text-center p-8 rounded-2xl gold-border-glow"
-                  style={{ background: 'linear-gradient(180deg, rgba(30,62,114,0.5), rgba(13,35,71,0.8))' }}>
+                <TiltCard intensity={10} className="glass-card text-center p-8 rounded-2xl">
                   <div className="w-16 h-16 rounded-full mx-auto mb-5 flex items-center justify-center text-yellow-400 icon-orb-3d"
                     style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.15), rgba(212,175,55,0.03))' }}>
                     {reasonIcons[i]}
@@ -705,9 +545,7 @@ function WhyUs() {
           })}
         </div>
 
-        {/* CTA Banner */}
-        <TiltCard intensity={4} className="relative rounded-2xl overflow-hidden gold-border-glow animated-border"
-          style={{ background: 'linear-gradient(135deg, rgba(30,62,114,0.8), rgba(19,41,80,0.95))' }}>
+        <TiltCard intensity={4} className="relative rounded-2xl overflow-hidden glass-card animated-border">
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent" />
           <div className="px-8 py-14 text-center">
             <p className="cinzel text-xs tracking-[0.4em] text-yellow-600/80 uppercase mb-4">Training The Sky Professionals of Tomorrow</p>
@@ -744,16 +582,11 @@ function Certificate() {
   return (
     <Section id="certificate" className="section-navy">
       <div className="max-w-5xl mx-auto">
-        <SectionTitle
-          label={t('cert_label')}
-          title={t('cert_title')}
-          subtitle={t('cert_subtitle')}
-        />
+        <SectionTitle label={t('cert_label')} title={t('cert_title')} subtitle={t('cert_subtitle')} />
 
         <div ref={ref} className="reveal">
           <div className="perspective-container mb-12">
-            <TiltCard intensity={6} className="relative rounded-2xl overflow-hidden gold-border-glow animated-border p-3"
-              style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.6), rgba(13,35,71,0.9))' }}>
+            <TiltCard intensity={6} className="relative rounded-2xl overflow-hidden glass-card animated-border p-3">
               <div className="absolute top-2 left-2 w-8 h-8 border-t-2 border-l-2 border-yellow-500/60 rounded-tl-lg" />
               <div className="absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-yellow-500/60 rounded-tr-lg" />
               <div className="absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-yellow-500/60 rounded-bl-lg" />
@@ -772,8 +605,7 @@ function Certificate() {
               const cardRef = useReveal();
               return (
                 <div key={i} ref={cardRef} className="reveal perspective-container">
-                  <TiltCard intensity={8} className="card-3d gold-border-glow rounded-xl p-6 text-center"
-                    style={{ background: 'linear-gradient(160deg, rgba(30,62,114,0.6), rgba(13,35,71,0.9))' }}>
+                  <TiltCard intensity={8} className="glass-card rounded-xl p-6 text-center">
                     <div className="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center text-yellow-400 training-icon-wrap">
                       {item.icon}
                     </div>
@@ -794,7 +626,6 @@ function Certificate() {
 function Contact() {
   const { t } = useLang();
   const ref = useReveal();
-
   const accKeys = ['acc1', 'acc2', 'acc3', 'acc4'] as const;
 
   return (
@@ -803,10 +634,8 @@ function Contact() {
         <SectionTitle label={t('contact_label')} title={t('contact_title')} subtitle={t('contact_subtitle')} />
 
         <div ref={ref} className="reveal grid md:grid-cols-2 gap-10">
-          {/* Info */}
           <div className="space-y-8">
-            <TiltCard intensity={5} className="p-8 rounded-2xl gold-border-glow"
-              style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
+            <TiltCard intensity={5} className="glass-card p-8 rounded-2xl">
               <h3 className="cinzel text-lg font-bold gold-gradient-text-static mb-6">{t('contact_info')}</h3>
 
               <div className="space-y-6">
@@ -836,7 +665,7 @@ function Contact() {
                     <a href="tel:+252634482830" className="block text-yellow-400 hover:text-yellow-300 text-sm mb-1 transition-colors">
                       +252 63 4482830
                     </a>
-                    <a href="tel:+252654482830" className="block text-yellow-400 hover:text-yellow-300 text-sm transition-colors">
+                    <a href="tel:+252654482830" className="block text-yellow-400 hover:text-yellow-300 text-sm mb-1 transition-colors">
                       +252 65 4482830
                     </a>
                     <a href="tel:+252633347512" className="block text-yellow-400 hover:text-yellow-300 text-sm transition-colors">
@@ -864,9 +693,7 @@ function Contact() {
               </div>
             </TiltCard>
 
-            {/* Accreditation */}
-            <TiltCard intensity={4} className="p-6 rounded-xl gold-border-glow"
-              style={{ background: 'rgba(30,62,114,0.3)' }}>
+            <TiltCard intensity={4} className="glass-card p-6 rounded-xl">
               <p className="cinzel text-xs tracking-[0.3em] text-yellow-600/80 uppercase mb-3">{t('contact_accreditation')}</p>
               <div className="space-y-2">
                 {accKeys.map((key, i) => (
@@ -879,10 +706,8 @@ function Contact() {
             </TiltCard>
           </div>
 
-          {/* WhatsApp CTA */}
           <div className="flex items-center justify-center">
-            <TiltCard intensity={5} className="w-full p-10 rounded-2xl gold-border-glow flex flex-col items-center justify-center text-center"
-              style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
+            <TiltCard intensity={5} className="w-full glass-card p-10 rounded-2xl flex flex-col items-center justify-center text-center">
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
                 style={{ background: 'linear-gradient(135deg, #25D366, #128C7E)' }}>
                 <MessageCircle size={32} className="text-white" />
@@ -919,8 +744,7 @@ function Footer() {
   ];
 
   return (
-    <footer className="relative z-10 border-t border-yellow-600/15 py-12 px-4"
-      style={{ background: 'linear-gradient(180deg, rgba(13,35,71,0.95), #0d2347)' }}>
+    <footer className="relative z-10 border-t border-yellow-600/15 py-12 px-4 glass-footer">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-8">
           <div className="flex items-center gap-4">
@@ -974,8 +798,9 @@ export default function App() {
   return (
     <LangContext.Provider value={{ lang, t, setLang }}>
       <div className="relative min-h-screen" style={{ background: '#0d2347' }}>
-        <StarsBackground />
-        <AirplanesBackground />
+        <Suspense fallback={null}>
+          <Scene3D />
+        </Suspense>
         <Navbar />
         <Hero />
         <StatsBanner />
