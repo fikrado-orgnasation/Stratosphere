@@ -3,7 +3,7 @@ import {
   Plane, Globe, Shield, BookOpen, Radio, Users, Award,
   ChevronDown, MapPin, Phone, Mail, Menu, X, Star, CheckCircle,
   Navigation, Cloud, Compass, Zap, GraduationCap, Briefcase,
-  Building, ChevronRight, ArrowRight, MessageCircle, Sparkles
+  Building, ChevronRight, ArrowRight, MessageCircle
 } from 'lucide-react';
 import { translations, Lang } from './translations';
 
@@ -27,7 +27,7 @@ function useTilt(intensity = 12) {
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
     el.style.transform = `perspective(800px) rotateY(${x * intensity}deg) rotateX(${-y * intensity}deg) scale3d(1.03,1.03,1.03)`;
-    el.style.boxShadow = `${-x * 20}px ${y * 20}px 60px rgba(0,0,0,0.5), 0 0 30px rgba(0,240,255,0.15)`;
+    el.style.boxShadow = `${-x * 20}px ${y * 20}px 60px rgba(0,0,0,0.5), 0 0 30px rgba(212,175,55,0.12)`;
   }, [intensity]);
 
   const handleLeave = useCallback(() => {
@@ -65,7 +65,7 @@ function TiltCard({ children, className, style, intensity }: { children: React.R
 
 // ── Stars + Floating Particles Background ─────────────────────────────────────
 function StarsBackground() {
-  const stars = Array.from({ length: 150 }, (_, i) => ({
+  const stars = Array.from({ length: 120 }, (_, i) => ({
     id: i,
     left: `${Math.random() * 100}%`,
     top: `${Math.random() * 100}%`,
@@ -74,7 +74,7 @@ function StarsBackground() {
     delay: `${Math.random() * 4}s`,
   }));
 
-  const particles = Array.from({ length: 20 }, (_, i) => ({
+  const particles = Array.from({ length: 18 }, (_, i) => ({
     id: i,
     left: `${Math.random() * 100}%`,
     size: Math.random() * 80 + 20,
@@ -101,6 +101,7 @@ function StarsBackground() {
           />
         ))}
       </div>
+      {/* 3D floating depth particles */}
       <div className="particles-bg">
         {particles.map(p => (
           <div
@@ -144,11 +145,6 @@ function AirplanesBackground() {
   );
 }
 
-// ── Futuristic 3D Grid Floor ──────────────────────────────────────────────────
-function GridFloor() {
-  return <div className="grid-floor" aria-hidden="true" />;
-}
-
 // ── Reveal on scroll hook ─────────────────────────────────────────────────────
 function useReveal() {
   const ref = useRef<HTMLDivElement>(null);
@@ -179,14 +175,13 @@ function SectionTitle({ label, title, subtitle }: { label?: string; title: strin
   return (
     <div ref={ref} className="reveal text-center mb-16">
       {label && (
-        <span className="inline-flex items-center gap-2 text-xs cinzel tracking-[0.35em] text-cyan-300 uppercase mb-3 px-4 py-1.5 border border-cyan-400/30 rounded-full bg-cyan-500/5">
-          <Sparkles size={12} />
+        <span className="inline-block text-xs cinzel tracking-[0.35em] text-yellow-500 uppercase mb-3 px-4 py-1.5 border border-yellow-600/30 rounded-full bg-yellow-500/5">
           {label}
         </span>
       )}
-      <h2 className="cinzel text-4xl md:text-5xl font-bold gold-gradient-text-3d mb-4">{title}</h2>
+      <h2 className="cinzel text-4xl md:text-5xl font-bold gold-gradient-text-static mb-4">{title}</h2>
       <div className="gold-divider w-48 mx-auto mb-5" />
-      {subtitle && <p className="text-cyan-100/70 max-w-2xl mx-auto text-base leading-relaxed">{subtitle}</p>}
+      {subtitle && <p className="text-blue-200/70 max-w-2xl mx-auto text-base leading-relaxed">{subtitle}</p>}
     </div>
   );
 }
@@ -215,7 +210,7 @@ function LangSwitcher() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(o => !o)}
-        className="flex items-center gap-1.5 px-3 py-1.5 border border-cyan-400/40 rounded-md bg-cyan-500/5 hover:bg-cyan-500/10 hover:border-cyan-400/60 transition-all duration-200 cinzel text-xs text-cyan-300 tracking-wider"
+        className="flex items-center gap-1.5 px-3 py-1.5 border border-yellow-600/40 rounded-md bg-yellow-500/5 hover:bg-yellow-500/10 hover:border-yellow-500/60 transition-all duration-200 cinzel text-xs text-yellow-400 tracking-wider"
         aria-label="Change language"
       >
         <Globe size={13} />
@@ -224,13 +219,13 @@ function LangSwitcher() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-36 rounded-lg border border-cyan-400/25 shadow-2xl overflow-hidden z-50"
-          style={{ background: 'rgba(5,10,24,0.98)', backdropFilter: 'blur(16px)' }}>
+        <div className="absolute right-0 top-full mt-2 w-36 rounded-lg border border-yellow-600/25 shadow-2xl overflow-hidden z-50"
+          style={{ background: 'rgba(13,35,71,0.98)', backdropFilter: 'blur(16px)' }}>
           {(['en', 'so', 'ar'] as Lang[]).map(l => (
             <button
               key={l}
               onClick={() => { setLang(l); setOpen(false); }}
-              className={`w-full flex items-center gap-3 px-4 py-3 text-left cinzel text-xs tracking-wider transition-colors duration-150 ${lang === l ? 'text-cyan-300 bg-cyan-500/10' : 'text-cyan-100/70 hover:text-cyan-300 hover:bg-cyan-500/5'}`}
+              className={`w-full flex items-center gap-3 px-4 py-3 text-left cinzel text-xs tracking-wider transition-colors duration-150 ${lang === l ? 'text-yellow-400 bg-yellow-500/10' : 'text-blue-100/70 hover:text-yellow-400 hover:bg-yellow-500/5'}`}
             >
               <span>{langLabels[l].flag}</span>
               <span>{l === 'en' ? 'English' : l === 'so' ? 'Soomaali' : 'العربية'}</span>
@@ -268,19 +263,17 @@ function Navbar() {
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'nav-glass shadow-lg shadow-black/40' : 'bg-transparent'}`}>
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between h-18 py-3">
         <a href="#hero" className="flex items-center gap-3 group">
-          <div className="relative">
-            <img src="/logo-removebg-preview.png" alt="Stratosphere Aeronautics" className="w-12 h-12 object-contain transition-transform duration-300 group-hover:scale-110" style={{ filter: 'drop-shadow(0 0 8px rgba(0,240,255,0.4))' }} />
-          </div>
+          <img src="/logo-removebg-preview.png" alt="Stratosphere Aeronautics" className="w-12 h-12 object-contain transition-transform duration-300 group-hover:scale-110" />
           <div className="hidden sm:block">
             <p className="cinzel text-sm font-bold gold-gradient-text leading-tight">Stratosphere</p>
-            <p className="cinzel text-[10px] text-cyan-400/80 tracking-widest uppercase">Aeronautics</p>
+            <p className="cinzel text-[10px] text-yellow-600/80 tracking-widest uppercase">Aeronautics</p>
           </div>
         </a>
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-6">
           {links.map(l => (
-            <a key={l.href} href={l.href} className="nav-link cinzel text-xs tracking-wider text-cyan-100/80 hover:text-cyan-300 uppercase transition-colors duration-300">
+            <a key={l.href} href={l.href} className="nav-link cinzel text-xs tracking-wider text-blue-100/80 hover:text-yellow-400 uppercase transition-colors duration-300">
               {l.label}
             </a>
           ))}
@@ -293,7 +286,7 @@ function Navbar() {
         {/* Mobile toggle */}
         <div className="md:hidden flex items-center gap-3">
           <LangSwitcher />
-          <button onClick={() => setMenuOpen(!menuOpen)} className="text-cyan-300 p-2">
+          <button onClick={() => setMenuOpen(!menuOpen)} className="text-yellow-400 p-2">
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
@@ -301,10 +294,10 @@ function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="mobile-menu md:hidden border-t border-cyan-400/20 px-6 py-6 flex flex-col gap-5">
+        <div className="mobile-menu md:hidden border-t border-yellow-600/20 px-6 py-6 flex flex-col gap-5">
           {links.map(l => (
             <a key={l.href} href={l.href} onClick={() => setMenuOpen(false)}
-              className="cinzel text-sm tracking-widest text-cyan-300/90 uppercase border-b border-cyan-400/10 pb-4">
+              className="cinzel text-sm tracking-widest text-yellow-400/90 uppercase border-b border-yellow-600/10 pb-4">
               {l.label}
             </a>
           ))}
@@ -344,7 +337,7 @@ function Hero() {
         ))}
         <div className="absolute bottom-16 left-1/2 -translate-x-1/2 flex gap-8">
           {Array.from({ length: 9 }).map((_, i) => (
-            <div key={i} className="runway-dot w-1.5 h-1.5 rounded-full bg-cyan-400/60"
+            <div key={i} className="runway-dot w-1.5 h-1.5 rounded-full bg-yellow-500/60"
               style={{ animationDelay: `${i * 0.2}s` }} />
           ))}
         </div>
@@ -356,9 +349,9 @@ function Hero() {
 
       {/* Logo with 3D depth */}
       <div className="perspective-container-extended mb-10 relative">
-        <div className="absolute inset-0 rounded-full pulse-ring border-2 border-cyan-400/30 scale-110" />
-        <div className="absolute inset-0 rounded-full pulse-ring border border-cyan-400/20 scale-125" style={{ animationDelay: '0.7s' }} />
-        <div className="absolute inset-0 rounded-full pulse-ring border border-cyan-400/10 scale-140" style={{ animationDelay: '1.4s' }} />
+        <div className="absolute inset-0 rounded-full pulse-ring border-2 border-yellow-500/30 scale-110" />
+        <div className="absolute inset-0 rounded-full pulse-ring border border-yellow-500/20 scale-125" style={{ animationDelay: '0.7s' }} />
+        <div className="absolute inset-0 rounded-full pulse-ring border border-yellow-500/10 scale-140" style={{ animationDelay: '1.4s' }} />
         <div className="logo-3d-shadow" />
         <img
           src="/logo-removebg-preview.png"
@@ -369,21 +362,21 @@ function Hero() {
 
       {/* Text with depth layers */}
       <div className="max-w-4xl mx-auto hero-text-depth">
-        <p className="cinzel text-xs md:text-sm tracking-[0.4em] text-cyan-300/80 uppercase mb-4 animate-fade-in">
+        <p className="cinzel text-xs md:text-sm tracking-[0.4em] text-yellow-500/80 uppercase mb-4 animate-fade-in">
           {t('hero_tagline')}
         </p>
         <h1 className="cinzel text-4xl sm:text-5xl md:text-7xl font-black gold-gradient-text-3d leading-[1.1] mb-4 animate-slide-up">
           Stratosphere<br />
-          <span className="aeronautics-glow neon-flicker">Aeronautics</span>
+          <span className="aeronautics-glow">Aeronautics</span>
         </h1>
-        <p className="cinzel text-base md:text-xl text-cyan-300/90 tracking-widest mb-3 animate-slide-up delay-200">
+        <p className="cinzel text-base md:text-xl text-yellow-500/90 tracking-widest mb-3 animate-slide-up delay-200">
           {t('hero_school')}
         </p>
         <div className="gold-divider-3d w-64 mx-auto mb-8" />
-        <p className="text-cyan-100/70 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-4 animate-fade-in delay-300">
+        <p className="text-blue-200/70 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-4 animate-fade-in delay-300">
           {t('hero_desc')}
         </p>
-        <p className="cinzel text-cyan-400/60 text-xs tracking-[0.3em] uppercase mb-10 animate-fade-in delay-400">
+        <p className="cinzel text-yellow-600/60 text-xs tracking-[0.3em] uppercase mb-10 animate-fade-in delay-400">
           {t('hero_motto')}
         </p>
 
@@ -399,8 +392,8 @@ function Hero() {
 
       {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-        <p className="cinzel text-[10px] tracking-[0.3em] text-cyan-400/50 uppercase">Discover More</p>
-        <ChevronDown className="scroll-indicator text-cyan-400/60" size={20} />
+        <p className="cinzel text-[10px] tracking-[0.3em] text-yellow-600/50 uppercase">Discover More</p>
+        <ChevronDown className="scroll-indicator text-yellow-500/60" size={20} />
       </div>
     </section>
   );
@@ -417,13 +410,13 @@ function StatsBanner() {
   ];
 
   return (
-    <div ref={ref} className="reveal relative z-10 bg-gradient-to-r from-cyan-900/10 via-cyan-800/5 to-cyan-900/10 border-y border-cyan-400/15">
+    <div ref={ref} className="reveal relative z-10 bg-gradient-to-r from-yellow-900/10 via-yellow-800/5 to-yellow-900/10 border-y border-yellow-600/15">
       <div className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-2 md:grid-cols-4 gap-6">
         {stats.map((s, i) => (
           <div key={i} className="flex flex-col items-center text-center gap-2">
-            <div className="text-cyan-400/70 mb-1">{s.icon}</div>
+            <div className="text-yellow-500/70 mb-1">{s.icon}</div>
             <p className="stat-number text-3xl md:text-4xl font-bold">{s.value}</p>
-            <p className="text-cyan-100/50 text-xs tracking-wider uppercase">{s.label}</p>
+            <p className="text-blue-200/50 text-xs tracking-wider uppercase">{s.label}</p>
           </div>
         ))}
       </div>
@@ -443,8 +436,8 @@ function About() {
         <div ref={ref} className="reveal grid md:grid-cols-2 gap-12 items-center">
           {/* Left */}
           <div className="space-y-6">
-            <p className="text-cyan-100/80 text-base leading-relaxed">{t('about_p1')}</p>
-            <p className="text-cyan-100/80 text-base leading-relaxed">{t('about_p2')}</p>
+            <p className="text-blue-100/80 text-base leading-relaxed">{t('about_p1')}</p>
+            <p className="text-blue-100/80 text-base leading-relaxed">{t('about_p2')}</p>
             <div className="grid grid-cols-2 gap-4 mt-8">
               {[
                 { icon: <Shield size={18} />, text: 'ICAO Compliant Syllabus' },
@@ -452,9 +445,9 @@ function About() {
                 { icon: <Users size={18} />, text: 'Ab-Initio Specialists' },
                 { icon: <Globe size={18} />, text: 'Internationally Valid Knowledge' },
               ].map((item, i) => (
-                <div key={i} className="flex items-center gap-3 p-3 gold-border-glow rounded-lg bg-navy-900/30">
-                  <span className="text-cyan-400 shrink-0">{item.icon}</span>
-                  <span className="text-cyan-100/80 text-sm">{item.text}</span>
+                <div key={i} className="flex items-center gap-3 p-3 gold-border-glow rounded-lg bg-blue-950/30">
+                  <span className="text-yellow-500 shrink-0">{item.icon}</span>
+                  <span className="text-blue-100/80 text-sm">{item.text}</span>
                 </div>
               ))}
             </div>
@@ -462,14 +455,14 @@ function About() {
 
           {/* Right — 3D tilt card */}
           <TiltCard intensity={10} className="perspective-container">
-            <div className="card-3d gold-border-glow rounded-2xl p-8 backdrop-blur-sm holo-scan"
-              style={{ background: 'linear-gradient(135deg, rgba(15,31,61,0.9), rgba(5,10,24,0.95))' }}>
+            <div className="card-3d gold-border-glow rounded-2xl bg-gradient-to-br from-navy-800/60 to-navy-900/80 p-8 backdrop-blur-sm"
+              style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
               <div className="card-inner-depth flex items-center gap-4 mb-6">
                 <img src="/logo-removebg-preview.png" alt="Stratosphere Aeronautics" className="w-20 h-20 object-contain floating-icon" />
                 <div>
                   <p className="cinzel text-lg font-bold gold-gradient-text-static">Stratosphere</p>
-                  <p className="cinzel text-sm text-cyan-400/80">Aeronautics</p>
-                  <p className="text-cyan-200/50 text-xs mt-1">Est. 2026</p>
+                  <p className="cinzel text-sm text-yellow-500/80">Aeronautics</p>
+                  <p className="text-blue-200/50 text-xs mt-1">Est. 2026</p>
                 </div>
               </div>
               <div className="gold-divider mb-6" />
@@ -482,8 +475,8 @@ function About() {
                   'Based in Hargeisa, Somaliland',
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <CheckCircle size={14} className="text-cyan-400 shrink-0" />
-                    <span className="text-cyan-100/75 text-sm">{item}</span>
+                    <CheckCircle size={14} className="text-yellow-500 shrink-0" />
+                    <span className="text-blue-100/75 text-sm">{item}</span>
                   </div>
                 ))}
               </div>
@@ -508,20 +501,20 @@ function Mission() {
         <SectionTitle label={t('mission_label')} title={t('mission_title')} />
 
         <div ref={ref} className="reveal perspective-container">
-          <TiltCard intensity={6} className="relative gold-border-glow rounded-2xl overflow-hidden animated-border holo-scan"
-            style={{ background: 'linear-gradient(135deg, rgba(10,20,40,0.95), rgba(15,42,80,0.5), rgba(5,10,24,0.95))' }}>
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />
+          <TiltCard intensity={6} className="relative gold-border-glow rounded-2xl overflow-hidden animated-border"
+            style={{ background: 'linear-gradient(135deg, rgba(19,41,80,0.95), rgba(30,62,114,0.5), rgba(13,35,71,0.95))' }}>
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent" />
             <div className="p-10 md:p-16 text-center relative">
               <div className="quote-marks relative inline-block pl-8 mb-8">
-                <Plane className="text-cyan-400/30 mx-auto mb-4" size={48} />
+                <Plane className="text-yellow-500/30 mx-auto mb-4" size={48} />
               </div>
-              <blockquote className="cinzel text-lg md:text-2xl font-semibold text-cyan-100/90 leading-relaxed mb-8 italic">
+              <blockquote className="cinzel text-lg md:text-2xl font-semibold text-blue-100/90 leading-relaxed mb-8 italic">
                 {t('mission_quote')}
               </blockquote>
-              <p className="text-cyan-200/65 text-base leading-relaxed max-w-3xl mx-auto">
+              <p className="text-blue-200/65 text-base leading-relaxed max-w-3xl mx-auto">
                 {descParts.map((part, i) =>
                   i % 2 === 1
-                    ? <span key={i} className="text-cyan-300 font-semibold">{part}</span>
+                    ? <span key={i} className="text-yellow-400">{part}</span>
                     : part
                 )}
               </p>
@@ -533,14 +526,14 @@ function Mission() {
                   { key: 'val_integrity' as const, icon: <Star size={16} /> },
                   { key: 'val_excellence' as const, icon: <Award size={16} /> },
                 ] as const).map((v, i) => (
-                  <div key={i} className="flex items-center gap-2 cinzel text-xs tracking-widest text-cyan-400/80 uppercase">
-                    <span className="text-cyan-500">{v.icon}</span>
+                  <div key={i} className="flex items-center gap-2 cinzel text-xs tracking-widest text-yellow-500/80 uppercase">
+                    <span className="text-yellow-600">{v.icon}</span>
                     {t(v.key)}
                   </div>
                 ))}
               </div>
             </div>
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent" />
           </TiltCard>
         </div>
       </div>
@@ -584,13 +577,13 @@ function Training() {
             return (
               <div key={i} ref={ref} className="reveal perspective-container" style={{ animationDelay: `${i * 0.05}s` }}>
                 <TiltCard intensity={8} className="card-3d gold-border-glow rounded-xl p-6 flex flex-col gap-4"
-                  style={{ background: 'linear-gradient(135deg, rgba(15,31,61,0.8), rgba(5,10,24,0.9))' }}>
-                  <div className="training-icon-wrap w-12 h-12 rounded-xl flex items-center justify-center text-cyan-400 shrink-0">
+                  style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.8), rgba(13,35,71,0.9))' }}>
+                  <div className="training-icon-wrap w-12 h-12 rounded-xl flex items-center justify-center text-yellow-400 shrink-0">
                     {trainingIcons[i]}
                   </div>
                   <div>
-                    <h3 className="cinzel text-sm font-bold text-cyan-400/90 mb-2 leading-snug">{t(keys.title)}</h3>
-                    <p className="text-cyan-200/60 text-xs leading-relaxed">{t(keys.desc)}</p>
+                    <h3 className="cinzel text-sm font-bold text-yellow-400/90 mb-2 leading-snug">{t(keys.title)}</h3>
+                    <p className="text-blue-200/60 text-xs leading-relaxed">{t(keys.desc)}</p>
                   </div>
                 </TiltCard>
               </div>
@@ -601,10 +594,10 @@ function Training() {
         {/* ASECNA / ICAO badge */}
         <div className="mt-16 text-center">
           <div className="inline-flex items-center gap-4 px-8 py-4 gold-border-glow rounded-full"
-            style={{ background: 'rgba(15,31,61,0.6)' }}>
-            <Globe className="text-cyan-400" size={20} />
-            <span className="cinzel text-sm tracking-widest text-cyan-400/90 uppercase">ASECNA | ICAO WACAF Office Partner</span>
-            <Globe className="text-cyan-400" size={20} />
+            style={{ background: 'rgba(26,52,96,0.6)' }}>
+            <Globe className="text-yellow-500" size={20} />
+            <span className="cinzel text-sm tracking-widest text-yellow-400/90 uppercase">ASECNA | ICAO WACAF Office Partner</span>
+            <Globe className="text-yellow-500" size={20} />
           </div>
         </div>
       </div>
@@ -645,24 +638,24 @@ function Careers() {
             return (
               <div key={i} ref={ref} className="reveal perspective-container">
                 <TiltCard intensity={8} className="card-3d gold-border-glow rounded-xl overflow-hidden"
-                  style={{ background: 'linear-gradient(160deg, rgba(15,42,80,0.6), rgba(5,10,24,0.9))' }}>
+                  style={{ background: 'linear-gradient(160deg, rgba(30,62,114,0.6), rgba(13,35,71,0.9))' }}>
                 <div className="p-6">
                   <div className="flex items-center gap-3 mb-5">
-                    <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-cyan-400">
+                    <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-yellow-400">
                       {careerGroupIcons[i]}
                     </div>
-                    <h3 className="cinzel text-sm font-bold text-cyan-400/90 leading-snug">{category}</h3>
+                    <h3 className="cinzel text-sm font-bold text-yellow-400/90 leading-snug">{category}</h3>
                   </div>
                   <div className="space-y-2.5">
                     {careerGroupRoles[i].map((role, j) => (
                       <div key={j} className="flex items-start gap-2.5">
-                        <ChevronRight size={12} className="text-cyan-500 mt-0.5 shrink-0" />
-                        <span className="text-cyan-100/70 text-sm leading-snug">{role}</span>
+                        <ChevronRight size={12} className="text-yellow-600 mt-0.5 shrink-0" />
+                        <span className="text-blue-100/70 text-sm leading-snug">{role}</span>
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="h-0.5 bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
+                <div className="h-0.5 bg-gradient-to-r from-transparent via-yellow-600/40 to-transparent" />
                 </TiltCard>
               </div>
             );
@@ -699,12 +692,13 @@ function WhyUs() {
             return (
               <div key={i} ref={ref} className="reveal perspective-container" style={{ transitionDelay: `${i * 0.1}s` }}>
                 <TiltCard intensity={10} className="card-3d text-center p-8 rounded-2xl gold-border-glow"
-                  style={{ background: 'linear-gradient(180deg, rgba(15,42,80,0.5), rgba(5,10,24,0.8))' }}>
-                  <div className="w-16 h-16 rounded-full mx-auto mb-5 flex items-center justify-center text-cyan-400 icon-orb-3d">
+                  style={{ background: 'linear-gradient(180deg, rgba(30,62,114,0.5), rgba(13,35,71,0.8))' }}>
+                  <div className="w-16 h-16 rounded-full mx-auto mb-5 flex items-center justify-center text-yellow-400 icon-orb-3d"
+                    style={{ background: 'radial-gradient(circle, rgba(212,175,55,0.15), rgba(212,175,55,0.03))' }}>
                     {reasonIcons[i]}
                   </div>
-                  <h3 className="cinzel text-sm font-bold text-cyan-400/90 mb-3 leading-snug">{t(keys.title)}</h3>
-                  <p className="text-cyan-200/65 text-sm leading-relaxed">{t(keys.desc)}</p>
+                  <h3 className="cinzel text-sm font-bold text-yellow-400/90 mb-3 leading-snug">{t(keys.title)}</h3>
+                  <p className="text-blue-200/65 text-sm leading-relaxed">{t(keys.desc)}</p>
                 </TiltCard>
               </div>
             );
@@ -712,13 +706,13 @@ function WhyUs() {
         </div>
 
         {/* CTA Banner */}
-        <TiltCard intensity={4} className="relative rounded-2xl overflow-hidden gold-border-glow animated-border holo-scan"
-          style={{ background: 'linear-gradient(135deg, rgba(15,42,80,0.8), rgba(10,20,40,0.95))' }}>
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />
+        <TiltCard intensity={4} className="relative rounded-2xl overflow-hidden gold-border-glow animated-border"
+          style={{ background: 'linear-gradient(135deg, rgba(30,62,114,0.8), rgba(19,41,80,0.95))' }}>
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent" />
           <div className="px-8 py-14 text-center">
-            <p className="cinzel text-xs tracking-[0.4em] text-cyan-400/80 uppercase mb-4">Training The Sky Professionals of Tomorrow</p>
+            <p className="cinzel text-xs tracking-[0.4em] text-yellow-600/80 uppercase mb-4">Training The Sky Professionals of Tomorrow</p>
             <h3 className="cinzel text-3xl md:text-4xl font-bold gold-gradient-text-static mb-4">Build Your Strong Foundation</h3>
-            <p className="text-cyan-200/65 text-base max-w-xl mx-auto mb-8 leading-relaxed">
+            <p className="text-blue-200/65 text-base max-w-xl mx-auto mb-8 leading-relaxed">
               The cockpit is waiting, but the journey starts in the classroom. Enrollment is open for aspiring pilots and aviation enthusiasts.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -730,7 +724,7 @@ function WhyUs() {
               </a>
             </div>
           </div>
-          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-yellow-500 to-transparent" />
         </TiltCard>
       </div>
     </Section>
@@ -758,17 +752,17 @@ function Certificate() {
 
         <div ref={ref} className="reveal">
           <div className="perspective-container mb-12">
-            <TiltCard intensity={6} className="relative rounded-2xl overflow-hidden gold-border-glow animated-border p-3 holo-scan"
-              style={{ background: 'linear-gradient(135deg, rgba(15,31,61,0.6), rgba(5,10,24,0.9))' }}>
-              <div className="absolute top-2 left-2 w-8 h-8 border-t-2 border-l-2 border-cyan-400/60 rounded-tl-lg" />
-              <div className="absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-cyan-400/60 rounded-tr-lg" />
-              <div className="absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-cyan-400/60 rounded-bl-lg" />
-              <div className="absolute bottom-2 right-2 w-8 h-8 border-b-2 border-r-2 border-cyan-400/60 rounded-br-lg" />
+            <TiltCard intensity={6} className="relative rounded-2xl overflow-hidden gold-border-glow animated-border p-3"
+              style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.6), rgba(13,35,71,0.9))' }}>
+              <div className="absolute top-2 left-2 w-8 h-8 border-t-2 border-l-2 border-yellow-500/60 rounded-tl-lg" />
+              <div className="absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-yellow-500/60 rounded-tr-lg" />
+              <div className="absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-yellow-500/60 rounded-bl-lg" />
+              <div className="absolute bottom-2 right-2 w-8 h-8 border-b-2 border-r-2 border-yellow-500/60 rounded-br-lg" />
               <img
                 src="/ST.png"
                 alt="Stratosphere Aeronautics Certificate of Completion"
                 className="w-full rounded-xl shadow-2xl"
-                style={{ boxShadow: '0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(0,240,255,0.08)' }}
+                style={{ boxShadow: '0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(212,175,55,0.08)' }}
               />
             </TiltCard>
           </div>
@@ -779,12 +773,12 @@ function Certificate() {
               return (
                 <div key={i} ref={cardRef} className="reveal perspective-container">
                   <TiltCard intensity={8} className="card-3d gold-border-glow rounded-xl p-6 text-center"
-                    style={{ background: 'linear-gradient(160deg, rgba(15,42,80,0.6), rgba(5,10,24,0.9))' }}>
-                    <div className="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center text-cyan-400 training-icon-wrap">
+                    style={{ background: 'linear-gradient(160deg, rgba(30,62,114,0.6), rgba(13,35,71,0.9))' }}>
+                    <div className="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center text-yellow-400 training-icon-wrap">
                       {item.icon}
                     </div>
-                    <h3 className="cinzel text-sm font-bold text-cyan-400/90 mb-2">{t(item.title)}</h3>
-                    <p className="text-cyan-200/65 text-sm leading-relaxed">{t(item.desc)}</p>
+                    <h3 className="cinzel text-sm font-bold text-yellow-400/90 mb-2">{t(item.title)}</h3>
+                    <p className="text-blue-200/65 text-sm leading-relaxed">{t(item.desc)}</p>
                   </TiltCard>
                 </div>
               );
@@ -811,22 +805,22 @@ function Contact() {
         <div ref={ref} className="reveal grid md:grid-cols-2 gap-10">
           {/* Info */}
           <div className="space-y-8">
-            <TiltCard intensity={5} className="p-8 rounded-2xl gold-border-glow holo-scan"
-              style={{ background: 'linear-gradient(135deg, rgba(15,31,61,0.9), rgba(5,10,24,0.95))' }}>
+            <TiltCard intensity={5} className="p-8 rounded-2xl gold-border-glow"
+              style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
               <h3 className="cinzel text-lg font-bold gold-gradient-text-static mb-6">{t('contact_info')}</h3>
 
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
-                  <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-cyan-400 shrink-0">
+                  <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-yellow-400 shrink-0">
                     <MapPin size={16} />
                   </div>
                   <div>
-                    <p className="cinzel text-xs text-cyan-400/80 uppercase tracking-wider mb-1">{t('contact_address')}</p>
-                    <p className="text-cyan-100/75 text-sm leading-relaxed">
+                    <p className="cinzel text-xs text-yellow-500/80 uppercase tracking-wider mb-1">{t('contact_address')}</p>
+                    <p className="text-blue-100/75 text-sm leading-relaxed">
                       Bahsane Building, 2nd Floor, Room 213<br />
                       Western Entrance (Facing West)<br />
                       Opposite Ex. National Cinema<br />
-                      <span className="text-cyan-300">{t('contact_address_val')}</span>
+                      <span className="text-yellow-400">{t('contact_address_val')}</span>
                     </p>
                   </div>
                 </div>
@@ -834,18 +828,18 @@ function Contact() {
                 <div className="gold-divider" />
 
                 <div className="flex items-start gap-4">
-                  <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-cyan-400 shrink-0">
+                  <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-yellow-400 shrink-0">
                     <Phone size={16} />
                   </div>
                   <div>
-                    <p className="cinzel text-xs text-cyan-400/80 uppercase tracking-wider mb-2">{t('contact_mobile')}</p>
-                    <a href="tel:+252634482830" className="block text-cyan-300 hover:text-cyan-200 text-sm mb-1 transition-colors">
+                    <p className="cinzel text-xs text-yellow-500/80 uppercase tracking-wider mb-2">{t('contact_mobile')}</p>
+                    <a href="tel:+252634482830" className="block text-yellow-400 hover:text-yellow-300 text-sm mb-1 transition-colors">
                       +252 63 4482830
                     </a>
-                    <a href="tel:+252654482830" className="block text-cyan-300 hover:text-cyan-200 text-sm mb-1 transition-colors">
+                    <a href="tel:+252654482830" className="block text-yellow-400 hover:text-yellow-300 text-sm transition-colors">
                       +252 65 4482830
                     </a>
-                    <a href="tel:+252633347512" className="block text-cyan-300 hover:text-cyan-200 text-sm transition-colors">
+                    <a href="tel:+252633347512" className="block text-yellow-400 hover:text-yellow-300 text-sm transition-colors">
                       +252 63 3347512
                     </a>
                   </div>
@@ -854,15 +848,15 @@ function Contact() {
                 <div className="gold-divider" />
 
                 <div className="flex items-start gap-4">
-                  <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-cyan-400 shrink-0">
+                  <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-yellow-400 shrink-0">
                     <Mail size={16} />
                   </div>
                   <div>
-                    <p className="cinzel text-xs text-cyan-400/80 uppercase tracking-wider mb-2">{t('contact_email')}</p>
-                    <a href="mailto:info@stratosphereaeronautics.com" className="block text-cyan-300 hover:text-cyan-200 text-sm transition-colors break-all">
+                    <p className="cinzel text-xs text-yellow-500/80 uppercase tracking-wider mb-2">{t('contact_email')}</p>
+                    <a href="mailto:info@stratosphereaeronautics.com" className="block text-yellow-400 hover:text-yellow-300 text-sm transition-colors break-all">
                       info@stratosphereaeronautics.com
                     </a>
-                    <a href="mailto:abdirahman.dahir@stratosphereaeronautics.com" className="block text-cyan-300 hover:text-cyan-200 text-sm transition-colors break-all">
+                    <a href="mailto:abdirahman.dahir@stratosphereaeronautics.com" className="block text-yellow-400 hover:text-yellow-300 text-sm transition-colors break-all">
                       abdirahman.dahir@stratosphereaeronautics.com
                     </a>
                   </div>
@@ -872,13 +866,13 @@ function Contact() {
 
             {/* Accreditation */}
             <TiltCard intensity={4} className="p-6 rounded-xl gold-border-glow"
-              style={{ background: 'rgba(15,42,80,0.3)' }}>
-              <p className="cinzel text-xs tracking-[0.3em] text-cyan-400/80 uppercase mb-3">{t('contact_accreditation')}</p>
+              style={{ background: 'rgba(30,62,114,0.3)' }}>
+              <p className="cinzel text-xs tracking-[0.3em] text-yellow-600/80 uppercase mb-3">{t('contact_accreditation')}</p>
               <div className="space-y-2">
                 {accKeys.map((key, i) => (
                   <div key={i} className="flex items-center gap-2.5">
-                    <CheckCircle size={12} className="text-cyan-400 shrink-0" />
-                    <span className="text-cyan-200/65 text-xs">{t(key)}</span>
+                    <CheckCircle size={12} className="text-yellow-500 shrink-0" />
+                    <span className="text-blue-200/65 text-xs">{t(key)}</span>
                   </div>
                 ))}
               </div>
@@ -887,19 +881,20 @@ function Contact() {
 
           {/* WhatsApp CTA */}
           <div className="flex items-center justify-center">
-            <TiltCard intensity={5} className="w-full p-10 rounded-2xl gold-border-glow flex flex-col items-center justify-center text-center holo-scan"
-              style={{ background: 'linear-gradient(135deg, rgba(15,31,61,0.9), rgba(5,10,24,0.95))' }}>
+            <TiltCard intensity={5} className="w-full p-10 rounded-2xl gold-border-glow flex flex-col items-center justify-center text-center"
+              style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
-                style={{ background: 'linear-gradient(135deg, #00f0ff, #4d9fff)', boxShadow: '0 0 30px rgba(0,240,255,0.3)' }}>
-                <MessageCircle size={32} className="text-navy-950" />
+                style={{ background: 'linear-gradient(135deg, #25D366, #128C7E)' }}>
+                <MessageCircle size={32} className="text-white" />
               </div>
               <h3 className="cinzel text-xl font-bold gold-gradient-text-static mb-3">{t('contact_whatsapp_title')}</h3>
-              <p className="text-cyan-200/65 text-sm leading-relaxed mb-8 max-w-sm">{t('contact_whatsapp_desc')}</p>
+              <p className="text-blue-200/65 text-sm leading-relaxed mb-8 max-w-sm">{t('contact_whatsapp_desc')}</p>
               <a
                 href="https://wa.me/252634482830"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="btn-primary px-10 py-4 rounded-lg text-sm tracking-widest cinzel inline-flex items-center gap-3"
+                style={{ background: 'linear-gradient(135deg, #d4af37, #f0c040)' }}
               >
                 <MessageCircle size={18} /> +252 63 4482830
               </a>
@@ -924,21 +919,21 @@ function Footer() {
   ];
 
   return (
-    <footer className="relative z-10 border-t border-cyan-400/15 py-12 px-4"
-      style={{ background: 'linear-gradient(180deg, rgba(5,10,24,0.95), #050a18)' }}>
+    <footer className="relative z-10 border-t border-yellow-600/15 py-12 px-4"
+      style={{ background: 'linear-gradient(180deg, rgba(13,35,71,0.95), #0d2347)' }}>
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-8">
           <div className="flex items-center gap-4">
-            <img src="/logo-removebg-preview.png" alt="Stratosphere Aeronautics" className="w-14 h-14 object-contain" style={{ filter: 'drop-shadow(0 0 8px rgba(0,240,255,0.3))' }} />
+            <img src="/logo-removebg-preview.png" alt="Stratosphere Aeronautics" className="w-14 h-14 object-contain" />
             <div>
               <p className="cinzel font-bold text-base gold-gradient-text-static">Stratosphere Aeronautics</p>
-              <p className="cinzel text-xs text-cyan-400/70 tracking-widest">{t('footer_school')}</p>
+              <p className="cinzel text-xs text-yellow-600/70 tracking-widest">{t('footer_school')}</p>
             </div>
           </div>
 
           <div className="flex flex-wrap justify-center gap-6">
             {footerLinks.map((item, i) => (
-              <a key={i} href={item.href} className="cinzel text-xs tracking-widest text-cyan-200/50 hover:text-cyan-300 uppercase transition-colors">
+              <a key={i} href={item.href} className="cinzel text-xs tracking-widest text-blue-200/50 hover:text-yellow-400 uppercase transition-colors">
                 {t(item.key)}
               </a>
             ))}
@@ -948,9 +943,9 @@ function Footer() {
         <div className="gold-divider mb-6" />
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-          <p className="text-cyan-200/35 text-xs">{t('footer_rights')}</p>
-          <p className="cinzel text-xs text-cyan-400/50 italic tracking-wider">{t('footer_tagline')}</p>
-          <p className="text-cyan-200/35 text-xs">{t('footer_ernam')} · {t('footer_icao')} · Est. 2026</p>
+          <p className="text-blue-200/35 text-xs">{t('footer_rights')}</p>
+          <p className="cinzel text-xs text-yellow-600/50 italic tracking-wider">{t('footer_tagline')}</p>
+          <p className="text-blue-200/35 text-xs">{t('footer_ernam')} · {t('footer_icao')} · Est. 2026</p>
         </div>
       </div>
     </footer>
@@ -978,10 +973,9 @@ export default function App() {
 
   return (
     <LangContext.Provider value={{ lang, t, setLang }}>
-      <div className="relative min-h-screen" style={{ background: '#050a18' }}>
+      <div className="relative min-h-screen" style={{ background: '#0d2347' }}>
         <StarsBackground />
         <AirplanesBackground />
-        <GridFloor />
         <Navbar />
         <Hero />
         <StatsBanner />
@@ -1000,7 +994,7 @@ export default function App() {
           aria-label="Chat on WhatsApp"
           className="whatsapp-fab"
         >
-          <MessageCircle size={28} className="text-navy-950" />
+          <MessageCircle size={28} className="text-white" />
         </a>
       </div>
     </LangContext.Provider>
