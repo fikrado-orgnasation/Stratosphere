@@ -2,7 +2,7 @@
 
 ### ERNAM Affiliated • ICAO Recognized • Regional Aviation Training Center
 
-![Stratosphere Aeronautics Logo](./assets/logo.png)
+![Stratosphere Aeronautics Logo](./public/logo.png)
 
 **Mastering the Skies. Managing the Future. Precision in Navigation.**
 [![Open in Bolt](https://bolt.new/static/open-in-bolt.svg)](https://bolt.new/~/sb1-awn4czaw)
