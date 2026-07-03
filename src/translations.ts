@@ -14,7 +14,7 @@ export const translations = {
 
     // Hero
     hero_tagline: 'ERNAM · ICAO Recognized · Regional Aviation Training Center',
-    hero_school: 'School for Air Navigation & Management',
+    hero_school: 'School of Theoretical Knowledge Instruction (TKI)',
     hero_desc: 'Mastering the Skies. Managing the Future. Precision in Navigation.',
     hero_motto: '"Precision in Theory. Excellence in Flight."',
     hero_explore: 'Explore Programs',
@@ -134,7 +134,7 @@ export const translations = {
     // Footer
     footer_rights: '© 2026 Stratosphere Aeronautics. All rights reserved.',
     footer_tagline: 'Precision in Theory. Excellence in Flight.',
-    footer_school: 'School for Air Navigation & Management',
+    footer_school: 'School of Theoretical Knowledge Instruction (TKI)',
     footer_icao: 'ICAO Compliant',
     footer_ernam: 'ERNAM Certified',
     footer_hargeisa: 'Hargeisa, Somaliland',
@@ -153,7 +153,7 @@ export const translations = {
 
     // Hero
     hero_tagline: 'ERNAM · ICAO Aqoonsan · Xarunta Tababarka Duulimaadka Gobolka',
-    hero_school: 'Dugsi Xulafada Hawada iyo Maamulka',
+    hero_school: 'Dugsi Barashada Aqoonta Aragtida (TKI)',
     hero_desc: 'Sare u gaadha Samada. Mustaqbalka Maareeya. Saxnaanta Wadaagga.',
     hero_motto: '"Saxnaanta Aragtida. Kaamil-nimmada Duulimaadka."',
     hero_explore: 'Baadh Barnaamijyada',
@@ -273,7 +273,7 @@ export const translations = {
     // Footer
     footer_rights: '© 2026 Stratosphere Aeronautics. Xuquuqda oo dhan waa xafiddan.',
     footer_tagline: 'Saxnaanta Aragtida. Kaamil-nimmada Duulimaadka.',
-    footer_school: 'Dugsi Xulafada Hawada iyo Maamulka',
+    footer_school: 'Dugsi Barashada Aqoonta Aragtida (TKI)',
     footer_icao: 'ICAO Waafaqsan',
     footer_ernam: 'ERNAM Shahaadaysan',
     footer_hargeisa: 'Hargeysa, Somaliland',
@@ -292,7 +292,7 @@ export const translations = {
 
     // Hero
     hero_tagline: 'ERNAM · معترف به من ICAO · مركز تدريب الطيران الإقليمي',
-    hero_school: 'مدرسة الملاحة الجوية والإدارة',
+    hero_school: 'مدرسة التعليم النظري للمعرفة (TKI)',
     hero_desc: 'إتقان السماء. إدارة المستقبل. دقة في الملاحة.',
     hero_motto: '"الدقة في النظرية. التميز في الطيران."',
     hero_explore: 'استكشف البرامج',
@@ -412,7 +412,7 @@ export const translations = {
     // Footer
     footer_rights: '© ٢٠٢٦ ستراتوسفير للطيران. جميع الحقوق محفوظة.',
     footer_tagline: 'الدقة في النظرية. التميز في الطيران.',
-    footer_school: 'مدرسة الملاحة الجوية والإدارة',
+    footer_school: 'مدرسة التعليم النظري للمعرفة (TKI)',
     footer_icao: 'متوافقة مع ICAO',
     footer_ernam: 'معتمدة من ERNAM',
     footer_hargeisa: 'هرجيسا، أرض الصومال',
