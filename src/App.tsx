@@ -3,9 +3,10 @@ import {
   Plane, Globe, Shield, BookOpen, Radio, Users, Award,
   ChevronDown, MapPin, Phone, Mail, Menu, X, Star, CheckCircle,
   Navigation, Cloud, Compass, Zap, GraduationCap, Briefcase,
-  Building, ChevronRight, ArrowRight, MessageCircle
+  Building, ChevronRight, ArrowRight, MessageCircle, Send, Loader2, AlertCircle
 } from 'lucide-react';
 import { translations, Lang } from './translations';
+import { supabase, EDGE_FUNCTION_URL } from './lib/supabase';
 
 // ── Language context ──────────────────────────────────────────────────────────
 const LangContext = createContext<{ lang: Lang; t: (k: keyof typeof translations['en']) => string; setLang: (l: Lang) => void }>({
@@ -57,7 +58,7 @@ function useTilt(intensity = 12) {
 function TiltCard({ children, className, style, intensity }: { children: React.ReactNode; className?: string; style?: React.CSSProperties; intensity?: number }) {
   const tiltRef = useTilt(intensity);
   return (
-    <div ref={tiltRef} className={className} style={style}>
+    <div ref={tiltRef} className={`tilt-shine ${className ?? ''}`} style={style}>
       {children}
     </div>
   );
@@ -345,6 +346,15 @@ function Hero() {
         <div className="hero-orb hero-orb-1" />
         <div className="hero-orb hero-orb-2" />
         <div className="hero-orb hero-orb-3" />
+        {/* 3D rotating globe */}
+        <div className="globe-3d-wrap absolute top-24 right-8 hidden lg:block opacity-70">
+          <div className="globe-3d" />
+          <div className="globe-orbit" />
+        </div>
+        <div className="globe-3d-wrap absolute bottom-32 left-8 hidden lg:block opacity-50" style={{ transform: 'scale(0.7)' }}>
+          <div className="globe-3d" />
+          <div className="globe-orbit" />
+        </div>
       </div>
 
       {/* Logo with 3D depth */}
@@ -369,7 +379,7 @@ function Hero() {
           Stratosphere<br />
           <span className="aeronautics-glow">Aeronautics</span>
         </h1>
-        <p className="cinzel text-base md:text-xl text-yellow-500/90 tracking-widest mb-3 animate-slide-up delay-200">
+        <p className="cinzel text-base md:text-xl text-yellow-500/90 tracking-widest mb-3 animate-slide-up delay-200 shimmer-text">
           {t('hero_school')}
         </p>
         <div className="gold-divider-3d w-64 mx-auto mb-8" />
@@ -576,7 +586,7 @@ function Training() {
             const ref = useReveal();
             return (
               <div key={i} ref={ref} className="reveal perspective-container" style={{ animationDelay: `${i * 0.05}s` }}>
-                <TiltCard intensity={8} className="card-3d gold-border-glow rounded-xl p-6 flex flex-col gap-4"
+                <TiltCard intensity={8} className="card-3d lift-3d gold-border-glow rounded-xl p-6 flex flex-col gap-4"
                   style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.8), rgba(13,35,71,0.9))' }}>
                   <div className="training-icon-wrap w-12 h-12 rounded-xl flex items-center justify-center text-yellow-400 shrink-0">
                     {trainingIcons[i]}
@@ -637,7 +647,7 @@ function Careers() {
             const ref = useReveal();
             return (
               <div key={i} ref={ref} className="reveal perspective-container">
-                <TiltCard intensity={8} className="card-3d gold-border-glow rounded-xl overflow-hidden"
+                <TiltCard intensity={8} className="card-3d lift-3d gold-border-glow rounded-xl overflow-hidden"
                   style={{ background: 'linear-gradient(160deg, rgba(30,62,114,0.6), rgba(13,35,71,0.9))' }}>
                 <div className="p-6">
                   <div className="flex items-center gap-3 mb-5">
@@ -879,26 +889,9 @@ function Contact() {
             </TiltCard>
           </div>
 
-          {/* WhatsApp CTA */}
-          <div className="flex items-center justify-center">
-            <TiltCard intensity={5} className="w-full p-10 rounded-2xl gold-border-glow flex flex-col items-center justify-center text-center"
-              style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
-                style={{ background: 'linear-gradient(135deg, #25D366, #128C7E)' }}>
-                <MessageCircle size={32} className="text-white" />
-              </div>
-              <h3 className="cinzel text-xl font-bold gold-gradient-text-static mb-3">{t('contact_whatsapp_title')}</h3>
-              <p className="text-blue-200/65 text-sm leading-relaxed mb-8 max-w-sm">{t('contact_whatsapp_desc')}</p>
-              <a
-                href="https://wa.me/252634482830"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary px-10 py-4 rounded-lg text-sm tracking-widest cinzel inline-flex items-center gap-3"
-                style={{ background: 'linear-gradient(135deg, #d4af37, #f0c040)' }}
-              >
-                <MessageCircle size={18} /> +252 63 4482830
-              </a>
-            </TiltCard>
+          {/* Enrollment Form */}
+          <div>
+            <ContactForm />
           </div>
         </div>
       </div>
@@ -952,6 +945,121 @@ function Footer() {
   );
 }
 
+// ── ContactForm ──────────────────────────────────────────────────────────────
+function ContactForm() {
+  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' });
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name || !form.email || !form.message) return;
+    setStatus('loading');
+    setErrorMsg('');
+    try {
+      const { error } = await supabase.functions.invoke('send-contact-inquiry', {
+        body: form,
+      });
+      if (error) throw error;
+      setStatus('success');
+      setForm({ name: '', email: '', phone: '', message: '' });
+    } catch (err) {
+      setStatus('error');
+      setErrorMsg(err instanceof Error ? err.message : 'Submission failed');
+    }
+  };
+
+  if (status === 'success') {
+    return (
+      <TiltCard intensity={4} className="w-full p-10 rounded-2xl gold-border-glow text-center"
+        style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
+        <div className="w-16 h-16 rounded-full mx-auto mb-6 flex items-center justify-center"
+          style={{ background: 'linear-gradient(135deg, #d4af37, #f0c040)' }}>
+          <CheckCircle size={32} className="text-[#0d2347]" />
+        </div>
+        <h3 className="cinzel text-xl font-bold gold-gradient-text-static mb-3">Inquiry Received</h3>
+        <p className="text-blue-200/65 text-sm leading-relaxed mb-8 max-w-sm mx-auto">
+          Thank you for your interest. Our team will be in touch within 24 hours.
+        </p>
+        <button onClick={() => setStatus('idle')}
+          className="btn-3d-outline px-8 py-3 rounded-lg text-sm tracking-widest cinzel">
+          Send Another
+        </button>
+      </TiltCard>
+    );
+  }
+
+  return (
+    <TiltCard intensity={4} className="w-full p-8 sm:p-10 rounded-2xl gold-border-glow"
+      style={{ background: 'linear-gradient(135deg, rgba(26,52,96,0.9), rgba(13,35,71,0.95))' }}>
+      <h3 className="cinzel text-xl font-bold gold-gradient-text-static mb-2">Enrollment Inquiry</h3>
+      <p className="text-blue-200/55 text-sm mb-6">Fields marked * are required.</p>
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <div>
+          <label className="block text-xs tracking-widest text-blue-200/70 mb-2 cinzel">FULL NAME *</label>
+          <input
+            type="text"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            required
+            className="w-full px-4 py-3 rounded-lg bg-[#0d2347]/60 border border-gold-500/30 text-blue-50 placeholder-blue-200/30 focus:outline-none focus:border-gold-500/70 focus:ring-2 focus:ring-gold-500/20 transition-all"
+            placeholder="Your full name"
+          />
+        </div>
+        <div>
+          <label className="block text-xs tracking-widest text-blue-200/70 mb-2 cinzel">EMAIL *</label>
+          <input
+            type="email"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+            required
+            className="w-full px-4 py-3 rounded-lg bg-[#0d2347]/60 border border-gold-500/30 text-blue-50 placeholder-blue-200/30 focus:outline-none focus:border-gold-500/70 focus:ring-2 focus:ring-gold-500/20 transition-all"
+            placeholder="you@example.com"
+          />
+        </div>
+        <div>
+          <label className="block text-xs tracking-widest text-blue-200/70 mb-2 cinzel">PHONE</label>
+          <input
+            type="tel"
+            value={form.phone}
+            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            className="w-full px-4 py-3 rounded-lg bg-[#0d2347]/60 border border-gold-500/30 text-blue-50 placeholder-blue-200/30 focus:outline-none focus:border-gold-500/70 focus:ring-2 focus:ring-gold-500/20 transition-all"
+            placeholder="+252 ..."
+          />
+        </div>
+        <div>
+          <label className="block text-xs tracking-widest text-blue-200/70 mb-2 cinzel">MESSAGE *</label>
+          <textarea
+            value={form.message}
+            onChange={(e) => setForm({ ...form, message: e.target.value })}
+            required
+            rows={4}
+            className="w-full px-4 py-3 rounded-lg bg-[#0d2347]/60 border border-gold-500/30 text-blue-50 placeholder-blue-200/30 focus:outline-none focus:border-gold-500/70 focus:ring-2 focus:ring-gold-500/20 transition-all resize-none"
+            placeholder="Tell us about your aviation goals..."
+          />
+        </div>
+        {status === 'error' && (
+          <div className="flex items-center gap-2 text-red-400 text-sm">
+            <AlertCircle size={16} />
+            <span>{errorMsg || 'Something went wrong. Please try again.'}</span>
+          </div>
+        )}
+        <button
+          type="submit"
+          disabled={status === 'loading'}
+          className="btn-3d-primary w-full px-8 py-4 rounded-lg text-sm tracking-widest cinzel flex items-center justify-center gap-3 disabled:opacity-60"
+        >
+          {status === 'loading' ? (
+            <><Loader2 size={18} className="animate-spin" /> Submitting...</>
+          ) : (
+            <><Send size={18} /> Submit Inquiry</>
+          )}
+        </button>
+      </form>
+    </TiltCard>
+  );
+}
+
 // ── App ───────────────────────────────────────────────────────────────────────
 export default function App() {
   const [lang, setLangState] = useState<Lang>('en');
@@ -971,9 +1079,31 @@ export default function App() {
 
   const t = (k: keyof typeof translations['en']) => translations[lang][k] ?? translations.en[k];
 
+  // Cursor glow + scroll progress
+  const [cursorPos, setCursorPos] = useState({ x: -500, y: -500 });
+  const [scrollProgress, setScrollProgress] = useState(0);
+
+  useEffect(() => {
+    const onMove = (e: MouseEvent) => setCursorPos({ x: e.clientX, y: e.clientY });
+    const onScroll = () => {
+      const scrolled = window.scrollY;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      setScrollProgress(max > 0 ? (scrolled / max) * 100 : 0);
+    };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+    return () => {
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('scroll', onScroll);
+    };
+  }, []);
+
   return (
     <LangContext.Provider value={{ lang, t, setLang }}>
       <div className="relative min-h-screen" style={{ background: '#0d2347' }}>
+        <div className="scroll-progress" style={{ width: `${scrollProgress}%` }} />
+        <div className="cursor-glow" style={{ left: cursorPos.x, top: cursorPos.y }} />
         <StarsBackground />
         <AirplanesBackground />
         <Navbar />
@@ -992,7 +1122,7 @@ export default function App() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Chat on WhatsApp"
-          className="whatsapp-fab"
+          className="whatsapp-fab float-glow"
         >
           <MessageCircle size={28} className="text-white" />
         </a>
