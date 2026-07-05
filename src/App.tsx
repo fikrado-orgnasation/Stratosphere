@@ -959,12 +959,15 @@ function Footer() {
         <div className="glow-divider mb-6" />
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-          <div className="flex flex-col items-center gap-1.5 md:items-start">
-            <img src="/fikrado_sec_(1).png" alt="Fikrado Security" className="w-10 h-10 object-contain opacity-70 hover:opacity-100 transition-opacity duration-300" />
-            <p className="display text-xs tracking-widest text-slate-400/50 uppercase">Powered by <span className="text-amber-500/70">FIKRADO SECURITY</span></p>
-          </div>
           <p className="display text-xs text-amber-500/50 italic tracking-wider">{t('footer_tagline')}</p>
           <p className="text-slate-400/35 text-xs">{t('footer_ernam')} · {t('footer_icao')} · Est. 2026</p>
+        </div>
+
+        <div className="mt-8 pt-6 border-t border-amber-500/10 flex justify-center">
+          <a href="https://fikrado2.github.io/fikrado/" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-1.5 group">
+            <img src="/fikrado_sec_(1).png" alt="Fikrado Security" className="w-10 h-10 object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
+            <p className="display text-xs tracking-widest text-slate-400/50 uppercase group-hover:text-amber-500/70 transition-colors duration-300">Powered by <span className="text-amber-500/70">FIKRADO SECURITY</span></p>
+          </a>
         </div>
       </div>
     </footer>
