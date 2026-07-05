@@ -258,8 +258,6 @@ function Navbar() {
   }, []);
 
   const links = [
-    { href: '#about', label: t('nav_about') },
-    { href: '#mission', label: t('nav_mission') },
     { href: '#training', label: t('nav_training') },
     { href: '#careers', label: t('nav_careers') },
     { href: '#why-us', label: t('nav_why_us') },
@@ -930,8 +928,6 @@ function Contact() {
 function Footer() {
   const { t } = useLang();
   const footerLinks = [
-    { href: '#about', key: 'nav_about' as const },
-    { href: '#mission', key: 'nav_mission' as const },
     { href: '#training', key: 'nav_training' as const },
     { href: '#careers', key: 'nav_careers' as const },
     { href: '#why-us', key: 'nav_why_us' as const },
@@ -1003,9 +999,6 @@ export default function App() {
         <AirplanesBackground />
         <Navbar />
         <Hero />
-        <StatsBanner />
-        <About />
-        <Mission />
         <Training />
         <Careers />
         <WhyUs />
