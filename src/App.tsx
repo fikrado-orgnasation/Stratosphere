@@ -3,8 +3,8 @@ import {
   Plane, Globe, Shield, BookOpen, Radio, Users, Award,
   ChevronDown, MapPin, Phone, Mail, Menu, X, CheckCircle,
   Navigation, Cloud, Compass, Zap, GraduationCap, Briefcase,
-  Building, ChevronRight, ArrowRight, Star, Target, Lightbulb,
-  Clock, TrendingUp, Heart
+  Building, ChevronRight, ArrowRight, Star,
+  Clock
 } from 'lucide-react';
 import { translations, Lang } from './translations';
 
@@ -260,11 +260,29 @@ function Navbar() {
   const { t } = useLang();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState('');
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Scroll-spy: highlight active nav link
+  useEffect(() => {
+    const sections = document.querySelectorAll('section[id]');
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: '-20% 0px -70% 0px' }
+    );
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
   }, []);
 
   const links = [
@@ -295,7 +313,11 @@ function Navbar() {
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-5 lg:gap-7">
           {links.map(l => (
-            <a key={l.href} href={l.href} className="nav-link">
+            <a
+              key={l.href}
+              href={l.href}
+              className={`nav-link ${activeSection === l.href.slice(1) ? 'active' : ''}`}
+            >
               {l.label}
             </a>
           ))}
@@ -326,14 +348,18 @@ function Navbar() {
       </div>
 
       {/* Mobile menu */}
-      {menuOpen && (
-        <div className="mobile-menu md:hidden border-t border-[rgba(36,114,232,0.15)] px-6 py-6 flex flex-col gap-1">
+      <div className={`mobile-menu md:hidden transition-all duration-300 ease-out ${menuOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0 overflow-hidden'}`}>
+        <div className="px-6 py-6 flex flex-col gap-1">
           {links.map(l => (
             <a
               key={l.href}
               href={l.href}
               onClick={() => setMenuOpen(false)}
-              className="flex items-center gap-3 py-3.5 px-3 rounded-lg text-sm font-semibold text-[rgba(180,210,255,0.8)] hover:text-[#7ab8f7] hover:bg-[rgba(36,114,232,0.08)] transition-all uppercase tracking-wider border-b border-[rgba(36,114,232,0.07)] last:border-0"
+              className={`flex items-center gap-3 py-3.5 px-3 rounded-lg text-sm font-semibold transition-all uppercase tracking-wider ${
+                activeSection === l.href.slice(1)
+                  ? 'text-[#4b8ef5] bg-[rgba(36,114,232,0.1)]'
+                  : 'text-[rgba(180,210,255,0.8)] hover:text-[#7ab8f7] hover:bg-[rgba(36,114,232,0.08)]'
+              }`}
             >
               <ChevronRight size={14} className="text-[#2472e8]" />
               {l.label}
@@ -347,7 +373,7 @@ function Navbar() {
             {t('nav_enroll')} <ArrowRight size={15} />
           </a>
         </div>
-      )}
+      </div>
     </nav>
   );
 }
@@ -387,6 +413,9 @@ function Hero() {
         <div ref={earthRef} className="earth-sphere" />
       </div>
 
+      {/* Aviation HUD grid */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none hud-grid opacity-40" />
+
       {/* Atmospheric lines */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {[15, 35, 55, 75].map((p, i) => (
@@ -400,6 +429,17 @@ function Hero() {
         <div className="hero-orb hero-orb-1" />
         <div className="hero-orb hero-orb-2" />
         <div className="hero-orb hero-orb-3" />
+        {/* Navigation dots */}
+        <div className="absolute top-[20%] right-[15%] flex gap-3">
+          <span className="nav-dot" />
+          <span className="nav-dot" style={{ animationDelay: '0.5s' }} />
+          <span className="nav-dot" style={{ animationDelay: '1s' }} />
+        </div>
+        <div className="absolute bottom-[30%] left-[12%] flex gap-3">
+          <span className="nav-dot" style={{ animationDelay: '1.5s' }} />
+          <span className="nav-dot" style={{ animationDelay: '2s' }} />
+          <span className="nav-dot" />
+        </div>
       </div>
 
       {/* Logo */}
@@ -510,11 +550,11 @@ function About() {
 
             <div className="grid grid-cols-2 gap-3 mt-6">
               {highlights.map((item, i) => (
-                <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-[rgba(10,32,68,0.6)] border border-[rgba(36,114,232,0.12)]">
-                  <div className={`icon-box w-8 h-8 ${item.color} shrink-0`}>
+                <div key={i} className="flex items-center gap-3 p-3.5 rounded-xl bg-[rgba(14,35,80,0.5)] border border-[rgba(75,142,245,0.12)] transition-all duration-300 hover:border-[rgba(122,184,247,0.3)] hover:bg-[rgba(20,50,100,0.5)]">
+                  <div className={`icon-box w-9 h-9 ${item.color} shrink-0`}>
                     {item.icon}
                   </div>
-                  <span className="text-[#94aed4] text-sm font-medium">{item.text}</span>
+                  <span className="text-[#94aed4] text-sm font-medium leading-tight">{item.text}</span>
                 </div>
               ))}
             </div>
@@ -525,7 +565,7 @@ function About() {
           <TiltCard
             intensity={8}
             className="card-modern"
-            style={{ background: 'linear-gradient(135deg, rgba(10,32,68,0.75), rgba(6,17,36,0.9))' }}
+            style={{ background: 'linear-gradient(150deg, rgba(14,35,80,0.7), rgba(8,20,48,0.9))' }}
           >
             <div className="p-8">
               <div className="flex items-center gap-4 mb-6">
@@ -552,7 +592,7 @@ function About() {
                   'Based in Hargeisa, Somaliland',
                 ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <CheckCircle size={14} className="text-[#4b8ef5] shrink-0" />
+                    <CheckCircle size={15} className="text-[#4b8ef5] shrink-0" />
                     <span className="text-[#94aed4] text-sm">{item}</span>
                   </div>
                 ))}
@@ -562,7 +602,7 @@ function About() {
 
               <div className="grid grid-cols-3 gap-3">
                 {facts.map((f, i) => (
-                  <div key={i} className="text-center p-3 rounded-xl bg-[rgba(36,114,232,0.07)] border border-[rgba(36,114,232,0.1)]">
+                  <div key={i} className="text-center p-3 rounded-xl bg-[rgba(36,114,232,0.06)] border border-[rgba(75,142,245,0.1)]">
                     <p className="text-[#4a6080] text-[10px] font-semibold uppercase tracking-wider mb-1">{f.label}</p>
                     <p className="text-[#7ab8f7] text-xs font-bold">{f.value}</p>
                   </div>
@@ -597,11 +637,18 @@ function Mission() {
         <SectionTitle label={t('mission_label')} title={t('mission_title')} />
 
         <div ref={ref} className="reveal">
-          <div className="mission-card animated-border p-10 md:p-14 text-center">
-            <div className="mb-8">
-              <Plane className="text-[rgba(36,114,232,0.4)] mx-auto mb-5" size={48} />
+          <div className="mission-card animated-border p-10 md:p-14 text-center relative">
+            {/* Corner accents */}
+            <div className="absolute top-4 left-4 w-8 h-8 border-t-2 border-l-2 border-[rgba(122,184,247,0.3)] rounded-tl-lg" />
+            <div className="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 border-[rgba(122,184,247,0.3)] rounded-tr-lg" />
+            <div className="absolute bottom-4 left-4 w-8 h-8 border-b-2 border-l-2 border-[rgba(122,184,247,0.3)] rounded-bl-lg" />
+            <div className="absolute bottom-4 right-4 w-8 h-8 border-b-2 border-r-2 border-[rgba(122,184,247,0.3)] rounded-br-lg" />
+
+            <div className="mb-8 relative">
+              <div className="absolute inset-0 rounded-full bg-[rgba(36,114,232,0.08)] blur-2xl scale-150" />
+              <Plane className="text-[rgba(122,184,247,0.5)] mx-auto mb-5 relative" size={52} strokeWidth={1.2} />
             </div>
-            <blockquote className="text-lg md:text-2xl font-semibold text-[#dceeff] leading-relaxed mb-8 italic">
+            <blockquote className="text-lg md:text-2xl font-semibold text-[#dceeff] leading-relaxed mb-8 italic relative">
               {t('mission_quote')}
             </blockquote>
             <p className="text-[#94aed4] text-base leading-relaxed max-w-3xl mx-auto">
@@ -616,8 +663,10 @@ function Mission() {
 
             <div className="flex flex-wrap justify-center gap-6 md:gap-10">
               {values.map((v, i) => (
-                <div key={i} className="flex items-center gap-2 text-xs font-bold tracking-[0.15em] uppercase text-[#94aed4]">
-                  <span className={v.color}>{v.icon}</span>
+                <div key={i} className="flex items-center gap-2.5 text-xs font-bold tracking-[0.15em] uppercase text-[#94aed4]">
+                  <span className={`${v.color} w-7 h-7 rounded-lg flex items-center justify-center bg-[rgba(10,26,56,0.6)] border border-[rgba(75,142,245,0.15)]`}>
+                    {v.icon}
+                  </span>
                   {t(v.key)}
                 </div>
               ))}
@@ -655,8 +704,8 @@ function TrainingCard({ keys, index }: {
 
   return (
     <div ref={ref} className="reveal" style={{ transitionDelay: `${index * 40}ms` }}>
-      <div className="card-modern h-full p-6 flex flex-col gap-4">
-        <div className={`icon-box w-12 h-12 ${color}`}>
+      <div className="card-modern h-full p-6 flex flex-col gap-4 group">
+        <div className={`icon-box w-14 h-14 ${color} transition-transform duration-300 group-hover:scale-110`}>
           {icon}
         </div>
         <div>
@@ -729,9 +778,9 @@ function CareerCard({ item, index }: { item: typeof careerData[0]; index: number
   const ref = useReveal();
   return (
     <div ref={ref} className="reveal" style={{ transitionDelay: `${index * 60}ms` }}>
-      <div className="card-modern h-full p-6">
+      <div className="card-modern h-full p-6 group">
         <div className="flex items-start gap-4 mb-5">
-          <div className={`icon-box w-10 h-10 ${item.color} shrink-0 mt-0.5`}>
+          <div className={`icon-box w-11 h-11 ${item.color} shrink-0 mt-0.5 transition-transform duration-300 group-hover:scale-110`}>
             {item.icon}
           </div>
           <h3 className="text-sm font-bold text-[#dceeff] leading-snug">{item.category}</h3>
@@ -739,12 +788,12 @@ function CareerCard({ item, index }: { item: typeof careerData[0]; index: number
         <div className="space-y-2.5">
           {item.roles.map((role, j) => (
             <div key={j} className="flex items-start gap-2.5">
-              <ChevronRight size={12} className="text-[#2472e8] mt-1 shrink-0" />
+              <ChevronRight size={13} className="text-[#4b8ef5] mt-1 shrink-0" />
               <span className="text-[#94aed4] text-sm leading-snug">{role}</span>
             </div>
           ))}
         </div>
-        <div className="mt-5 pt-4 border-t border-[rgba(36,114,232,0.1)]" />
+        <div className="mt-5 pt-4 border-t border-[rgba(75,142,245,0.1)]" />
       </div>
     </div>
   );
@@ -783,8 +832,8 @@ function WhyCard({ item, index }: { item: typeof reasonData[0]; index: number })
   const ref = useReveal();
   return (
     <div ref={ref} className="reveal" style={{ transitionDelay: `${index * 80}ms` }}>
-      <div className="card-modern h-full p-8 text-center flex flex-col items-center">
-        <div className={`icon-box w-16 h-16 ${item.color} mb-5`}>
+      <div className="card-modern h-full p-8 text-center flex flex-col items-center group">
+        <div className={`icon-box w-16 h-16 ${item.color} mb-5 transition-transform duration-300 group-hover:scale-110`}>
           {item.icon}
         </div>
         <h3 className="text-sm font-bold text-[#dceeff] mb-3 leading-snug">{t(item.title)}</h3>
@@ -852,8 +901,8 @@ function CertCard({ item, index }: { item: typeof certCards[0]; index: number })
   const ref = useReveal();
   return (
     <div ref={ref} className="reveal" style={{ transitionDelay: `${index * 80}ms` }}>
-      <div className="card-modern h-full p-6 text-center">
-        <div className={`icon-box w-12 h-12 ${item.color} mx-auto mb-4`}>
+      <div className="card-modern h-full p-6 text-center group">
+        <div className={`icon-box w-14 h-14 ${item.color} mx-auto mb-4 transition-transform duration-300 group-hover:scale-110`}>
           {item.icon}
         </div>
         <h3 className="text-sm font-bold text-[#dceeff] mb-2">{t(item.title)}</h3>
@@ -923,8 +972,8 @@ function Contact() {
               <div className="space-y-6">
                 {/* Address */}
                 <div className="flex items-start gap-4">
-                  <div className="icon-box w-10 h-10 icon-box-blue shrink-0 mt-0.5">
-                    <MapPin size={16} />
+                  <div className="icon-box w-11 h-11 icon-box-blue shrink-0 mt-0.5">
+                    <MapPin size={17} />
                   </div>
                   <div>
                     <p className="text-xs font-bold text-[#4b8ef5] uppercase tracking-wider mb-1">{t('contact_address')}</p>
@@ -941,14 +990,14 @@ function Contact() {
 
                 {/* Phone */}
                 <div className="flex items-start gap-4">
-                  <div className="icon-box w-10 h-10 icon-box-green shrink-0 mt-0.5">
-                    <Phone size={16} />
+                  <div className="icon-box w-11 h-11 icon-box-green shrink-0 mt-0.5">
+                    <Phone size={17} />
                   </div>
                   <div>
                     <p className="text-xs font-bold text-[#4ade80] uppercase tracking-wider mb-2">{t('contact_mobile')}</p>
-                    <a href="tel:+252634482830" className="block text-[#7ab8f7] hover:text-[#a8d4fb] text-sm mb-1 transition-colors font-medium">+252 63 4482830</a>
-                    <a href="tel:+252654482830" className="block text-[#7ab8f7] hover:text-[#a8d4fb] text-sm mb-1 transition-colors font-medium">+252 65 4482830</a>
-                    <a href="tel:+252633347512" className="block text-[#7ab8f7] hover:text-[#a8d4fb] text-sm transition-colors font-medium">+252 63 3347512</a>
+                    <a href="tel:+252****2830" className="block text-[#7ab8f7] hover:text-[#a8d4fb] text-sm mb-1 transition-colors font-medium">+252 63 4482830</a>
+                    <a href="tel:+252****2830" className="block text-[#7ab8f7] hover:text-[#a8d4fb] text-sm mb-1 transition-colors font-medium">+252 65 4482830</a>
+                    <a href="tel:+252****7512" className="block text-[#7ab8f7] hover:text-[#a8d4fb] text-sm transition-colors font-medium">+252 63 3347512</a>
                   </div>
                 </div>
 
@@ -956,8 +1005,8 @@ function Contact() {
 
                 {/* Email */}
                 <div className="flex items-start gap-4">
-                  <div className="icon-box w-10 h-10 icon-box-purple shrink-0 mt-0.5">
-                    <Mail size={16} />
+                  <div className="icon-box w-11 h-11 icon-box-purple shrink-0 mt-0.5">
+                    <Mail size={17} />
                   </div>
                   <div>
                     <p className="text-xs font-bold text-[#a78bfa] uppercase tracking-wider mb-2">{t('contact_email')}</p>
@@ -978,7 +1027,7 @@ function Contact() {
               <div className="space-y-2.5">
                 {accKeys.map((key, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <CheckCircle size={14} className="text-[#4b8ef5] shrink-0" />
+                    <CheckCircle size={15} className="text-[#4b8ef5] shrink-0" />
                     <span className="text-[#94aed4] text-sm font-medium">{t(key)}</span>
                   </div>
                 ))}
