@@ -1,20 +1,45 @@
 # ✈️ Stratosphere Aeronautics
 
-### ERNAM Affiliated • ICAO Recognized • Regional Aviation Training Center
+### Somaliland's No. 1 Aviation School — ICAO Recognized • ERNAM Affiliated
 
-![Stratosphere Aeronautics Logo](./assets/logo.png)
+![Stratosphere Aeronautics Logo](./public/logo-removebg-preview.png)
 
 **Mastering the Skies. Managing the Future. Precision in Navigation.**
-[![Open in Bolt](https://bolt.new/static/open-in-bolt.svg)](https://bolt.new/~/sb1-awn4czaw)
+
 > "Precision in Theory. Excellence in Flight."
 
 ---
 
 ## 🌍 About Us
 
-**Stratosphere Aeronautics School for Air Navigation & Management** is a premier aviation knowledge institution based in **Hargeisa, Somaliland**, dedicated to developing the next generation of aviation professionals through internationally aligned theoretical instruction.
+**Stratosphere Aeronautics** is a premier aviation knowledge institution based in **Hargeisa, Somaliland**, dedicated to developing the next generation of aviation professionals through internationally aligned theoretical instruction.
 
 Our training programs follow **ICAO standards** and the educational framework of **ERNAM (Regional School of Air Navigation and Management)**, providing students with the knowledge foundation required for successful aviation careers.
+
+---
+
+## ✨ Website Features
+
+- **Interactive 3D Aircraft Hero** — Animated aircraft with flight paths, atmospheric clouds, and mouse-reactive camera parallax
+- **Multi-Page Structure** — 9 routes: Home, About, Training Programs, Individual Program Details, Careers, Admissions, Student Life, Resources, Contact
+- **Premium Aviation Design** — Deep navy/aviation blue palette, glassmorphism, subtle blue glow effects, premium typography
+- **Responsive** — Mobile-first with professional hamburger navigation, responsive grids, zero horizontal overflow
+- **SEO Optimized** — Per-page meta titles, descriptions, Open Graph tags, and semantic HTML
+- **i18n** — English, Somali, and Arabic language support with RTL
+- **Accessibility** — Focus-visible states, proper ARIA labels, keyboard navigation, reduced-motion support
+- **Performance** — Lazy-loaded 3D scene, code-split chunks, GPU-friendly animations
+
+---
+
+## 🚀 Tech Stack
+
+- **Framework:** React 19 + TypeScript
+- **Build Tool:** Vite 5
+- **Routing:** React Router DOM (HashRouter for static hosting)
+- **3D Graphics:** React Three Fiber + Drei (interactive aircraft scene)
+- **Styling:** Tailwind CSS 3 + custom CSS design system
+- **Icons:** Lucide React
+- **Fonts:** Plus Jakarta Sans
 
 ---
 
@@ -27,6 +52,9 @@ Our training programs follow **ICAO standards** and the educational framework of
 - Internationally Certified Instructors
 - Private & Small-Group Tuition
 - PPL & CPL Foundation Preparation
+- Interactive 3D Aircraft Animation
+- Multi-Page Professional Structure
+- SEO Optimized for Aviation Schools
 
 ---
 
@@ -184,6 +212,9 @@ Thank you for supporting innovation, education, and technology development in So
 School for Air Navigation & Management
 
 📍 Hargeisa, Somaliland
+📞 +252 63 4482830
+📧 info@stratosphereaeronautics.com
+💬 WhatsApp: +252 63 4482830
 
 ✈️ *Mastering the Skies. Managing the Future.*
 
@@ -192,4 +223,3 @@ School for Air Navigation & Management
 ## © License
 
 Copyright © 2026 Stratosphere Aeronautics. All Rights Reserved.
-
