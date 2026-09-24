@@ -36,7 +36,7 @@ function useTilt(intensity = 12) {
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
     el.style.transform = `perspective(800px) rotateY(${x * intensity}deg) rotateX(${-y * intensity}deg) scale3d(1.03,1.03,1.03)`;
-    el.style.boxShadow = `${-x * 20}px ${y * 20}px 60px rgba(10,30,63,0.12), 0 0 30px rgba(14,165,233,0.1)`;
+    el.style.boxShadow = `${-x * 20}px ${y * 20}px 60px rgba(0,0,0,0.5), 0 0 30px rgba(240,192,64,0.12)`;
   }, [intensity]);
 
   const handleLeave = useCallback(() => {
@@ -72,8 +72,17 @@ function TiltCard({ children, className, style, intensity }: { children: React.R
   );
 }
 
-// ── Floating Particles Background ─────────────────────────────────────────────
-function ParticlesBackground() {
+// ── Stars + Floating Particles Background ─────────────────────────────────────
+function StarsBackground() {
+  const stars = Array.from({ length: 120 }, (_, i) => ({
+    id: i,
+    left: `${Math.random() * 100}%`,
+    top: `${Math.random() * 100}%`,
+    size: Math.random() * 2.5 + 0.5,
+    duration: `${Math.random() * 4 + 2}s`,
+    delay: `${Math.random() * 4}s`,
+  }));
+
   const particles = Array.from({ length: 18 }, (_, i) => ({
     id: i,
     left: `${Math.random() * 100}%`,
@@ -84,22 +93,40 @@ function ParticlesBackground() {
   }));
 
   return (
-    <div className="particles-bg">
-      {particles.map(p => (
-        <div
-          key={p.id}
-          className="depth-particle"
-          style={{
-            left: p.left,
-            width: `${p.size}px`,
-            height: `${p.size}px`,
-            '--float-dur': p.duration,
-            '--float-delay': p.delay,
-            '--depth': p.depth,
-          } as React.CSSProperties}
-        />
-      ))}
-    </div>
+    <>
+      <div className="stars-bg">
+        {stars.map(s => (
+          <div
+            key={s.id}
+            className="star"
+            style={{
+              left: s.left,
+              top: s.top,
+              width: `${s.size}px`,
+              height: `${s.size}px`,
+              '--duration': s.duration,
+              '--delay': s.delay,
+            } as React.CSSProperties}
+          />
+        ))}
+      </div>
+      <div className="particles-bg">
+        {particles.map(p => (
+          <div
+            key={p.id}
+            className="depth-particle"
+            style={{
+              left: p.left,
+              width: `${p.size}px`,
+              height: `${p.size}px`,
+              '--float-dur': p.duration,
+              '--float-delay': p.delay,
+              '--depth': p.depth,
+            } as React.CSSProperties}
+          />
+        ))}
+      </div>
+    </>
   );
 }
 
@@ -151,18 +178,18 @@ function Section({ id, className, children }: { id?: string; className?: string;
   );
 }
 
-function SectionTitle({ label, title, subtitle, light }: { label?: string; title: string; subtitle?: string; light?: boolean }) {
+function SectionTitle({ label, title, subtitle }: { label?: string; title: string; subtitle?: string }) {
   const ref = useReveal();
   return (
     <div ref={ref} className="reveal text-center mb-16">
       {label && (
-        <span className={`inline-block text-xs display tracking-[0.35em] uppercase mb-3 px-4 py-1.5 border rounded-full ${light ? 'text-sky-300 border-sky-400/30 bg-sky-400/10' : 'text-sky-600 border-sky-500/25 bg-sky-50'}`}>
+        <span className="inline-block text-xs display tracking-[0.35em] text-amber-400 uppercase mb-3 px-4 py-1.5 border border-amber-500/30 rounded-full bg-amber-500/5">
           {label}
         </span>
       )}
-      <h2 className={`display text-4xl md:text-5xl font-bold mb-4 ${light ? 'text-white' : 'accent-gradient-text-static'}`}>{title}</h2>
+      <h2 className="display text-4xl md:text-5xl font-bold accent-gradient-text-static mb-4">{title}</h2>
       <div className="glow-divider w-48 mx-auto mb-5" />
-      {subtitle && <p className={`max-w-2xl mx-auto text-base leading-relaxed ${light ? 'text-sky-100/70' : 'text-slate-600'}`}>{subtitle}</p>}
+      {subtitle && <p className="text-slate-300/70 max-w-2xl mx-auto text-base leading-relaxed">{subtitle}</p>}
     </div>
   );
 }
@@ -174,7 +201,7 @@ const langLabels: Record<Lang, { flag: string; label: string }> = {
   ar: { flag: '🇸🇦', label: 'AR' },
 };
 
-function LangSwitcher({ light }: { light?: boolean }) {
+function LangSwitcher() {
   const { lang, setLang } = useLang();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -191,7 +218,7 @@ function LangSwitcher({ light }: { light?: boolean }) {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(o => !o)}
-        className={`flex items-center gap-1.5 px-3 py-1.5 border rounded-lg transition-all duration-200 display text-xs tracking-wider ${light ? 'border-sky-400/40 bg-sky-400/10 hover:bg-sky-400/20 text-sky-200' : 'border-sky-500/30 bg-sky-50 hover:bg-sky-100 text-sky-700'}`}
+        className="flex items-center gap-1.5 px-3 py-1.5 border border-amber-500/40 rounded-md bg-amber-500/5 hover:bg-amber-500/10 hover:border-amber-400/60 transition-all duration-200 display text-xs text-amber-400 tracking-wider"
         aria-label="Change language"
       >
         <Globe size={13} />
@@ -200,13 +227,13 @@ function LangSwitcher({ light }: { light?: boolean }) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-2 w-36 rounded-xl border border-sky-200 shadow-2xl overflow-hidden z-50 bg-white"
-          style={{ boxShadow: '0 12px 40px rgba(10,30,63,0.12)' }}>
+        <div className="absolute right-0 top-full mt-2 w-36 rounded-lg border border-amber-500/25 shadow-2xl overflow-hidden z-50 glass-strong"
+          style={{ background: 'rgba(10,14,26,0.98)' }}>
           {(['en', 'so', 'ar'] as Lang[]).map(l => (
             <button
               key={l}
               onClick={() => { setLang(l); setOpen(false); }}
-              className={`w-full flex items-center gap-3 px-4 py-3 text-left display text-xs tracking-wider transition-colors duration-150 ${lang === l ? 'text-sky-600 bg-sky-50' : 'text-slate-600 hover:text-sky-600 hover:bg-sky-50'}`}
+              className={`w-full flex items-center gap-3 px-4 py-3 text-left display text-xs tracking-wider transition-colors duration-150 ${lang === l ? 'text-amber-400 bg-amber-500/10' : 'text-slate-200/70 hover:text-amber-400 hover:bg-amber-500/5'}`}
             >
               <span>{langLabels[l].flag}</span>
               <span>{l === 'en' ? 'English' : l === 'so' ? 'Soomaali' : 'العربية'}</span>
@@ -239,45 +266,45 @@ function Navbar() {
   ];
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'nav-glass shadow-lg shadow-sky-900/5' : 'bg-transparent'}`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'nav-glass shadow-lg shadow-black/40' : 'bg-transparent'}`}>
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between h-18 py-3">
         <a href="#hero" className="flex items-center gap-3 group">
           <img src="/logo-removebg-preview.png" alt="Stratosphere Aeronautics" className="w-12 h-12 object-contain transition-transform duration-300 group-hover:scale-110" />
           <div className="hidden sm:block">
-            <p className="display text-sm font-bold text-navy leading-tight">Stratosphere</p>
-            <p className="display text-[10px] text-sky-600 tracking-widest uppercase">Aeronautics</p>
+            <p className="display text-sm font-bold accent-gradient-text leading-tight">Stratosphere</p>
+            <p className="display text-[10px] text-amber-500/80 tracking-widest uppercase">Aeronautics</p>
           </div>
         </a>
 
         <div className="hidden md:flex items-center gap-6">
           {links.map(l => (
-            <a key={l.href} href={l.href} className="nav-link display text-xs tracking-wider text-slate-600 hover:text-sky-600 uppercase transition-colors duration-300">
+            <a key={l.href} href={l.href} className="nav-link display text-xs tracking-wider text-slate-200/80 hover:text-amber-400 uppercase transition-colors duration-300">
               {l.label}
             </a>
           ))}
           <LangSwitcher />
-          <a href="#contact" className="btn-primary display text-xs px-5 py-2.5 rounded-lg tracking-wider">
+          <a href="#contact" className="btn-primary display text-xs px-5 py-2.5 rounded-sm tracking-wider">
             {t('nav_enroll')}
           </a>
         </div>
 
         <div className="md:hidden flex items-center gap-3">
           <LangSwitcher />
-          <button onClick={() => setMenuOpen(!menuOpen)} className="text-sky-600 p-2">
+          <button onClick={() => setMenuOpen(!menuOpen)} className="text-amber-400 p-2">
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>
 
       {menuOpen && (
-        <div className="mobile-menu md:hidden border-t border-sky-200 px-6 py-6 flex flex-col gap-5">
+        <div className="mobile-menu md:hidden border-t border-amber-500/20 px-6 py-6 flex flex-col gap-5">
           {links.map(l => (
             <a key={l.href} href={l.href} onClick={() => setMenuOpen(false)}
-              className="display text-sm tracking-widest text-sky-700 uppercase border-b border-sky-100 pb-4">
+              className="display text-sm tracking-widest text-amber-400/90 uppercase border-b border-amber-500/10 pb-4">
               {l.label}
             </a>
           ))}
-          <a href="#contact" onClick={() => setMenuOpen(false)} className="btn-primary display text-sm px-6 py-3 rounded-lg text-center tracking-widest">
+          <a href="#contact" onClick={() => setMenuOpen(false)} className="btn-primary display text-sm px-6 py-3 rounded-sm text-center tracking-widest">
             {t('nav_enroll')}
           </a>
         </div>
@@ -286,12 +313,13 @@ function Navbar() {
   );
 }
 
-// ── Hero with cinematic aviation experience ───────────────────────────────────
+// ── Hero with interactive Earth ──────────────────────────────────────────────
 function Hero() {
   const { t } = useLang();
   const heroRef = useRef<HTMLDivElement>(null);
-  const airplaneRef = useRef<HTMLImageElement>(null);
-  const cloudsRef = useRef<HTMLDivElement>(null);
+  const earthRef = useRef<HTMLDivElement>(null);
+  const earthGlowRef = useRef<HTMLDivElement>(null);
+  const earthAtmoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const el = heroRef.current;
@@ -299,50 +327,35 @@ function Hero() {
     const onMove = (e: MouseEvent) => {
       const x = (e.clientX / window.innerWidth - 0.5) * 2;
       const y = (e.clientY / window.innerHeight - 0.5) * 2;
+
       el.style.setProperty('--mx', `${x}`);
       el.style.setProperty('--my', `${y}`);
-      if (airplaneRef.current) {
-        airplaneRef.current.style.transform = `translate(${x * 25}px, ${y * 15}px)`;
+
+      // Earth parallax — moves opposite to mouse for depth
+      if (earthRef.current) {
+        earthRef.current.style.transform = `translate(${x * 30}px, ${y * 30}px) scale(1.05)`;
       }
-      if (cloudsRef.current) {
-        cloudsRef.current.style.transform = `translate(${x * -15}px, ${y * -10}px)`;
+      if (earthGlowRef.current) {
+        earthGlowRef.current.style.transform = `translate(${x * 20}px, ${y * 20}px)`;
       }
-    };
-    const onScroll = () => {
-      const scrollY = window.scrollY;
-      if (airplaneRef.current && scrollY < 800) {
-        airplaneRef.current.style.opacity = `${1 - scrollY / 800}`;
+      if (earthAtmoRef.current) {
+        earthAtmoRef.current.style.transform = `translate(${x * 25}px, ${y * 25}px)`;
       }
     };
     window.addEventListener('mousemove', onMove);
-    window.addEventListener('scroll', onScroll);
-    return () => {
-      window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('scroll', onScroll);
-    };
+    return () => window.removeEventListener('mousemove', onMove);
   }, []);
 
   return (
     <section id="hero" ref={heroRef} className="hero-bg hero-3d relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-4 pt-20 overflow-hidden">
-      {/* Cinematic airplane background */}
-      <div className="hero-airplane-container">
-        <div ref={cloudsRef} className="absolute inset-0 parallax-layer">
-          <div className="hero-cloud" style={{ width: '300px', height: '100px', top: '15%', left: '10%', animationDuration: '35s', animationDelay: '0s' }} />
-          <div className="hero-cloud" style={{ width: '400px', height: '120px', top: '40%', left: '50%', animationDuration: '45s', animationDelay: '5s' }} />
-          <div className="hero-cloud" style={{ width: '250px', height: '80px', top: '70%', left: '20%', animationDuration: '40s', animationDelay: '10s' }} />
-        </div>
-        <img
-          ref={airplaneRef}
-          src="https://images.pexels.com/photos/1493756/pexels-photo-1493756.jpeg?auto=compress&cs=tinysrgb&w=1600"
-          alt="Commercial airplane in sky"
-          className="hero-airplane parallax-layer rounded-3xl"
-        />
-        <div className="hero-orb hero-orb-1" />
-        <div className="hero-orb hero-orb-2" />
-        <div className="hero-orb hero-orb-3" />
+      {/* Interactive Earth background */}
+      <div className="earth-container">
+        <div ref={earthGlowRef} className="earth-glow" />
+        <div ref={earthAtmoRef} className="earth-atmosphere" />
+        <div ref={earthRef} className="earth-sphere" />
       </div>
 
-      {/* Runway lights at bottom */}
+      {/* Horizon + runway effects on top of earth */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {[20, 40, 60, 80].map((p, i) => (
           <div key={i} className="absolute w-full horizon-glow" style={{ top: `${p}%`, animationDelay: `${i * 0.5}s` }} />
@@ -353,12 +366,15 @@ function Hero() {
               style={{ animationDelay: `${i * 0.2}s` }} />
           ))}
         </div>
+        <div className="hero-orb hero-orb-1" />
+        <div className="hero-orb hero-orb-2" />
+        <div className="hero-orb hero-orb-3" />
       </div>
 
       <div className="perspective-container-extended mb-10 relative">
-        <div className="absolute inset-0 rounded-full pulse-ring border-2 border-sky-500/30 scale-110" />
-        <div className="absolute inset-0 rounded-full pulse-ring border border-sky-500/20 scale-125" style={{ animationDelay: '0.7s' }} />
-        <div className="absolute inset-0 rounded-full pulse-ring border border-sky-500/10 scale-140" style={{ animationDelay: '1.4s' }} />
+        <div className="absolute inset-0 rounded-full pulse-ring border-2 border-amber-500/30 scale-110" />
+        <div className="absolute inset-0 rounded-full pulse-ring border border-amber-500/20 scale-125" style={{ animationDelay: '0.7s' }} />
+        <div className="absolute inset-0 rounded-full pulse-ring border border-amber-500/10 scale-140" style={{ animationDelay: '1.4s' }} />
         <div className="logo-3d-shadow" />
         <img
           src="/logo-removebg-preview.png"
@@ -368,39 +384,179 @@ function Hero() {
       </div>
 
       <div className="max-w-4xl mx-auto hero-text-depth relative z-10">
-        <p className="display text-xs md:text-sm tracking-[0.4em] text-sky-600 uppercase mb-4 animate-fade-in">
+        <p className="display text-xs md:text-sm tracking-[0.4em] text-amber-400/80 uppercase mb-4 animate-fade-in">
           {t('hero_tagline')}
         </p>
         <h1 className="display text-4xl sm:text-5xl md:text-7xl font-black accent-gradient-text-3d leading-[1.1] mb-4 animate-slide-up">
           Stratosphere<br />
           <span className="aeronautics-glow">Aeronautics</span>
         </h1>
-        <p className="display text-base md:text-xl text-sky-700 tracking-widest mb-3 animate-slide-up delay-200">
+        <p className="display text-base md:text-xl text-amber-300/90 tracking-widest mb-3 animate-slide-up delay-200">
           {t('hero_school')}
         </p>
         <div className="glow-divider-3d w-64 mx-auto mb-8" />
-        <p className="text-slate-600 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-4 animate-fade-in delay-300">
+        <p className="text-slate-300/70 text-base md:text-lg max-w-2xl mx-auto leading-relaxed mb-4 animate-fade-in delay-300">
           {t('hero_desc')}
         </p>
-        <p className="display text-sky-500 text-xs tracking-[0.3em] uppercase mb-10 animate-fade-in delay-400">
+        <p className="display text-amber-500/60 text-xs tracking-[0.3em] uppercase mb-10 animate-fade-in delay-400">
           {t('hero_motto')}
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up delay-500">
-          <a href="#contact" className="btn-3d-primary px-10 py-4 rounded-xl text-sm inline-flex items-center gap-2 justify-center">
-            {t('hero_enroll')} <ArrowRight size={16} />
+          <a href="#training" className="btn-3d-primary px-10 py-4 rounded-sm text-sm inline-flex items-center gap-2 justify-center">
+            {t('hero_explore')} <ArrowRight size={16} />
           </a>
-          <a href="#training" className="btn-3d-outline px-10 py-4 rounded-xl text-sm inline-flex items-center gap-2 justify-center">
-            {t('hero_explore')} <ChevronRight size={16} />
+          <a href="#contact" className="btn-3d-outline px-10 py-4 rounded-sm text-sm inline-flex items-center gap-2 justify-center">
+            {t('hero_enroll')} <ChevronRight size={16} />
           </a>
         </div>
       </div>
 
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10">
-        <p className="display text-[10px] tracking-[0.3em] text-sky-500 uppercase">Discover More</p>
-        <ChevronDown className="scroll-indicator text-sky-400" size={20} />
+        <p className="display text-[10px] tracking-[0.3em] text-amber-500/50 uppercase">Discover More</p>
+        <ChevronDown className="scroll-indicator text-amber-400/60" size={20} />
       </div>
     </section>
+  );
+}
+
+// ── Stats banner ──────────────────────────────────────────────────────────────
+function StatsBanner() {
+  const ref = useReveal();
+  const stats = [
+    { value: 'ICAO', label: 'Recognized Standard', icon: <Globe size={20} /> },
+    { value: 'ERNAM', label: 'Affiliated Training', icon: <Award size={20} /> },
+    { value: '10+', label: 'Core Training Areas', icon: <BookOpen size={20} /> },
+    { value: '5+', label: 'Career Pathways', icon: <Briefcase size={20} /> },
+  ];
+
+  return (
+    <div ref={ref} className="reveal relative z-10 glass border-y border-amber-500/15">
+      <div className="max-w-6xl mx-auto px-4 py-10 grid grid-cols-2 md:grid-cols-4 gap-6">
+        {stats.map((s, i) => (
+          <div key={i} className="flex flex-col items-center text-center gap-2">
+            <div className="text-amber-400/70 mb-1">{s.icon}</div>
+            <p className="stat-number text-3xl md:text-4xl font-bold">{s.value}</p>
+            <p className="text-slate-400/60 text-xs tracking-wider uppercase">{s.label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── About ─────────────────────────────────────────────────────────────────────
+function About() {
+  const { t } = useLang();
+  const ref = useReveal();
+  return (
+    <Section id="about" className="section-dark">
+      <div className="max-w-6xl mx-auto">
+        <SectionTitle label={t('about_label')} title={t('about_title')} subtitle={t('about_subtitle')} />
+
+        <div ref={ref} className="reveal grid md:grid-cols-2 gap-12 items-center">
+          <div className="space-y-6">
+            <p className="text-slate-200/80 text-base leading-relaxed">{t('about_p1')}</p>
+            <p className="text-slate-200/80 text-base leading-relaxed">{t('about_p2')}</p>
+            <div className="grid grid-cols-2 gap-4 mt-8">
+              {[
+                { icon: <Shield size={18} />, text: 'ICAO Compliant Syllabus' },
+                { icon: <Star size={18} />, text: 'Expert ERNAM-Trained Instructors' },
+                { icon: <Users size={18} />, text: 'Ab-Initio Specialists' },
+                { icon: <Globe size={18} />, text: 'Internationally Valid Knowledge' },
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-3 p-3 glass-glow rounded-lg">
+                  <span className="text-amber-400 shrink-0">{item.icon}</span>
+                  <span className="text-slate-200/80 text-sm">{item.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <TiltCard intensity={10} className="perspective-container">
+            <div className="card-3d glass-glow rounded-2xl p-8"
+              style={{ background: 'linear-gradient(135deg, rgba(15,20,36,0.6), rgba(10,14,26,0.8))', backdropFilter: 'blur(20px)' }}>
+              <div className="card-inner-depth flex items-center gap-4 mb-6">
+                <img src="/logo-removebg-preview.png" alt="Stratosphere Aeronautics" className="w-20 h-20 object-contain floating-icon" />
+                <div>
+                  <p className="display text-lg font-bold accent-gradient-text-static">Stratosphere</p>
+                  <p className="display text-sm text-amber-400/80">Aeronautics</p>
+                  <p className="text-slate-400/50 text-xs mt-1">Est. 2026</p>
+                </div>
+              </div>
+              <div className="glow-divider mb-6" />
+              <div className="space-y-3">
+                {[
+                  'Theoretical Knowledge Instruction (TKI)',
+                  'Private & Small-Group Tuition',
+                  'PPL & CPL Prerequisite Foundation',
+                  'ASECNA | ICAO WACAF Office Partner',
+                  'Based in Hargeisa, Somaliland',
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3">
+                    <CheckCircle size={14} className="text-amber-400 shrink-0" />
+                    <span className="text-slate-200/75 text-sm">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </TiltCard>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
+// ── Mission ───────────────────────────────────────────────────────────────────
+function Mission() {
+  const { t } = useLang();
+  const ref = useReveal();
+
+  const descParts = t('mission_desc').split(/<gold>|<\/gold>/);
+
+  return (
+    <Section id="mission" className="section-dark-alt">
+      <div className="max-w-5xl mx-auto">
+        <SectionTitle label={t('mission_label')} title={t('mission_title')} />
+
+        <div ref={ref} className="reveal perspective-container">
+          <TiltCard intensity={6} className="relative glass-glow rounded-2xl overflow-hidden animated-border"
+            style={{ background: 'linear-gradient(135deg, rgba(15,20,36,0.7), rgba(10,14,26,0.5), rgba(15,20,36,0.8))', backdropFilter: 'blur(24px)' }}>
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
+            <div className="p-10 md:p-16 text-center relative">
+              <div className="quote-marks relative inline-block pl-8 mb-8">
+                <Plane className="text-amber-400/30 mx-auto mb-4" size={48} />
+              </div>
+              <blockquote className="display text-lg md:text-2xl font-semibold text-slate-100/90 leading-relaxed mb-8 italic">
+                {t('mission_quote')}
+              </blockquote>
+              <p className="text-slate-300/65 text-base leading-relaxed max-w-3xl mx-auto">
+                {descParts.map((part, i) =>
+                  i % 2 === 1
+                    ? <span key={i} className="text-amber-400">{part}</span>
+                    : part
+                )}
+              </p>
+              <div className="glow-divider w-40 mx-auto mt-10 mb-6" />
+              <div className="flex flex-wrap justify-center gap-6 text-center">
+                {([
+                  { key: 'val_precision' as const, icon: <Navigation size={16} /> },
+                  { key: 'val_safety' as const, icon: <Shield size={16} /> },
+                  { key: 'val_integrity' as const, icon: <Star size={16} /> },
+                  { key: 'val_excellence' as const, icon: <Award size={16} /> },
+                ] as const).map((v, i) => (
+                  <div key={i} className="flex items-center gap-2 display text-xs tracking-widest text-amber-400/80 uppercase">
+                    <span className="text-amber-500">{v.icon}</span>
+                    {t(v.key)}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
+          </TiltCard>
+        </div>
+      </div>
+    </Section>
   );
 }
 
@@ -427,7 +583,7 @@ function Training() {
   ];
 
   return (
-    <Section id="training" className="section-dark-alt">
+    <Section id="training" className="section-dark">
       <div className="max-w-7xl mx-auto">
         <SectionTitle
           label={t('training_label')}
@@ -439,14 +595,14 @@ function Training() {
             const ref = useReveal();
             return (
               <div key={i} ref={ref} className="reveal perspective-container" style={{ animationDelay: `${i * 0.05}s` }}>
-                <TiltCard intensity={8} className="card-3d glass-glow rounded-2xl p-6 flex flex-col gap-4 bg-white"
-                  style={{ backdropFilter: 'blur(16px)' }}>
-                  <div className="training-icon-wrap w-12 h-12 rounded-xl flex items-center justify-center text-sky-600 shrink-0">
+                <TiltCard intensity={8} className="card-3d glass-glow rounded-xl p-6 flex flex-col gap-4"
+                  style={{ background: 'linear-gradient(135deg, rgba(15,20,36,0.6), rgba(10,14,26,0.7))', backdropFilter: 'blur(16px)' }}>
+                  <div className="training-icon-wrap w-12 h-12 rounded-xl flex items-center justify-center text-amber-400 shrink-0">
                     {trainingIcons[i]}
                   </div>
                   <div>
-                    <h3 className="display text-sm font-bold text-navy mb-2 leading-snug">{t(keys.title)}</h3>
-                    <p className="text-slate-500 text-xs leading-relaxed">{t(keys.desc)}</p>
+                    <h3 className="display text-sm font-bold text-amber-400/90 mb-2 leading-snug">{t(keys.title)}</h3>
+                    <p className="text-slate-300/60 text-xs leading-relaxed">{t(keys.desc)}</p>
                   </div>
                 </TiltCard>
               </div>
@@ -455,11 +611,11 @@ function Training() {
         </div>
 
         <div className="mt-16 text-center">
-          <div className="inline-flex items-center gap-4 px-8 py-4 glass-glow rounded-full bg-white"
-            style={{ backdropFilter: 'blur(16px)' }}>
-            <Globe className="text-sky-600" size={20} />
-            <span className="display text-sm tracking-widest text-sky-700 uppercase">ASECNA | ICAO WACAF Office Partner</span>
-            <Globe className="text-sky-600" size={20} />
+          <div className="inline-flex items-center gap-4 px-8 py-4 glass-glow rounded-full"
+            style={{ background: 'rgba(15,20,36,0.6)', backdropFilter: 'blur(16px)' }}>
+            <Globe className="text-amber-400" size={20} />
+            <span className="display text-sm tracking-widest text-amber-400/90 uppercase">ASECNA | ICAO WACAF Office Partner</span>
+            <Globe className="text-amber-400" size={20} />
           </div>
         </div>
       </div>
@@ -487,38 +643,37 @@ const careerGroupRoles = [
 function Careers() {
   const { t } = useLang();
   return (
-    <Section id="careers" className="section-navy">
+    <Section id="careers" className="section-dark-alt">
       <div className="max-w-6xl mx-auto">
         <SectionTitle
           label={t('careers_label')}
           title={t('careers_title')}
           subtitle={t('careers_subtitle')}
-          light
         />
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {careerGroupCategories.map((category, i) => {
             const ref = useReveal();
             return (
               <div key={i} ref={ref} className="reveal perspective-container">
-                <TiltCard intensity={8} className="card-3d rounded-2xl overflow-hidden bg-white/95"
-                  style={{ backdropFilter: 'blur(16px)', boxShadow: '0 8px 32px rgba(6,20,41,0.2)' }}>
+                <TiltCard intensity={8} className="card-3d glass-glow rounded-xl overflow-hidden"
+                  style={{ background: 'linear-gradient(160deg, rgba(15,20,36,0.5), rgba(10,14,26,0.7))', backdropFilter: 'blur(16px)' }}>
                 <div className="p-6">
                   <div className="flex items-center gap-3 mb-5">
-                    <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-sky-600">
+                    <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-amber-400">
                       {careerGroupIcons[i]}
                     </div>
-                    <h3 className="display text-sm font-bold text-navy leading-snug">{category}</h3>
+                    <h3 className="display text-sm font-bold text-amber-400/90 leading-snug">{category}</h3>
                   </div>
                   <div className="space-y-2.5">
                     {careerGroupRoles[i].map((role, j) => (
                       <div key={j} className="flex items-start gap-2.5">
-                        <ChevronRight size={12} className="text-sky-500 mt-0.5 shrink-0" />
-                        <span className="text-slate-600 text-sm leading-snug">{role}</span>
+                        <ChevronRight size={12} className="text-amber-500 mt-0.5 shrink-0" />
+                        <span className="text-slate-200/70 text-sm leading-snug">{role}</span>
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="h-0.5 bg-gradient-to-r from-transparent via-sky-500/40 to-transparent" />
+                <div className="h-0.5 bg-gradient-to-r from-transparent via-amber-500/40 to-transparent" />
                 </TiltCard>
               </div>
             );
@@ -554,39 +709,39 @@ function WhyUs() {
             const ref = useReveal();
             return (
               <div key={i} ref={ref} className="reveal perspective-container" style={{ transitionDelay: `${i * 0.1}s` }}>
-                <TiltCard intensity={10} className="card-3d text-center p-8 rounded-2xl glass-glow bg-white"
-                  style={{ backdropFilter: 'blur(16px)' }}>
-                  <div className="w-16 h-16 rounded-full mx-auto mb-5 flex items-center justify-center text-sky-600 icon-orb-3d"
-                    style={{ background: 'radial-gradient(circle, rgba(14,165,233,0.15), rgba(14,165,233,0.03))' }}>
+                <TiltCard intensity={10} className="card-3d text-center p-8 rounded-2xl glass-glow"
+                  style={{ background: 'linear-gradient(180deg, rgba(15,20,36,0.4), rgba(10,14,26,0.6))', backdropFilter: 'blur(16px)' }}>
+                  <div className="w-16 h-16 rounded-full mx-auto mb-5 flex items-center justify-center text-amber-400 icon-orb-3d"
+                    style={{ background: 'radial-gradient(circle, rgba(240,192,64,0.15), rgba(240,192,64,0.03))' }}>
                     {reasonIcons[i]}
                   </div>
-                  <h3 className="display text-sm font-bold text-navy mb-3 leading-snug">{t(keys.title)}</h3>
-                  <p className="text-slate-500 text-sm leading-relaxed">{t(keys.desc)}</p>
+                  <h3 className="display text-sm font-bold text-amber-400/90 mb-3 leading-snug">{t(keys.title)}</h3>
+                  <p className="text-slate-300/65 text-sm leading-relaxed">{t(keys.desc)}</p>
                 </TiltCard>
               </div>
             );
           })}
         </div>
 
-        <TiltCard intensity={4} className="relative rounded-3xl overflow-hidden glass-glow animated-border bg-white"
-          style={{ backdropFilter: 'blur(20px)' }}>
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-sky-500 to-transparent" />
+        <TiltCard intensity={4} className="relative rounded-2xl overflow-hidden glass-glow animated-border"
+          style={{ background: 'linear-gradient(135deg, rgba(15,20,36,0.6), rgba(10,14,26,0.7))', backdropFilter: 'blur(20px)' }}>
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
           <div className="px-8 py-14 text-center">
-            <p className="display text-xs tracking-[0.4em] text-sky-600 uppercase mb-4">Training The Sky Professionals of Tomorrow</p>
+            <p className="display text-xs tracking-[0.4em] text-amber-500/80 uppercase mb-4">Training The Sky Professionals of Tomorrow</p>
             <h3 className="display text-3xl md:text-4xl font-bold accent-gradient-text-static mb-4">Build Your Strong Foundation</h3>
-            <p className="text-slate-500 text-base max-w-xl mx-auto mb-8 leading-relaxed">
+            <p className="text-slate-300/65 text-base max-w-xl mx-auto mb-8 leading-relaxed">
               The cockpit is waiting, but the journey starts in the classroom. Enrollment is open for aspiring pilots and aviation enthusiasts.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="#contact" className="btn-primary px-10 py-4 rounded-xl text-sm inline-flex items-center gap-2 justify-center">
+              <a href="#contact" className="btn-primary px-10 py-4 rounded-sm text-sm inline-flex items-center gap-2 justify-center">
                 Register Now <ArrowRight size={16} />
               </a>
-              <a href="tel:+252634482830" className="btn-outline px-10 py-4 rounded-xl text-sm inline-flex items-center gap-2 justify-center">
+              <a href="tel:+252634482830" className="btn-outline px-10 py-4 rounded-sm text-sm inline-flex items-center gap-2 justify-center">
                 <Phone size={14} /> Call Us Today
               </a>
             </div>
           </div>
-          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-sky-500 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent" />
         </TiltCard>
       </div>
     </Section>
@@ -604,7 +759,7 @@ function Certificate() {
   ];
 
   return (
-    <Section id="certificate" className="section-dark-alt">
+    <Section id="certificate" className="section-dark">
       <div className="max-w-5xl mx-auto">
         <SectionTitle
           label={t('cert_label')}
@@ -614,17 +769,17 @@ function Certificate() {
 
         <div ref={ref} className="reveal">
           <div className="perspective-container mb-12">
-            <TiltCard intensity={6} className="relative rounded-3xl overflow-hidden glass-glow animated-border p-3 bg-white"
-              style={{ backdropFilter: 'blur(20px)' }}>
-              <div className="absolute top-2 left-2 w-8 h-8 border-t-2 border-l-2 border-sky-500/60 rounded-tl-lg" />
-              <div className="absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-sky-500/60 rounded-tr-lg" />
-              <div className="absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-sky-500/60 rounded-bl-lg" />
-              <div className="absolute bottom-2 right-2 w-8 h-8 border-b-2 border-r-2 border-sky-500/60 rounded-br-lg" />
+            <TiltCard intensity={6} className="relative rounded-2xl overflow-hidden glass-glow animated-border p-3"
+              style={{ background: 'linear-gradient(135deg, rgba(15,20,36,0.5), rgba(10,14,26,0.7))', backdropFilter: 'blur(20px)' }}>
+              <div className="absolute top-2 left-2 w-8 h-8 border-t-2 border-l-2 border-amber-400/60 rounded-tl-lg" />
+              <div className="absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-amber-400/60 rounded-tr-lg" />
+              <div className="absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-amber-400/60 rounded-bl-lg" />
+              <div className="absolute bottom-2 right-2 w-8 h-8 border-b-2 border-r-2 border-amber-400/60 rounded-br-lg" />
               <img
                 src="/ST.png"
                 alt="Stratosphere Aeronautics Certificate of Completion"
-                className="w-full rounded-2xl shadow-2xl"
-                style={{ boxShadow: '0 25px 60px rgba(10,30,63,0.12), 0 0 40px rgba(14,165,233,0.08)' }}
+                className="w-full rounded-xl shadow-2xl"
+                style={{ boxShadow: '0 25px 60px rgba(0,0,0,0.5), 0 0 40px rgba(240,192,64,0.08)' }}
               />
             </TiltCard>
           </div>
@@ -634,13 +789,13 @@ function Certificate() {
               const cardRef = useReveal();
               return (
                 <div key={i} ref={cardRef} className="reveal perspective-container">
-                  <TiltCard intensity={8} className="card-3d glass-glow rounded-2xl p-6 text-center bg-white"
-                    style={{ backdropFilter: 'blur(16px)' }}>
-                    <div className="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center text-sky-600 training-icon-wrap">
+                  <TiltCard intensity={8} className="card-3d glass-glow rounded-xl p-6 text-center"
+                    style={{ background: 'linear-gradient(160deg, rgba(15,20,36,0.5), rgba(10,14,26,0.7))', backdropFilter: 'blur(16px)' }}>
+                    <div className="w-12 h-12 rounded-full mx-auto mb-4 flex items-center justify-center text-amber-400 training-icon-wrap">
                       {item.icon}
                     </div>
-                    <h3 className="display text-sm font-bold text-navy mb-2">{t(item.title)}</h3>
-                    <p className="text-slate-500 text-sm leading-relaxed">{t(item.desc)}</p>
+                    <h3 className="display text-sm font-bold text-amber-400/90 mb-2">{t(item.title)}</h3>
+                    <p className="text-slate-300/65 text-sm leading-relaxed">{t(item.desc)}</p>
                   </TiltCard>
                 </div>
               );
@@ -660,28 +815,28 @@ function Contact() {
   const accKeys = ['acc1', 'acc2', 'acc3', 'acc4'] as const;
 
   return (
-    <Section id="contact" className="section-navy">
+    <Section id="contact" className="section-dark-alt">
       <div className="max-w-6xl mx-auto">
-        <SectionTitle label={t('contact_label')} title={t('contact_title')} subtitle={t('contact_subtitle')} light />
+        <SectionTitle label={t('contact_label')} title={t('contact_title')} subtitle={t('contact_subtitle')} />
 
         <div ref={ref} className="reveal grid md:grid-cols-2 gap-10">
           <div className="space-y-8">
-            <TiltCard intensity={5} className="p-8 rounded-3xl bg-white/95"
-              style={{ backdropFilter: 'blur(20px)', boxShadow: '0 8px 32px rgba(6,20,41,0.15)' }}>
-              <h3 className="display text-lg font-bold text-navy mb-6">{t('contact_info')}</h3>
+            <TiltCard intensity={5} className="p-8 rounded-2xl glass-glow"
+              style={{ background: 'linear-gradient(135deg, rgba(15,20,36,0.6), rgba(10,14,26,0.7))', backdropFilter: 'blur(20px)' }}>
+              <h3 className="display text-lg font-bold accent-gradient-text-static mb-6">{t('contact_info')}</h3>
 
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
-                  <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-sky-600 shrink-0">
+                  <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-amber-400 shrink-0">
                     <MapPin size={16} />
                   </div>
                   <div>
-                    <p className="display text-xs text-sky-600 uppercase tracking-wider mb-1">{t('contact_address')}</p>
-                    <p className="text-slate-600 text-sm leading-relaxed">
+                    <p className="display text-xs text-amber-400/80 uppercase tracking-wider mb-1">{t('contact_address')}</p>
+                    <p className="text-slate-200/75 text-sm leading-relaxed">
                       Bahsane Building, 2nd Floor, Room 213<br />
                       Western Entrance (Facing West)<br />
                       Opposite Ex. National Cinema<br />
-                      <span className="text-sky-600 font-semibold">{t('contact_address_val')}</span>
+                      <span className="text-amber-400">{t('contact_address_val')}</span>
                     </p>
                   </div>
                 </div>
@@ -689,18 +844,18 @@ function Contact() {
                 <div className="glow-divider" />
 
                 <div className="flex items-start gap-4">
-                  <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-sky-600 shrink-0">
+                  <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-amber-400 shrink-0">
                     <Phone size={16} />
                   </div>
                   <div>
-                    <p className="display text-xs text-sky-600 uppercase tracking-wider mb-2">{t('contact_mobile')}</p>
-                    <a href="tel:+252634482830" className="block text-sky-600 hover:text-sky-700 text-sm mb-1 transition-colors">
+                    <p className="display text-xs text-amber-400/80 uppercase tracking-wider mb-2">{t('contact_mobile')}</p>
+                    <a href="tel:+252634482830" className="block text-amber-400 hover:text-amber-300 text-sm mb-1 transition-colors">
                       +252 63 4482830
                     </a>
-                    <a href="tel:+252654482830" className="block text-sky-600 hover:text-sky-700 text-sm mb-1 transition-colors">
+                    <a href="tel:+252654482830" className="block text-amber-400 hover:text-amber-300 text-sm transition-colors">
                       +252 65 4482830
                     </a>
-                    <a href="tel:+252633347512" className="block text-sky-600 hover:text-sky-700 text-sm transition-colors">
+                    <a href="tel:+252633347512" className="block text-amber-400 hover:text-amber-300 text-sm transition-colors">
                       +252 63 3347512
                     </a>
                   </div>
@@ -709,15 +864,15 @@ function Contact() {
                 <div className="glow-divider" />
 
                 <div className="flex items-start gap-4">
-                  <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-sky-600 shrink-0">
+                  <div className="training-icon-wrap w-10 h-10 rounded-lg flex items-center justify-center text-amber-400 shrink-0">
                     <Mail size={16} />
                   </div>
                   <div>
-                    <p className="display text-xs text-sky-600 uppercase tracking-wider mb-2">{t('contact_email')}</p>
-                    <a href="mailto:info@stratosphereaeronautics.com" className="block text-sky-600 hover:text-sky-700 text-sm transition-colors break-all">
+                    <p className="display text-xs text-amber-400/80 uppercase tracking-wider mb-2">{t('contact_email')}</p>
+                    <a href="mailto:info@stratosphereaeronautics.com" className="block text-amber-400 hover:text-amber-300 text-sm transition-colors break-all">
                       info@stratosphereaeronautics.com
                     </a>
-                    <a href="mailto:abdirahman.dahir@stratosphereaeronautics.com" className="block text-sky-600 hover:text-sky-700 text-sm transition-colors break-all">
+                    <a href="mailto:abdirahman.dahir@stratosphereaeronautics.com" className="block text-amber-400 hover:text-amber-300 text-sm transition-colors break-all">
                       abdirahman.dahir@stratosphereaeronautics.com
                     </a>
                   </div>
@@ -725,14 +880,14 @@ function Contact() {
               </div>
             </TiltCard>
 
-            <TiltCard intensity={4} className="p-6 rounded-2xl bg-white/90"
-              style={{ backdropFilter: 'blur(16px)' }}>
-              <p className="display text-xs tracking-[0.3em] text-sky-600 uppercase mb-3">{t('contact_accreditation')}</p>
+            <TiltCard intensity={4} className="p-6 rounded-xl glass-glow"
+              style={{ background: 'rgba(15,20,36,0.4)', backdropFilter: 'blur(16px)' }}>
+              <p className="display text-xs tracking-[0.3em] text-amber-500/80 uppercase mb-3">{t('contact_accreditation')}</p>
               <div className="space-y-2">
                 {accKeys.map((key, i) => (
                   <div key={i} className="flex items-center gap-2.5">
-                    <CheckCircle size={12} className="text-sky-500 shrink-0" />
-                    <span className="text-slate-600 text-xs">{t(key)}</span>
+                    <CheckCircle size={12} className="text-amber-400 shrink-0" />
+                    <span className="text-slate-300/65 text-xs">{t(key)}</span>
                   </div>
                 ))}
               </div>
@@ -740,19 +895,19 @@ function Contact() {
           </div>
 
           <div className="flex items-center justify-center">
-            <TiltCard intensity={5} className="w-full p-10 rounded-3xl bg-white/95 flex flex-col items-center justify-center text-center"
-              style={{ backdropFilter: 'blur(20px)', boxShadow: '0 8px 32px rgba(6,20,41,0.15)' }}>
+            <TiltCard intensity={5} className="w-full p-10 rounded-2xl glass-glow flex flex-col items-center justify-center text-center"
+              style={{ background: 'linear-gradient(135deg, rgba(15,20,36,0.6), rgba(10,14,26,0.7))', backdropFilter: 'blur(20px)' }}>
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-6"
                 style={{ background: 'linear-gradient(135deg, #25d366, #128c7e)' }}>
                 <WhatsAppIcon size={32} className="text-white" />
               </div>
-              <h3 className="display text-xl font-bold text-navy mb-3">{t('contact_whatsapp_title')}</h3>
-              <p className="text-slate-500 text-sm leading-relaxed mb-8 max-w-sm">{t('contact_whatsapp_desc')}</p>
+              <h3 className="display text-xl font-bold accent-gradient-text-static mb-3">{t('contact_whatsapp_title')}</h3>
+              <p className="text-slate-300/65 text-sm leading-relaxed mb-8 max-w-sm">{t('contact_whatsapp_desc')}</p>
               <a
                 href="https://wa.me/252634482830"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-10 py-4 rounded-xl text-sm tracking-widest display inline-flex items-center gap-3 transition-all duration-300"
+                className="px-10 py-4 rounded-lg text-sm tracking-widest display inline-flex items-center gap-3 transition-all duration-300"
                 style={{
                   background: 'linear-gradient(135deg, #25d366, #128c7e)',
                   color: '#ffffff',
@@ -780,20 +935,21 @@ function Footer() {
   ];
 
   return (
-    <footer className="relative z-10 border-t border-sky-200 py-12 px-4 bg-white">
+    <footer className="relative z-10 border-t border-amber-500/15 py-12 px-4 glass"
+      style={{ background: 'linear-gradient(180deg, rgba(10,14,26,0.95), #06080f)' }}>
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-8">
           <div className="flex items-center gap-4">
             <img src="/logo-removebg-preview.png" alt="Stratosphere Aeronautics" className="w-14 h-14 object-contain" />
             <div>
-              <p className="display font-bold text-base text-navy">Stratosphere Aeronautics</p>
-              <p className="display text-xs text-sky-600 tracking-widest">{t('footer_school')}</p>
+              <p className="display font-bold text-base accent-gradient-text-static">Stratosphere Aeronautics</p>
+              <p className="display text-xs text-amber-500/70 tracking-widest">{t('footer_school')}</p>
             </div>
           </div>
 
           <div className="flex flex-wrap justify-center gap-6">
             {footerLinks.map((item, i) => (
-              <a key={i} href={item.href} className="display text-xs tracking-widest text-slate-500 hover:text-sky-600 uppercase transition-colors">
+              <a key={i} href={item.href} className="display text-xs tracking-widest text-slate-300/50 hover:text-amber-400 uppercase transition-colors">
                 {t(item.key)}
               </a>
             ))}
@@ -803,14 +959,14 @@ function Footer() {
         <div className="glow-divider mb-6" />
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-          <p className="display text-xs text-sky-600 italic tracking-wider">{t('footer_tagline')}</p>
-          <p className="text-slate-400 text-xs">{t('footer_ernam')} · {t('footer_icao')} · Est. 2026</p>
+          <p className="display text-xs text-amber-500/50 italic tracking-wider">{t('footer_tagline')}</p>
+          <p className="text-slate-400/35 text-xs">{t('footer_ernam')} · {t('footer_icao')} · Est. 2026</p>
         </div>
 
-        <div className="mt-8 pt-6 border-t border-sky-100 flex justify-center">
+        <div className="mt-8 pt-6 border-t border-amber-500/10 flex justify-center">
           <a href="https://fikrado2.github.io/fikrado/" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-1.5 group">
             <img src="/fikrado_sec_(1).png" alt="Fikrado Security" className="w-10 h-10 object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300" />
-            <p className="display text-xs tracking-widest text-slate-400 uppercase group-hover:text-sky-600 transition-colors duration-300">Powered by <span className="text-sky-600">FIKRADO SECURITY</span></p>
+            <p className="display text-xs tracking-widest text-slate-400/50 uppercase group-hover:text-amber-500/70 transition-colors duration-300">Powered by <span className="text-amber-500/70">FIKRADO SECURITY</span></p>
           </a>
         </div>
       </div>
@@ -839,10 +995,10 @@ export default function App() {
 
   return (
     <LangContext.Provider value={{ lang, t, setLang }}>
-      <div className="relative min-h-screen" style={{ background: '#ffffff' }}>
+      <div className="relative min-h-screen" style={{ background: '#06080f' }}>
         <div className="ambient-bg" />
         <div className="grid-overlay" />
-        <ParticlesBackground />
+        <StarsBackground />
         <AirplanesBackground />
         <Navbar />
         <Hero />
