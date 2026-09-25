@@ -100,14 +100,59 @@ export const ADVANTAGES = [
   { title: 'Your schedule', body: 'Mornings, evenings or weekends. We build around your week.' },
 ] as const;
 
+/* ── books ───────────────────────────────────────────────────────────────── */
+/* The school's own titles, one per subject.
+
+   READ THIS BEFORE PUBLISHING: every field below is a PLACEHOLDER. The
+   titles, editions and prices are illustrative so the page can be laid out
+   and reviewed — they are not a real stock list, and the price is the only
+   field the school must fill in for a line to go on sale. `stock` is already
+   set per the school's own stock list; `price: null` means "not yet priced"
+   and the page says so rather than showing a number.
+
+   `isbn` is null everywhere, so the books page currently states plainly that
+   it is not yet a catalogue of confirmed titles. Replace `title` and
+   `edition` with the real ones, add the ISBN, and the copy updates itself. */
+export type Book = {
+  ref: string;
+  subject: string;
+  title: string;
+  edition: string;
+  note: string;
+  price: number | null;
+  stock: 'held' | 'order';
+};
+
+export const BOOKS: Book[] = [
+  { ref: 'B01', subject: 'M01', title: 'Air Law for Student Pilots', edition: '2nd edition', note: 'The core reference for M01. Covers the rules of the air, international regulation and airspace classification.', price: 45, stock: 'held' },
+  { ref: 'B02', subject: 'M02', title: 'Principles of Flight', edition: '3rd edition', note: 'Aerodynamics, aircraft systems and performance, for M02 and the performance elements of M05.', price: 40, stock: 'held' },
+  { ref: 'B03', subject: 'M03', title: 'Meteorology for the Private Pilot', edition: '5th edition', note: 'Weather patterns and the go and no-go decisions that M03 is examined on.', price: null, stock: 'order' },
+  { ref: 'B04', subject: 'M04', title: 'Navigation and Flight Planning', edition: '1st edition', note: 'Route planning, GPS, VOR and ADF, covering M04 end to end.', price: null, stock: 'order' },
+  { ref: 'B05', subject: 'M05', title: 'Aircraft General Knowledge Manual', edition: '4th edition', note: 'Systems, powerplants, airframe and electrical systems, for M05.', price: 38, stock: 'held' },
+  { ref: 'B06', subject: 'M06', title: 'Human Factors in Aviation', edition: '2nd edition', note: 'The physiological and psychological material behind M06, written for student pilots.', price: 42, stock: 'held' },
+  { ref: 'B07', subject: 'M07', title: 'Radio Communications Manual', edition: '2nd edition', note: 'Standard phraseology, procedures and frequency management for M07.', price: null, stock: 'order' },
+  { ref: 'B08', subject: 'M08', title: 'Air Traffic Control and the AIM', edition: '3rd edition', note: 'ATC procedures, airspace structure and aeronautical information, for M08.', price: null, stock: 'order' },
+  { ref: 'B09', subject: 'M09', title: 'Safety Management Systems for Aviation', edition: '1st edition', note: 'SMS frameworks, risk assessment and safety culture, for M09.', price: 35, stock: 'held' },
+  { ref: 'B10', subject: 'M10', title: 'ICAO Language Proficiency Guide', edition: '1st edition', note: 'The reference for M10 and for the operational level test that follows it.', price: 30, stock: 'order' },
+];
+
+/* Study packs. price is null until the school sets them. */
+export type Pack = { code: string; name: string; desc: string; subjects: string; price: number | null };
+
+export const PACKS: Pack[] = [
+  { code: 'PPL', name: 'PPL theory pack', desc: 'Everything the written requirement for a Private Pilot Licence asks for, in one order.', subjects: '6 subjects', price: null },
+  { code: 'CPL', name: 'CPL theory pack', desc: 'The full commercial syllabus, taken to ATPL level where it goes beyond PPL.', subjects: '10 subjects', price: null },
+  { code: 'SGL', name: 'Single subject', desc: 'One subject, examined and certificated on its own. Most people start here.', subjects: '1 subject', price: 12 },
+];
+
 /* href is null where the material is still being written. The page says so
    rather than shipping a link that goes nowhere. */
 export const RESOURCES = [
   { code: 'DOC', title: 'ICAO documents', body: 'Official ICAO documentation and the standards our curriculum is built on.', href: 'https://www.icao.int/' },
-  { code: 'MAT', title: 'Study materials', body: 'Guides and reference material covering each of the ten subjects.', href: null },
+  { code: 'MAT', title: 'Study materials', body: 'Guides and reference material covering each of the ten subjects.', href: '/books' },
   { code: 'WEB', title: 'Air navigation services', body: 'ICAO air navigation resources, including the AIM and Doc 7192.', href: 'https://www.icao.int/safety/airnavigation/Pages/default.aspx' },
   { code: 'CRT', title: 'Certification guide', body: 'What the certificate covers, and what it leads to.', href: null },
-  { code: 'CAR', title: 'Career resources', body: 'Templates and guidance for applying into aviation roles.', href: null },
+  { code: 'CAR', title: 'Career resources', body: 'Templates and guidance for applying into aviation roles.', href: '/careers' },
   { code: 'LOC', title: 'Local information', body: 'Practical information for students based in Hargeisa.', href: null },
 ] as const;
 

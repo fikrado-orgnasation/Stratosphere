@@ -14,10 +14,10 @@ export default function About() {
   return (
     <Shell>
       <PageHead
-        kicker="About the school"
+        kicker="About us"
         code="ABT-01"
-        title="The first school of its kind in Somaliland."
-        lede="Stratosphere Aeronautics was established in 2026 to teach the theoretical knowledge that sits underneath every pilot licence — properly, privately, and to an international standard."
+        title="A ground school, in the country that needed one."
+        lede="Stratosphere Aeronautics was established in 2026 so that the theoretical knowledge behind a pilot licence could be studied in Hargeisa — privately, properly, and to a standard that travels."
       />
 
       <section className="band band--tight" style={{ paddingTop: 0 }}>
@@ -64,8 +64,8 @@ export default function About() {
       <section className="band">
         <div className="shell">
           <div className="band__head" style={{ maxWidth: '44ch' }}>
-            <p className="datum">Purpose</p>
-            <h2 className="h2">To empower the next generation of aviation leaders.</h2>
+            <p className="datum">What we are for</p>
+            <h2 className="h2">The written half of a licence, taught properly.</h2>
           </div>
 
           <div className="rule rule--split">

@@ -48,7 +48,7 @@ export default function StudentLife() {
               Every ground school promises personal attention. These are the specific
               commitments behind that sentence.
             </p>
-            <Link to="/admissions" className="btn btn--primary" style={{ width: 'fit-content', marginTop: 6 }}>
+            <Link to="/register" className="btn btn--primary" style={{ width: 'fit-content', marginTop: 6 }}>
               Start an enquiry
               <ArrowRight size={16} />
             </Link>

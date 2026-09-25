@@ -49,7 +49,7 @@ export default function Careers() {
               written theoretical knowledge requirement. Passing the ten subjects here
               is how you satisfy it. The flying hours come after, on top.
             </p>
-            <Link to="/admissions" className="btn btn--primary" style={{ width: 'fit-content', marginTop: 6 }}>
+            <Link to="/register" className="btn btn--primary" style={{ width: 'fit-content', marginTop: 6 }}>
               Start an enquiry
               <ArrowRight size={16} />
             </Link>

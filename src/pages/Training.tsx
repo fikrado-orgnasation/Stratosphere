@@ -63,9 +63,13 @@ export default function Training() {
               Most questions we get answered are about logistics rather than content,
               so here they are plainly.
             </p>
-            <Link to="/admissions" className="btn btn--primary" style={{ width: 'fit-content', marginTop: 6 }}>
-              Start an enquiry
+            <Link to="/register" className="btn btn--primary" style={{ width: 'fit-content', marginTop: 6 }}>
+              Register for a subject
               <ArrowRight size={16} />
+            </Link>
+            <Link to="/books" className="act" style={{ width: 'fit-content' }}>
+              The books for these subjects
+              <ArrowRight size={15} />
             </Link>
           </div>
 

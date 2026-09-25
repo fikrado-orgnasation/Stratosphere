@@ -80,9 +80,13 @@ export default function ProgramDetails() {
               </dl>
             </div>
 
-            <Link to="/admissions" className="btn btn--primary" style={{ width: 'fit-content', marginTop: 10 }}>
-              Enquire about {subject.code}
+            <Link to="/register" className="btn btn--primary" style={{ width: 'fit-content', marginTop: 10 }}>
+              Register for {subject.code}
               <ArrowRight size={16} />
+            </Link>
+            <Link to="/books" className="act" style={{ width: 'fit-content' }}>
+              The book for this subject
+              <ArrowRight size={15} />
             </Link>
           </div>
         </div>

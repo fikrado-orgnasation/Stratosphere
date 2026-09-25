@@ -1,225 +1,57 @@
 # ✈️ Stratosphere Aeronautics
 
-### Somaliland's No. 1 Aviation School — ICAO Recognized • ERNAM Affiliated
+### School of Theoretical Knowledge Instruction (TKI) · Hargeisa, Somaliland
 
 ![Stratosphere Aeronautics Logo](./public/logo-removebg-preview.png)
 
-**Mastering the Skies. Managing the Future. Precision in Navigation.**
+**Precision in theory. Excellence in flight.**
 
-> "Precision in Theory. Excellence in Flight."
+Stratosphere Aeronautics is an ICAO-aligned theoretical knowledge instruction school in
+Hargeisa, Somaliland. Students can register for one subject or build a complete theory
+programme with private, one-to-one instruction from ERNAM-trained instructors.
 
----
+## What the site includes
 
-## 🌍 About Us
+- Ten-subject TKI syllabus: Air Law, Principles of Flight, Meteorology, Navigation and Flight
+  Planning, Aircraft General Knowledge, Human Performance, Radio Communications, ATC and AIM,
+  Safety Management Systems, and Language Proficiency.
+- Registration flow with subject selection, WhatsApp enquiry, and an enquiry form.
+- Books and study packs held at the school.
+- About, syllabus, programme detail, careers, student life, and contact pages.
+- Responsive, accessible design with reduced-motion support and an instrument-panel visual system.
+- Supabase edge function and migration for sending contact inquiries.
 
-**Stratosphere Aeronautics** is a premier aviation knowledge institution based in **Hargeisa, Somaliland**, dedicated to developing the next generation of aviation professionals through internationally aligned theoretical instruction.
+## Run locally
 
-Our training programs follow **ICAO standards** and the educational framework of **ERNAM (Regional School of Air Navigation and Management)**, providing students with the knowledge foundation required for successful aviation careers.
+```bash
+npm install
+npm run dev
+```
 
----
+Open `http://localhost:5173`.
 
-## ✨ Website Features
+## Verify and build
 
-- **Interactive 3D Aircraft Hero** — Animated aircraft with flight paths, atmospheric clouds, and mouse-reactive camera parallax
-- **Multi-Page Structure** — 9 routes: Home, About, Training Programs, Individual Program Details, Careers, Admissions, Student Life, Resources, Contact
-- **Premium Aviation Design** — Deep navy/aviation blue palette, glassmorphism, subtle blue glow effects, premium typography
-- **Responsive** — Mobile-first with professional hamburger navigation, responsive grids, zero horizontal overflow
-- **SEO Optimized** — Per-page meta titles, descriptions, Open Graph tags, and semantic HTML
-- **i18n** — English, Somali, and Arabic language support with RTL
-- **Accessibility** — Focus-visible states, proper ARIA labels, keyboard navigation, reduced-motion support
-- **Performance** — Lazy-loaded 3D scene, code-split chunks, GPU-friendly animations
+```bash
+npm run typecheck
+npm run build
+```
 
----
+## Contact
 
-## 🚀 Tech Stack
+**Stratosphere Aeronautics**  
+Bahsane Building, 2nd Floor, Room 213  
+Western entrance, facing west · Opposite the former National Cinema  
+Hargeisa, Somaliland
 
-- **Framework:** React 19 + TypeScript
-- **Build Tool:** Vite 5
-- **Routing:** React Router DOM (HashRouter for static hosting)
-- **3D Graphics:** React Three Fiber + Drei (interactive aircraft scene)
-- **Styling:** Tailwind CSS 3 + custom CSS design system
-- **Icons:** Lucide React
-- **Fonts:** Plus Jakarta Sans
+- +252 63 4482830
+- +252 65 4482830
+- +252 63 3347512
+- info@stratosphereaeronautics.com
+- https://wa.me/252634482830
 
----
+## Standards and affiliations
 
-## 🚀 Highlights
+ICAO aligned · ERNAM trained · ASECNA partner · ICAO WACAF
 
-- ICAO Recognized Standards
-- ERNAM Affiliated Training
-- 10+ Core Training Areas
-- 5+ Career Pathways
-- Internationally Certified Instructors
-- Private & Small-Group Tuition
-- PPL & CPL Foundation Preparation
-- Interactive 3D Aircraft Animation
-- Multi-Page Professional Structure
-- SEO Optimized for Aviation Schools
-
----
-
-## 🎯 Mission
-
-> To empower the next generation of aviation leaders through rigorous air navigation training and comprehensive systems management education.
-
----
-
-## 🔭 Vision
-
-To become the leading aviation theoretical knowledge institution in the Horn of Africa, producing highly competent aviation professionals recognized globally for excellence, safety, and integrity.
-
----
-
-## 📚 Training Areas
-
-### Air Law
-Rules of the air, international regulations, and operational procedures governing global airspace.
-
-### Principles of Flight
-Aerodynamics, aircraft systems, performance, and the physics of flight.
-
-### Meteorology
-Understanding weather patterns, atmospheric science, and safe operational decision-making.
-
-### Navigation & Flight Planning
-Master the mathematics and technology behind precision navigation and route planning.
-
-### Aircraft General Knowledge
-Comprehensive understanding of aircraft systems, powerplants, and airframe components.
-
-### Human Performance
-Physiological and psychological factors affecting pilot performance and decision-making.
-
-### Radio Communications
-Standard phraseology, communication procedures, and frequency management.
-
-### Air Traffic Control & AIM
-ATC procedures, airspace structure, and aeronautical information management.
-
-### Safety Management Systems (SMS)
-Risk assessment, hazard identification, and aviation safety culture.
-
-### Language Proficiency Testing
-Preparation for ICAO English Language Proficiency requirements.
-
----
-
-## 💼 Career Pathways
-
-### Flight Operations
-- Flight Dispatcher
-- Flight Operations Officer
-- Flight Follower
-
-### Logistics & Ground Handling
-- Aviation Logistics Coordinator
-- Ramp Operations Supervisor
-- Loadmaster
-- Weight & Balance Officer
-
-### Safety & Compliance
-- Safety Assistant (SMS)
-- Compliance Coordinator
-
-### Technical & Administrative Support
-- Technical Records Specialist
-- Meteorological Assistant
-- Crew Scheduler
-
-### Advanced Training
-- Pathway to PPL Licensing
-- Pathway to CPL Licensing
-- Aviation Training Foundation
-
----
-
-## ⭐ Why Choose Stratosphere Aeronautics?
-
-### 👨‍✈️ Private 1-on-1 Sessions
-Dedicated instruction tailored to your pace and learning style.
-
-### 🌐 ICAO & ERNAM Aligned
-Curriculum designed according to international aviation standards.
-
-### 🎓 Experienced Instructors
-Learn from seasoned aviation professionals with real-world operational experience.
-
-### ⏰ Flexible Scheduling
-Morning, evening, and weekend study options.
-
-### 📍 Strategic Location
-Located in Hargeisa, Somaliland.
-
----
-
-## 🏢 Institution Profile
-
-| Item | Details |
-|--------|---------|
-| Institution | Stratosphere Aeronautics |
-| Established | 2026 |
-| Location | Hargeisa, Somaliland |
-| Training Type | Theoretical Knowledge Instruction (TKI) |
-| Affiliation | ERNAM |
-| Standards | ICAO Compliant |
-| Focus | Air Navigation & Aviation Management |
-
----
-
-## 🛡️ Core Values
-
-- Precision
-- Safety
-- Integrity
-- Excellence
-- Professionalism
-- Innovation
-
----
-
-## 🤝 Partners & Standards
-
-- ICAO (International Civil Aviation Organization)
-- ERNAM (Regional School of Air Navigation and Management)
-- ASECNA Framework
-- ICAO WACAF Standards
-
----
-
-## 🙏 Special Thanks
-
-This project was supported by:
-
-### FIKRADO Organization
-
-[![GitHub](https://img.shields.io/badge/GitHub-FIKRADO%20Organization-black?logo=github)](https://github.com/fikrado-orgnasation)
-
-🔗 https://github.com/fikrado-orgnasation
-
-### FIKRADO DEV
-
-[![GitHub](https://img.shields.io/badge/GitHub-FIKRADO%20DEV-black?logo=github)](https://github.com/fikrado)
-
-🔗 https://github.com/fikrado
-
-Thank you for supporting innovation, education, and technology development in Somaliland and across Africa.
-
----
-
-## 📞 Contact
-
-### Stratosphere Aeronautics
-School for Air Navigation & Management
-
-📍 Hargeisa, Somaliland
-📞 +252 63 4482830
-📧 info@stratosphereaeronautics.com
-💬 WhatsApp: +252 63 4482830
-
-✈️ *Mastering the Skies. Managing the Future.*
-
----
-
-## © License
-
-Copyright © 2026 Stratosphere Aeronautics. All Rights Reserved.
+© 2026 Stratosphere Aeronautics
