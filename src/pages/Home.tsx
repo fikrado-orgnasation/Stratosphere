@@ -1,8 +1,7 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowDownRight, ArrowRight, Plane } from 'lucide-react';
+import { ArrowDownRight, ArrowRight } from 'lucide-react';
 import Shell, { Ask, Filings } from '../components/Shell';
-import { BOOKS, FLEET, RAIL, STUDENT_JOURNEY, SUBJECTS } from '../data/site';
+import { BOOKS, RAIL, STUDENT_JOURNEY, SUBJECTS } from '../data/site';
 
 const ADVANTAGE = [
   { title: 'One to one, always', body: 'Every subject is taught privately. There is no lecture hall version of this course.' },
@@ -12,9 +11,6 @@ const ADVANTAGE = [
 ];
 
 export default function Home() {
-  const [selected, setSelected] = useState(0);
-  const plane = FLEET[selected];
-
   return (
     <Shell>
       {/* ── hero ──────────────────────────────────────────────────────────── */}
@@ -49,8 +45,6 @@ export default function Home() {
               <p className="datum datum--lit" style={{ marginBottom: 8 }}>Station</p>
               <dl style={{ display: 'grid' }}>
                 <div className="hero__row"><dt>Field</dt><dd>{RAIL.field}</dd></div>
-                <div className="hero__row"><dt>Position</dt><dd>{RAIL.position}</dd></div>
-                <div className="hero__row"><dt>Elevation</dt><dd>{RAIL.altitude}</dd></div>
                 <div className="hero__row"><dt>Subjects</dt><dd>10</dd></div>
                 <div className="hero__row"><dt>Books held</dt><dd>{BOOKS.length}</dd></div>
                 <div className="hero__row hero__row--live"><dt>Enrolment</dt><dd>Open</dd></div>
@@ -177,57 +171,6 @@ export default function Home() {
               </li>
             ))}
           </ul>
-        </div>
-      </section>
-
-      {/* ── the hangar ────────────────────────────────────────────────────── */}
-      <section className="band band--edge">
-        <div className="shell">
-          <div className="band__head">
-            <p className="datum">The hangar</p>
-            <h2 className="h2">Theory first. These are what it is for.</h2>
-            <p className="lede">
-              The Cessna 172 and the DA40 are how a syllabus becomes a skill. We fly
-              the three aircraft the training was designed around.
-            </p>
-          </div>
-
-          <div className="rule rule--split" style={{ alignItems: 'center' }}>
-            <div className="hangar">
-              <div className="hangar__art">
-                <span className="hangar__tag mono">{plane.tail}</span>
-                <Plane size={120} strokeWidth={0.75} />
-              </div>
-              <dl className="hangar__specs">
-                <div className="hangar__spec"><dt>Type</dt><dd>{plane.type}</dd></div>
-                <div className="hangar__spec"><dt>Role</dt><dd>{plane.role}</dd></div>
-                <div className="hangar__spec"><dt>Base</dt><dd>{RAIL.field}</dd></div>
-              </dl>
-            </div>
-
-            <div>
-              <div className="hangar-list">
-                {FLEET.map((p, i) => (
-                  <button
-                    key={p.tail}
-                    className={`hangar-item ${i === selected ? 'is-on' : ''}`}
-                    onClick={() => setSelected(i)}
-                    aria-pressed={i === selected}
-                  >
-                    <span className="hangar-item__code">{String(i + 1).padStart(2, '0')}</span>
-                    <span>
-                      <b>{p.type}</b>
-                      <span>{p.role}</span>
-                    </span>
-                    <span className="hangar-item__tail">{p.tail}</span>
-                  </button>
-                ))}
-              </div>
-              <p className="mono mono--xs muted" style={{ marginTop: 22 }}>
-                Maintained to the standard the syllabus assumes.
-              </p>
-            </div>
-          </div>
         </div>
       </section>
 

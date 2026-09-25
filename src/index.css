@@ -576,56 +576,6 @@ h1, h2, h3, h4 { font-weight: 600; line-height: 1.06; letter-spacing: -0.028em; 
   .ledger__link { text-align: left; }
 }
 
-/* Fleet — a hangar manifest, selectable like a list, not a card grid */
-.hangar {
-  border: 1px solid var(--edge);
-  background: var(--ink-deep);
-  position: relative; overflow: hidden;
-}
-.hangar__art {
-  position: relative; aspect-ratio: 4 / 3;
-  border-bottom: 1px solid var(--edge);
-  background:
-    linear-gradient(180deg, rgba(240,169,60,0.045), transparent 60%),
-    var(--panel);
-  display: grid; place-items: center; overflow: hidden;
-}
-.hangar__art svg { color: var(--chalk-mute); width: 42%; height: auto; transition: color 0.3s var(--ease), transform 0.5s var(--ease); }
-.hangar__tag {
-  position: absolute; top: 14px; left: 16px;
-  font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.1em;
-  color: var(--faint-ink);
-}
-.hangar__specs { display: grid; }
-.hangar__spec {
-  display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
-  padding: 13px 18px; border-bottom: 1px solid var(--edge-soft);
-}
-.hangar__spec:last-child { border-bottom: 0; }
-.hangar__spec dt {
-  font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.13em;
-  text-transform: uppercase; color: var(--faint-ink);
-}
-.hangar__spec dd { font-size: 0.875rem; color: var(--chalk-dim); }
-
-.hangar-list { display: grid; gap: 0; }
-.hangar-item {
-  width: 100%; text-align: left;
-  display: grid; grid-template-columns: 46px minmax(0, 1fr) auto; align-items: center;
-  gap: 18px; padding: 20px 4px;
-  border-bottom: 1px solid var(--edge-soft);
-  color: var(--chalk-dim);
-  transition: color 0.2s var(--ease), padding-left 0.25s var(--ease);
-}
-.hangar-item:first-child { border-top: 1px solid var(--edge-soft); }
-.hangar-item:hover, .hangar-item.is-on { color: var(--chalk); padding-left: 12px; }
-.hangar-item__code { font-family: var(--mono); font-size: 0.75rem; color: var(--faint-ink); }
-.hangar-item.is-on .hangar-item__code { color: var(--amber); }
-.hangar-item b { display: block; font-size: 1.0625rem; font-weight: 600; letter-spacing: -0.018em; }
-.hangar-item span { display: block; font-size: 0.8125rem; color: var(--chalk-mute); margin-top: 2px; }
-.hangar-item__tail { font-family: var(--mono); font-size: 0.8125rem; color: var(--faint-ink); }
-.hangar-item.is-on .hangar-item__tail { color: var(--amber-dim); }
-
 /* Figures: big numbers are used once, and mean something */
 .figures {
   display: grid; gap: 0;

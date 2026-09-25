@@ -74,14 +74,6 @@ function Rail() {
           <span className="rail__v">{RAIL.position}</span>
         </div>
         <div className="rail__ro">
-          <span className="rail__k">Alt</span>
-          <span className="rail__v">{RAIL.altitude}</span>
-        </div>
-        <div className="rail__ro">
-          <span className="rail__k">Hdg</span>
-          <span className="rail__v">{RAIL.heading}</span>
-        </div>
-        <div className="rail__ro">
           <span className="rail__k">Enrol</span>
           <span className="rail__v rail__v--live">Open</span>
         </div>
