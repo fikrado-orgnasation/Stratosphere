@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowDownRight, ArrowRight } from 'lucide-react';
 import Shell, { Ask, Filings } from '../components/Shell';
+import FlightCanvas from '../components/FlightCanvasLazy';
 import { BOOKS, RAIL, STUDENT_JOURNEY, SUBJECTS } from '../data/site';
 
 const ADVANTAGE = [
@@ -15,6 +16,7 @@ export default function Home() {
     <Shell>
       {/* ── hero ──────────────────────────────────────────────────────────── */}
       <section className="hero">
+        <FlightCanvas />
         <div className="hero__streak" aria-hidden="true" />
         <div className="hero__grid" aria-hidden="true" />
         <div className="shell hero__in">
@@ -22,7 +24,7 @@ export default function Home() {
             <div>
               <p className="datum">Theoretical knowledge instruction · Hargeisa</p>
               <h1 className="display hero__title">
-                Ten subjects. One instructor. The written half of your licence.
+                Stratosphere Aeronautics — School of Theoretical Knowledge Instruction (TKI)
               </h1>
               <p className="lede hero__lede">
                 The theory every pilot is examined on, taught one to one in Hargeisa to
