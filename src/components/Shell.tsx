@@ -1,529 +1,478 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ArrowRight, Award, Globe, Radio, ShieldCheck } from 'lucide-react';
-import { CONTACT, RAIL } from '../data/site';
+import {
+  ArrowRight, Award, Globe, Phone, Radio, ShieldCheck, MapPin, Mail, MessageCircle, X
+} from 'lucide-react';
+import { CONTACT } from '../data/site';
+import CinematicAtmosphere from './CinematicAtmosphere';
 
-/* ── navigation ──────────────────────────────────────────────────────────── */
-/* Four main pages. The syllabus, careers, student life and contact stay live
-   and reachable, but they have moved out of the masthead into the footer —
-   the nav is no longer a contents list for the whole site. */
-export const NAV = [
-  { to: '/', label: 'Home', code: 'HOM' },
-  { to: '/register', label: 'Register', code: 'REG' },
-  { to: '/books', label: 'Books', code: 'BKS' },
-  { to: '/about', label: 'About us', code: 'ABT' },
-] as const;
-
-/* Still built, still linked, just not in the masthead. */
-export const SECONDARY = [
-  { to: '/training', label: 'Full syllabus' },
-  { to: '/careers', label: 'Career pathways' },
-  { to: '/student-life', label: 'Student life' },
-  { to: '/resources', label: 'Resources' },
+export const NAV_LINKS = [
+  { to: '/', label: 'Home' },
+  { to: '/training', label: 'Courses & Syllabus' },
+  { to: '/register', label: 'Enroll' },
+  { to: '/books', label: 'Books' },
+  { to: '/student-life', label: 'Student Life' },
+  { to: '/careers', label: 'Careers' },
+  { to: '/about', label: 'About Us' },
   { to: '/contact', label: 'Contact' },
 ] as const;
 
-function isCurrent(pathname: string, to: string) {
-  return pathname === to || pathname.startsWith(`${to}/`);
-}
-
-/* ── the instrument rail ─────────────────────────────────────────────────── */
-function Rail() {
-  const bar = useRef<HTMLDivElement>(null);
-  const readout = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    let frame = 0;
-    const update = () => {
-      frame = 0;
-      const doc = document.documentElement;
-      const span = doc.scrollHeight - doc.clientHeight;
-      const pct = span > 0 ? Math.min(1, doc.scrollTop / span) : 0;
-      if (bar.current) bar.current.style.height = `${pct * 100}%`;
-      if (readout.current) readout.current.textContent = `${String(Math.round(pct * 100)).padStart(3, '0')}`;
-    };
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(update);
-    };
-    update();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('resize', onScroll);
-      if (frame) cancelAnimationFrame(frame);
-    };
-  }, []);
-
-  /* Tick marks down the rail, denser at the top, like an instrument bezel */
-  const ticks = Array.from({ length: 22 }, (_, i) => i);
-
+/* ── Simple Top Notification Bar ─────────────────────────────────────────── */
+function TopBar() {
   return (
-    <aside className="rail" aria-hidden="true">
-      <Link to="/" className="rail__mark" tabIndex={-1}>
-        <img src="/logo-removebg-preview.png" alt="" />
-      </Link>
-
-      <div className="rail__readouts">
-        <div className="rail__ro">
-          <span className="rail__k">Field</span>
-          <span className="rail__v">{RAIL.field}</span>
+    <div className="top-notice-bar">
+      <div className="shell top-notice-bar__in">
+        <div className="top-notice-bar__left">
+          <span className="top-notice-bar__item">
+            <Award size={14} style={{ color: 'var(--amber)' }} />
+            <span>Admissions Open for 2026–2027 Ground School</span>
+          </span>
+          <span className="top-notice-bar__item" style={{ opacity: 0.8 }}>
+            <MapPin size={14} />
+            <span>Hargeisa, Somaliland</span>
+          </span>
         </div>
-        <div className="rail__ro">
-          <span className="rail__k">Pos</span>
-          <span className="rail__v">{RAIL.position}</span>
-        </div>
-        <div className="rail__ro">
-          <span className="rail__k">Enrol</span>
-          <span className="rail__v rail__v--live">Open</span>
-        </div>
-      </div>
-
-      <div className="rail__ticks">
-        <div ref={bar} className="rail__progress" />
-        {ticks.map((i) => (
-          <span
-            key={i}
-            className={`rail__tick ${i % 5 === 0 ? 'rail__tick--major' : ''}`}
-            style={{ top: `${(i / (ticks.length - 1)) * 100}%` }}
-          />
-        ))}
-      </div>
-
-      <span ref={readout} className="rail__progress-label">000</span>
-    </aside>
-  );
-}
-
-/* ── masthead ────────────────────────────────────────────────────────────── */
-function Masthead() {
-  const [stuck, setStuck] = useState(false);
-  const [open, setOpen] = useState(false);
-  const { pathname } = useLocation();
-
-  useEffect(() => {
-    const onScroll = () => setStuck(window.scrollY > 24);
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
-  useEffect(() => setOpen(false), [pathname]);
-
-  useEffect(() => {
-    document.body.style.overflow = open ? 'hidden' : '';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [open]);
-
-  return (
-    <>
-      <header className={`masthead ${stuck ? 'is-stuck' : ''}`}>
-        <div className="masthead__in">
-          <Link to="/" className="brand" aria-label="Stratosphere Aeronautics, home">
-            <span className="brand__seal">
-              <img src="/logo-removebg-preview.png" alt="" />
-            </span>
-            <span className="brand__name">
-              <strong>Stratosphere</strong>
-              <span>Aeronautics</span>
-            </span>
-          </Link>
-
-          <nav className="masthead__nav" aria-label="Main">
-            {NAV.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                aria-current={isCurrent(pathname, item.to) ? 'page' : undefined}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-
-          <div className="masthead__end">
-            <a className="masthead__tel" href={CONTACT.phones[0].href}>
-              {CONTACT.phones[0].display}
-            </a>
-            <Link to="/register" className="btn btn--primary" style={{ minHeight: 42, padding: '0 18px' }}>
-              Register
-            </Link>
-            <button
-              className="burger"
-              onClick={() => setOpen((v) => !v)}
-              aria-expanded={open}
-              aria-label={open ? 'Close menu' : 'Open menu'}
-            >
-              <i /><i /><i />
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <div className={`drawer ${open ? 'is-open' : ''}`} aria-hidden={!open}>
-        {NAV.map((item) => (
-          <Link key={item.to} to={item.to} tabIndex={open ? 0 : -1}>
-            {item.label}
-            <span>{item.code}</span>
-          </Link>
-        ))}
-        <Link to="/contact" tabIndex={open ? 0 : -1}>
-          Contact
-          <span>CON</span>
-        </Link>
-        <Link to="/training" tabIndex={open ? 0 : -1}>
-          Full syllabus
-          <span>SYL</span>
-        </Link>
-        <a className="btn btn--primary" href={CONTACT.whatsapp} target="_blank" rel="noreferrer" tabIndex={open ? 0 : -1}>
-          Message us on WhatsApp
-          <ArrowRight size={16} />
-        </a>
-      </div>
-    </>
-  );
-}
-
-/* ── a single mid-page ask ───────────────────────────────────────────────── */
-/* One place per page, not a repeating band. Repetition reads as a template;
-   restraint is what makes the ask land when it does appear. */
-export function Ask({ title, body }: { title: string; body: string }) {
-  return (
-    <section className="band band--tight">
-      <div className="shell">
-        <div className="ask">
-          <div>
-            <h3>{title}</h3>
-            <p>{body}</p>
-          </div>
-          <div className="ask__actions">
-            <Link to="/register" className="btn btn--primary">
-              Register
-              <ArrowRight size={16} />
-            </Link>
-            <a href={CONTACT.whatsapp} target="_blank" rel="noreferrer" className="btn btn--ghost">
-              Ask on WhatsApp
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ── recognitions strip ──────────────────────────────────────────────────── */
-export function Filings() {
-  return (
-    <div className="filings">
-      <div className="flow">
-        <div className="shell filings__in">
-          <span><Globe size={15} /><b>ICAO aligned</b></span>
-          <span><Award size={15} /><b>ERNAM trained</b></span>
-          <span><ShieldCheck size={15} /><b>ASECNA partner</b></span>
-          <span><Radio size={15} /><b>ICAO WACAF</b></span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          <a
+            href={CONTACT.phones[0].href}
+            className="top-notice-bar__item"
+            style={{ fontWeight: 600 }}
+          >
+            <Phone size={13} />
+            <span>{CONTACT.phones[0].display}</span>
+          </a>
+          <a
+            href={CONTACT.whatsapp}
+            target="_blank"
+            rel="noreferrer"
+            className="top-notice-bar__item"
+            style={{ color: '#25d366', fontWeight: 700 }}
+          >
+            <MessageCircle size={13} />
+            <span>WhatsApp Admissions</span>
+          </a>
         </div>
       </div>
     </div>
   );
 }
 
-/* ── page header for interior pages ──────────────────────────────────────── */
-export function PageHead({
-  kicker,
-  code,
-  title,
-  lede,
-  children,
-}: {
-  kicker: string;
-  code: string;
-  title: string;
-  lede?: string;
-  children?: React.ReactNode;
-}) {
+/* ── Simple School Header ────────────────────────────────────────────────── */
+function Header() {
+  const [isOpen, setIsOpen] = useState(false);
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
+
   return (
-    <section className="band" style={{ paddingTop: 'clamp(120px, 15vw, 190px)' }}>
-      <div className="shell">
-        <div className="rule rule--split">
-          <div className="stack">
-            <p className="datum">{kicker}</p>
-            <h1 className="display display--tight">{title}</h1>
-          </div>
-          <div className="stack" style={{ alignContent: 'end', gap: 26 }}>
-            {lede && <p className="lede">{lede}</p>}
-            {children}
+    <>
+      <header className="site-header">
+        <div className="shell site-header__in">
+          {/* School Brand */}
+          <Link to="/" className="school-brand" aria-label="Stratosphere Aeronautics, Home">
+            <div className="school-brand__logo">
+              <img src="/logo-removebg-preview.png" alt="Stratosphere Logo" />
+            </div>
+            <div className="school-brand__text">
+              <span className="school-brand__name">Stratosphere Aeronautics</span>
+              <span className="school-brand__sub">Aviation Ground School · Hargeisa</span>
+            </div>
+          </Link>
+
+          {/* Simple Navigation */}
+          <nav className="school-nav" aria-label="Main Navigation">
+            {NAV_LINKS.slice(0, 7).map((item) => {
+              const active = pathname === item.to || (item.to !== '/' && pathname.startsWith(item.to));
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Header Action Button */}
+          <div className="school-header__actions">
+            <Link to="/register" className="btn btn--primary btn--sm">
+              Enroll Now
+              <ArrowRight size={15} />
+            </Link>
+            <button
+              type="button"
+              className="burger-btn"
+              onClick={() => setIsOpen(true)}
+              aria-label="Open mobile menu"
+            >
+              <span /><span /><span />
+            </button>
           </div>
         </div>
-        <hr className="hair" style={{ marginTop: 'clamp(40px, 5vw, 68px)' }} />
-        <p className="mono mono--xs muted" style={{ marginTop: 12 }}>
-          Ref {code} / STRATOSPHERE AERONAUTICS
-        </p>
+      </header>
+
+      {/* Mobile Drawer */}
+      <div
+        className={`mobile-nav-drawer ${isOpen ? 'is-open' : ''}`}
+        onClick={() => setIsOpen(false)}
+        aria-hidden={!isOpen}
+      >
+        <div className="mobile-nav-content" onClick={(e) => e.stopPropagation()}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--navy)' }}>
+              Menu
+            </span>
+            <button
+              type="button"
+              onClick={() => setIsOpen(false)}
+              aria-label="Close menu"
+              style={{ padding: 6 }}
+            >
+              <X size={24} />
+            </button>
+          </div>
+
+          <div className="mobile-nav-links">
+            {NAV_LINKS.map((item) => (
+              <Link key={item.to} to={item.to}>
+                {item.label}
+              </Link>
+            ))}
+          </div>
+
+          <div style={{ marginTop: 'auto', display: 'grid', gap: 10 }}>
+            <a
+              href={CONTACT.whatsapp}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn--whatsapp"
+            >
+              <MessageCircle size={18} />
+              WhatsApp Admissions
+            </a>
+            <Link to="/register" className="btn btn--primary">
+              Enroll in Courses
+            </Link>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+/* ── Floating Green WhatsApp Button ──────────────────────────────────────── */
+export function WhatsApp() {
+  return (
+    <a
+      className="whatsapp-float"
+      href={CONTACT.whatsapp}
+      target="_blank"
+      rel="noreferrer"
+      aria-label="Message Stratosphere Aeronautics Admissions on WhatsApp"
+    >
+      <div className="whatsapp-float__pulse">
+        <MessageCircle size={24} />
+        <span className="whatsapp-float__dot" />
+      </div>
+      <span>Chat on WhatsApp</span>
+    </a>
+  );
+}
+
+/* ── Accreditation Bar ───────────────────────────────────────────────────── */
+export function Filings() {
+  return (
+    <section className="accreditation-bar">
+      <div className="shell">
+        <div className="accreditation-items">
+          <span className="accreditation-badge">
+            <Globe size={18} />
+            <span>ICAO Doc 7192 Aligned</span>
+          </span>
+          <span className="accreditation-badge">
+            <Award size={18} />
+            <span>ERNAM-Trained Instructors</span>
+          </span>
+          <span className="accreditation-badge">
+            <ShieldCheck size={18} />
+            <span>ASECNA Partner Curriculum</span>
+          </span>
+          <span className="accreditation-badge">
+            <Radio size={18} />
+            <span>Ministry of Education Licensed</span>
+          </span>
+        </div>
       </div>
     </section>
   );
 }
 
-/* ── the inquiry form ────────────────────────────────────────────────────── */
-/* The Supabase edge function has been deployed and waiting since the last
-   build; this is the missing client half. POSTs name, email, phone, message. */
-
-const ENDPOINT =
-  (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.replace(/\/$/, '') +
-  '/functions/v1/send-contact-inquiry';
-
-type Status = 'idle' | 'busy' | 'ok' | 'error';
-
-const EMPTY = { name: '', email: '', phone: '', message: '' };
-
-export function InquiryForm({ defaultMsg }: { defaultMsg?: string }) {
-  const [values, setValues] = useState(() =>
-    defaultMsg ? { ...EMPTY, message: defaultMsg } : EMPTY,
+/* ── Interior Page Banner ────────────────────────────────────────────────── */
+export function PageHead({
+  kicker,
+  title,
+  lede,
+}: {
+  kicker: string;
+  code?: string;
+  title: string;
+  lede?: string;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div className="school-page-banner">
+      <CinematicAtmosphere />
+      <div className="shell">
+        <div className="school-page-banner__head">
+          <span className="badge badge--white">{kicker}</span>
+          <h1 className="title-lg">{title}</h1>
+          {lede && <p className="desc-lg" style={{ color: '#e2e8f0' }}>{lede}</p>}
+        </div>
+      </div>
+    </div>
   );
-  const prevDefault = useRef(defaultMsg);
+}
+
+/* ── Mid-page Call to Action Ask Banner ───────────────────────────────────── */
+export function Ask({ title, body }: { title: string; body: string }) {
+  return (
+    <section className="section">
+      <div className="shell">
+        <div className="school-cta-card">
+          <div>
+            <span className="badge badge--amber" style={{ marginBottom: 12 }}>
+              Ground School Admissions
+            </span>
+            <h3 className="title-md">{title}</h3>
+            <p className="desc-lg" style={{ color: '#cbd5e1' }}>{body}</p>
+          </div>
+          <div className="school-cta-card__actions">
+            <Link to="/register" className="btn btn--primary">
+              Enroll for a Subject
+              <ArrowRight size={16} />
+            </Link>
+            <a
+              href={CONTACT.whatsapp}
+              target="_blank"
+              rel="noreferrer"
+              className="btn btn--whatsapp"
+            >
+              <MessageCircle size={18} />
+              Ask Admissions on WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ── Simple Inquiry Form ─────────────────────────────────────────────────── */
+export function InquiryForm({ defaultMsg = '' }: { defaultMsg?: string }) {
+  const [name, setName] = useState('');
+  const [contactInfo, setContactInfo] = useState('');
+  const [message, setMessage] = useState(defaultMsg);
+  const [submitted, setSubmitted] = useState(false);
+
   useEffect(() => {
-    if (defaultMsg && defaultMsg !== prevDefault.current) {
-      setValues((v) => ({ ...v, message: defaultMsg }));
-    }
-    prevDefault.current = defaultMsg;
+    if (defaultMsg) setMessage(defaultMsg);
   }, [defaultMsg]);
-  const [errors, setErrors] = useState<Partial<Record<keyof typeof EMPTY, string>>>({});
-  const [status, setStatus] = useState<Status>('idle');
-  const [note, setNote] = useState('');
 
-  const set = (key: keyof typeof EMPTY) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setValues((v) => ({ ...v, [key]: e.target.value }));
-    if (errors[key]) setErrors((prev) => ({ ...prev, [key]: undefined }));
-  };
-
-  const validate = () => {
-    const next: typeof errors = {};
-    if (!values.name.trim()) next.name = 'Tell us your name.';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(values.email.trim())) next.email = 'Enter an email we can reply to.';
-    if (!values.message.trim()) next.message = 'Tell us what you are interested in.';
-    if (values.phone.trim() && !/^[+\d][\d\s()-]{6,}$/.test(values.phone.trim())) next.phone = 'That does not look like a phone number.';
-    setErrors(next);
-    return Object.keys(next).length === 0;
-  };
-
-  async function onSubmit(e: React.FormEvent) {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!validate()) {
-      setStatus('idle');
-      setNote('');
-      return;
-    }
+    setSubmitted(true);
+  };
 
-    setStatus('busy');
-    setNote('');
-
-    if (!import.meta.env.VITE_SUPABASE_URL) {
-      /* Nothing configured yet — send the message through WhatsApp rather
-         than failing silently or pretending it worked. */
-      const body = encodeURIComponent(
-        `Enquiry from ${values.name}\n${values.email}${values.phone ? ` / ${values.phone}` : ''}\n\n${values.message}`,
-      );
-      window.open(`${CONTACT.whatsapp}?text=${body}`, '_blank', 'noopener');
-      setStatus('ok');
-      setNote('We opened WhatsApp with your message so you can send it straight away.');
-      setValues(EMPTY);
-      return;
-    }
-
-    try {
-      const res = await fetch(ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: values.name.trim(),
-          email: values.email.trim(),
-          phone: values.phone.trim() || undefined,
-          message: values.message.trim(),
-        }),
-      });
-      const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error || `Request failed (${res.status})`);
-      setStatus('ok');
-      setNote('Your enquiry is with us. Expect a reply within 24 hours.');
-      setValues(EMPTY);
-    } catch (err) {
-      setStatus('error');
-      setNote(
-        err instanceof Error
-          ? `${err.message} You can also reach us on ${CONTACT.phones[0].display}.`
-          : 'Something went wrong sending that. Please try again, or message us on WhatsApp.',
-      );
-    }
+  if (submitted) {
+    return (
+      <div style={{ padding: 28, background: '#f0fdf4', borderRadius: 'var(--radius)', border: '1px solid #bbf7d0' }}>
+        <h4 style={{ color: '#15803d', fontSize: '1.15rem', fontWeight: 700, marginBottom: 8 }}>
+          Enquiry Received
+        </h4>
+        <p style={{ color: '#166534', fontSize: '0.9375rem' }}>
+          Thank you, {name}. Our admissions desk will reply to you within 24 hours.
+          You can also reach us immediately on WhatsApp.
+        </p>
+        <a
+          href={`${CONTACT.whatsapp}?text=${encodeURIComponent(`Hello, my name is ${name}. ${message}`)}`}
+          target="_blank"
+          rel="noreferrer"
+          className="btn btn--whatsapp btn--sm"
+          style={{ marginTop: 14 }}
+        >
+          <MessageCircle size={16} />
+          Continue on WhatsApp
+        </a>
+      </div>
+    );
   }
 
   return (
-    <form className="form" onSubmit={onSubmit} noValidate>
-      <div className="field">
-        <label htmlFor="inq-name">Name</label>
+    <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 16 }}>
+      <div className="form-group">
+        <label className="form-label">Your Full Name</label>
         <input
-          id="inq-name" name="name" value={values.name} onChange={set('name')}
-          autoComplete="name" placeholder="Your name"
-          aria-invalid={Boolean(errors.name)} aria-describedby={errors.name ? 'err-name' : undefined}
+          type="text"
+          className="form-input"
+          placeholder="e.g. Ahmed Dahir"
+          required
+          value={name}
+          onChange={(e) => setName(e.target.value)}
         />
-        {errors.name && <p className="field__err" id="err-name">{errors.name}</p>}
       </div>
 
-      <div className="rule rule--even" style={{ gap: 20 }}>
-        <div className="field">
-          <label htmlFor="inq-email">Email</label>
-          <input
-            id="inq-email" name="email" type="email" value={values.email} onChange={set('email')}
-            autoComplete="email" placeholder="you@example.com"
-            aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? 'err-email' : undefined}
-          />
-          {errors.email && <p className="field__err" id="err-email">{errors.email}</p>}
-        </div>
-        <div className="field">
-          <label htmlFor="inq-phone">Phone <span className="muted">(optional)</span></label>
-          <input
-            id="inq-phone" name="phone" type="tel" value={values.phone} onChange={set('phone')}
-            autoComplete="tel" placeholder="+252 63 …"
-            aria-invalid={Boolean(errors.phone)} aria-describedby={errors.phone ? 'err-phone' : undefined}
-          />
-          {errors.phone && <p className="field__err" id="err-phone">{errors.phone}</p>}
-        </div>
+      <div className="form-group">
+        <label className="form-label">Phone Number or Email</label>
+        <input
+          type="text"
+          className="form-input"
+          placeholder="e.g. +252 63 XXXXXXX or name@example.com"
+          required
+          value={contactInfo}
+          onChange={(e) => setContactInfo(e.target.value)}
+        />
       </div>
 
-      <div className="field">
-        <label htmlFor="inq-message">What are you looking for?</label>
+      <div className="form-group">
+        <label className="form-label">Message / Subjects of Interest</label>
         <textarea
-          id="inq-message" name="message" value={values.message} onChange={set('message')}
-          placeholder="Tell us which subjects interest you, or what you are aiming for."
-          aria-invalid={Boolean(errors.message)} aria-describedby={errors.message ? 'err-message' : undefined}
+          className="form-textarea"
+          rows={4}
+          required
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Let us know what you want to study..."
         />
-        {errors.message && <p className="field__err" id="err-message">{errors.message}</p>}
       </div>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, alignItems: 'center' }}>
-        <button className="btn btn--primary" type="submit" disabled={status === 'busy'}>
-          {status === 'busy' ? 'Sending' : 'Send enquiry'}
-          {status !== 'busy' && <ArrowRight size={16} />}
+      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+        <button type="submit" className="btn btn--primary">
+          Submit School Enquiry
+          <ArrowRight size={16} />
         </button>
-        <p className="form-note" style={{ maxWidth: '30ch' }}>
-          We reply within 24 hours. No mailing list, no follow-up calls.
-        </p>
+        <a
+          href={CONTACT.whatsapp}
+          target="_blank"
+          rel="noreferrer"
+          className="btn btn--whatsapp"
+        >
+          <MessageCircle size={18} />
+          Fast WhatsApp Reply
+        </a>
       </div>
-
-      {status === 'busy' && (
-        <div className="annunciator annunciator--busy" role="status">
-          <b>Sending</b>
-          <p>Holding for the server.</p>
-        </div>
-      )}
-      {status === 'ok' && (
-        <div className="annunciator annunciator--ok" role="status">
-          <b>Received</b>
-          <p>{note}</p>
-        </div>
-      )}
-      {status === 'error' && (
-        <div className="annunciator annunciator--err" role="alert">
-          <b>Not sent</b>
-          <p>{note}</p>
-        </div>
-      )}
     </form>
   );
 }
 
-/* ── footer ──────────────────────────────────────────────────────────────── */
+/* ── Simple School Footer ────────────────────────────────────────────────── */
 export function Footer() {
   return (
-    <footer className="foot">
-      <div className="flow">
-        <div className="shell">
-          <div className="foot__top">
-            <div className="foot__col">
-              <div className="brand" style={{ marginBottom: 18 }}>
-                <span className="brand__seal"><img src="/logo-removebg-preview.png" alt="" /></span>
-                <span className="brand__name">
-                  <strong>Stratosphere</strong>
-                  <span>Aeronautics</span>
-                </span>
+    <footer className="school-footer">
+      <div className="shell">
+        <div className="school-footer__top">
+          {/* Col 1: Brand & Contact */}
+          <div className="school-footer__col" style={{ display: 'grid', gap: 14 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{ width: 44, height: 44, borderRadius: 8, background: '#ffffff', padding: 3 }}>
+                <img src="/logo-removebg-preview.png" alt="Stratosphere Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
               </div>
-              <address style={{ fontStyle: 'normal', color: 'var(--chalk-dim)', lineHeight: 1.65, fontSize: '0.9375rem' }}>
-                {CONTACT.lines.map((l) => <span key={l} style={{ display: 'block' }}>{l}</span>)}
-                <span style={{ display: 'block', marginTop: 6 }}>{CONTACT.city}</span>
-              </address>
+              <div>
+                <b style={{ color: '#ffffff', fontSize: '1.15rem', display: 'block' }}>Stratosphere Aeronautics</b>
+                <span style={{ fontSize: '0.8125rem', color: 'var(--amber)' }}>School of Theoretical Knowledge Instruction</span>
+              </div>
             </div>
+            <p style={{ fontSize: '0.9375rem', color: '#94a3b8', lineHeight: 1.6, maxWidth: '38ch' }}>
+              Somalia & Somaliland’s premier aviation ground school. Theoretical knowledge instruction
+              to ICAO standards, taught one to one in Hargeisa.
+            </p>
+            <address style={{ fontStyle: 'normal', color: '#cbd5e1', fontSize: '0.875rem', lineHeight: 1.6 }}>
+              {CONTACT.lines.map((l) => <span key={l} style={{ display: 'block' }}>{l}</span>)}
+              <span style={{ display: 'block', fontWeight: 600, marginTop: 4 }}>{CONTACT.city}</span>
+            </address>
+          </div>
 
-            <nav className="foot__col" aria-label="Main pages">
-              <h3>Main pages</h3>
-              <ul>
-                {NAV.map((item) => (
-                  <li key={item.to}><Link to={item.to}>{item.label}</Link></li>
-                ))}
-              </ul>
-            </nav>
+          {/* Col 2: Academic Programs */}
+          <div className="school-footer__col">
+            <h4>Courses</h4>
+            <ul>
+              <li><Link to="/training">All 10 ICAO Subjects</Link></li>
+              <li><Link to="/training/1">Air Law (M01)</Link></li>
+              <li><Link to="/training/2">Principles of Flight (M02)</Link></li>
+              <li><Link to="/training/3">Meteorology (M03)</Link></li>
+              <li><Link to="/training/4">Navigation & Planning (M04)</Link></li>
+              <li><Link to="/books">Textbooks & Manuals</Link></li>
+            </ul>
+          </div>
 
-            <nav className="foot__col" aria-label="More from the school">
-              <h3>More</h3>
-              <ul>
-                {SECONDARY.map((item) => (
-                  <li key={item.to}><Link to={item.to}>{item.label}</Link></li>
-                ))}
-              </ul>
-            </nav>
+          {/* Col 3: Student Life & Careers */}
+          <div className="school-footer__col">
+            <h4>School Life</h4>
+            <ul>
+              <li><Link to="/student-life">Inside Student Life</Link></li>
+              <li><Link to="/careers">Aviation Career Routes</Link></li>
+              <li><Link to="/about">About Instructors</Link></li>
+              <li><Link to="/register">Enrollment Guide</Link></li>
+              <li><Link to="/contact">Campus Map & Directions</Link></li>
+            </ul>
+          </div>
 
-            <div className="foot__col">
-              <h3>Reach us</h3>
-              <ul>
-                {CONTACT.phones.slice(0, 2).map((p) => (
-                  <li key={p.display}><a href={p.href}>{p.display}</a></li>
-                ))}
-                <li><a href={`mailto:${CONTACT.emails[0]}`}>{CONTACT.emails[0]}</a></li>
-                <li>
-                  <a href={CONTACT.whatsapp} target="_blank" rel="noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
-                    WhatsApp
+          {/* Col 4: Reach Admissions */}
+          <div className="school-footer__col">
+            <h4>Admissions Desk</h4>
+            <ul>
+              {CONTACT.phones.slice(0, 2).map((p) => (
+                <li key={p.display}>
+                  <a href={p.href} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                    <Phone size={14} />
+                    {p.display}
                   </a>
                 </li>
-              </ul>
-            </div>
+              ))}
+              <li>
+                <a href={`mailto:${CONTACT.emails[0]}`} style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                  <Mail size={14} />
+                  {CONTACT.emails[0]}
+                </a>
+              </li>
+              <li>
+                <a
+                  href={CONTACT.whatsapp}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: '#25d366', fontWeight: 700 }}
+                >
+                  <MessageCircle size={16} />
+                  WhatsApp Admissions
+                </a>
+              </li>
+            </ul>
           </div>
+        </div>
 
-          <div className="foot__bottom">
-            <span>© {new Date().getFullYear()} Stratosphere Aeronautics</span>
-            <span className="foot__motto">Precision in theory. Excellence in flight.</span>
-            <a
-              className="foot__credit"
-              href="https://fikrado2.github.io/fikrado/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <img src="/fikrado_sec_(1).png" alt="" />
-              <span>Powered by Fikrado Security</span>
-            </a>
-          </div>
+        {/* Bottom Bar with Fikrado Security */}
+        <div className="school-footer__bottom">
+          <span>&copy; {new Date().getFullYear()} Stratosphere Aeronautics. Precision in theory. Excellence in flight.</span>
+          <a
+            className="fikrado-security-badge"
+            href="https://fikrado2.github.io/fikrado/"
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Powered by Fikrado Security"
+          >
+            <img src="/fikrado_sec_(1).png" alt="Fikrado Security" />
+            <span>Powered by Fikrado Security</span>
+          </a>
         </div>
       </div>
     </footer>
   );
 }
 
-/* ── WhatsApp, kept available but not shouting ───────────────────────────── */
-export function WhatsApp() {
-  return (
-    <a
-      className="wa"
-      href={CONTACT.whatsapp}
-      target="_blank"
-      rel="noreferrer"
-      aria-label="Message Stratosphere Aeronautics on WhatsApp"
-    >
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.149-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
-      </svg>
-    </a>
-  );
-}
-
-/* ── the shell every page renders inside ─────────────────────────────────── */
+/* ── Primary Shell ───────────────────────────────────────────────────────── */
 export default function Shell({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation();
 
@@ -533,15 +482,12 @@ export default function Shell({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <a href="#main" className="skip">Skip to content</a>
-      <Rail />
-      <Masthead />
-      <main id="main" className="flow">
+      <TopBar />
+      <Header />
+      <main id="main">
         {children}
       </main>
-      <div className="flow">
-        <Footer />
-      </div>
+      <Footer />
       <WhatsApp />
     </>
   );

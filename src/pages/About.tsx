@@ -1,136 +1,172 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Check, Target, Shield, Award, Globe } from 'lucide-react';
-import Shell, { Filings, PageHead } from '../components/Shell';
-import { ACCREDITATION, CONTACT, RAIL } from '../data/site';
+import {
+  ArrowRight, Award, CheckCircle2, Globe, MessageCircle, Shield, Target
+} from 'lucide-react';
+import Shell, { Ask, Filings, PageHead } from '../components/Shell';
+import { ACCREDITATION, CONTACT } from '../data/site';
 
 const VALUES = [
-  { icon: Target, term: 'Precision', gloss: 'If a number can be checked, it gets checked. Theory is the part you cannot wing.' },
-  { icon: Shield, term: 'Safety', gloss: 'The first thing we teach and the first thing we hold ourselves to.' },
-  { icon: Award, term: 'Integrity', gloss: 'We would rather tell you a subject is not ready than sign it off early.' },
-  { icon: Globe, term: 'Excellence', gloss: 'The standard is international, and it does not bend because the school is local.' },
+  { icon: Target, term: 'Academic Precision', gloss: 'If a calculation or heading can be verified, it gets verified. In aviation, theory is the part you cannot guess.' },
+  { icon: Shield, term: 'Flight Safety Culture', gloss: 'Safety is the first principle we teach and the first benchmark we hold our instructors and students to.' },
+  { icon: Award, term: 'Certified Integrity', gloss: 'We would rather tell a student a module is not ready than sign off an incomplete exam.' },
+  { icon: Globe, term: 'International Standard', gloss: 'The standard is set by ICAO Doc 7192, and it does not bend because our campus is in Hargeisa.' },
 ];
 
 export default function About() {
   return (
     <Shell>
       <PageHead
-        kicker="About us"
-        code="ABT-01"
-        title="A ground school, in the country that needed one."
-        lede="Stratosphere Aeronautics was established in 2026 so that the theoretical knowledge behind an aviation licence could be studied in Hargeisa — privately, properly, and to a standard that travels."
+        kicker="Our Mission"
+        title="Somalia & Somaliland’s Aviation Ground School"
+        lede="Stratosphere Aeronautics was founded in Hargeisa so that the theoretical knowledge behind an international aviation licence could be studied locally — thoroughly, affordably, and to a standard that travels globally."
       />
-
-      <section className="band band--tight" style={{ paddingTop: 0 }}>
-        <div className="shell rule rule--split">
-          <div className="stack">
-            <p className="body">
-              Until now, anyone in Somaliland who wanted the theory behind an aviation
-              licence had to leave the country. Stratosphere was set up in Hargeisa so
-              that the syllabus could be studied here, in Somali, at a cost that does
-              not require a visa.
-            </p>
-            <p className="body">
-              Our curriculum follows ICAO Doc 7192 and the ERNAM instructional
-              framework. The instruction is delivered by specialists trained at ERNAM,
-              and the certificate is signed by them. That combination is what makes it
-              portable: the theory you pass here counts towards a PPL or CPL anywhere
-              the standards are recognised.
-            </p>
-          </div>
-
-          <div>
-            <p className="datum" style={{ marginBottom: 16 }}>What the school is</p>
-            <ul className="values values--iconed">
-              {[
-                'School of Theoretical Knowledge Instruction',
-                'Private tuition, one to one or in a small group',
-                'PPL and CPL theoretical prerequisite',
-                'ASECNA and ICAO WACAF office partner',
-                `Based in ${CONTACT.city}`,
-              ].map((item) => (
-                <li key={item}>
-                  <span className="values__icon"><Check size={15} /></span>
-                  <span>
-                    <b style={{ fontSize: '0.9375rem', fontWeight: 500 }}>{item}</b>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
 
       <Filings />
 
-      {/* ── mission ────────────────────────────────────────────────────────── */}
-      <section className="band">
+      {/* ── 01 The School Story ────────────────────────────────────────────── */}
+      <section className="section">
         <div className="shell">
-          <div className="band__head" style={{ maxWidth: '44ch' }}>
-            <p className="datum">What we are for</p>
-            <h2 className="h2">The written half of a licence, taught properly.</h2>
-          </div>
+          <div className="school-hero__grid" style={{ alignItems: 'center' }}>
+            <div style={{ display: 'grid', gap: 18 }}>
+              <span className="badge">Founded in Hargeisa</span>
+              <h2 className="title-md">Bringing World-Class Ground School to the Horn of Africa.</h2>
+              <p className="desc-md">
+                Until recently, anyone in Somaliland or Somalia pursuing a career as a commercial pilot,
+                flight dispatcher, or aviation manager had to travel to Europe, South Africa, or the
+                Middle East just to complete their basic aviation theory exams.
+              </p>
+              <p className="desc-md">
+                Stratosphere Aeronautics was established in Hargeisa to remove that barrier. Students can
+                now complete the full ten-subject theoretical prerequisite right here at home, with
+                one-on-one instruction from certified flight instructors, without prohibitive foreign
+                tuition fees and travel visa hurdles.
+              </p>
+              <div style={{ display: 'flex', gap: 14, marginTop: 10, flexWrap: 'wrap' }}>
+                <Link to="/register" className="btn btn--primary">
+                  Enroll in Ground School <ArrowRight size={16} />
+                </Link>
+                <a
+                  href={CONTACT.whatsapp}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn btn--whatsapp"
+                >
+                  <MessageCircle size={18} />
+                  Speak with Admissions
+                </a>
+              </div>
+            </div>
 
-          <div className="rule rule--split">
-            <p className="pull">
-              Rigorous air navigation training, and the systems thinking that goes with
-              it. <em>Technical mastery and professional judgement, taught together.</em>
-            </p>
-            <ul className="values values--iconed">
-              {VALUES.map((v) => (
-                <li key={v.term}>
-                  <span className="values__icon"><v.icon size={16} /></span>
-                  <span>
-                    <b>{v.term}</b>
-                    <span>{v.gloss}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
+            <div style={{ borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: 'var(--shadow-lg)' }}>
+              <img
+                src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80"
+                alt="Stratosphere Aeronautics ground school instruction in Hargeisa"
+                style={{ width: '100%', height: '400px', objectFit: 'cover' }}
+              />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── numbers ───────────────────────────────────────────────────────── */}
-      <section className="band band--edge">
+      {/* ── 02 Academic Values ─────────────────────────────────────────────── */}
+      <section className="section section--subtle">
         <div className="shell">
-          <div className="figures">
-            <div><b>{RAIL.established}</b><span>Founded</span></div>
-            <div><b>ICAO</b><span>Curriculum standard</span></div>
-            <div><b>ERNAM</b><span>Instructor training</span></div>
-            <div><b>10</b><span>Subjects taught</span></div>
+          <div className="section-head">
+            <span className="badge badge--amber">Core Principles</span>
+            <h2 className="title-md">What We Stand For</h2>
+            <p className="desc-md">
+              Aviation demands uncompromising rigor. Here are the values that govern our academy.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 24 }}>
+            {VALUES.map((v) => (
+              <div
+                key={v.term}
+                style={{
+                  padding: 28,
+                  borderRadius: 'var(--radius)',
+                  background: '#ffffff',
+                  border: '1px solid var(--border)',
+                  boxShadow: 'var(--shadow-sm)',
+                  display: 'grid',
+                  gap: 12,
+                }}
+              >
+                <div style={{ width: 44, height: 44, borderRadius: 10, background: 'var(--blue-light)', color: 'var(--blue)', display: 'grid', placeItems: 'center' }}>
+                  <v.icon size={22} />
+                </div>
+                <h3 className="title-sm">{v.term}</h3>
+                <p className="desc-md">{v.gloss}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ── accreditation ──────────────────────────────────────────────────── */}
-      <section className="band band--edge">
-        <div className="shell rule rule--split">
-          <div className="stack">
-            <p className="datum">Recognition</p>
-            <h2 className="h2">What we are aligned to.</h2>
-            <p className="body">
-              We are not accredited to issue licences. We are aligned to the frameworks
-              that decide what a licence requires, which is the part a student actually
-              needs covered.
+      {/* ── 03 Institutional Recognition & Accreditations ──────────────────── */}
+      <section className="section">
+        <div className="shell">
+          <div className="section-head">
+            <span className="badge">Accreditations & Partnerships</span>
+            <h2 className="title-md">Aligned to International Standards</h2>
+            <p className="desc-md">
+              We teach according to the international benchmarks that global civil aviation authorities demand.
             </p>
-            <Link to="/training" className="act" style={{ width: 'fit-content' }}>
-              See the syllabus
-              <ArrowRight size={15} />
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
+            {ACCREDITATION.map((a) => (
+              <div
+                key={a}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 14,
+                  padding: 20,
+                  borderRadius: 'var(--radius)',
+                  background: 'var(--bg-subtle)',
+                  border: '1px solid var(--border)',
+                }}
+              >
+                <CheckCircle2 size={22} style={{ color: 'var(--blue)', flexShrink: 0 }} />
+                <b style={{ color: 'var(--navy)', fontSize: '0.9375rem' }}>{a}</b>
+              </div>
+            ))}
+          </div>
+
+          <div
+            style={{
+              marginTop: 48,
+              padding: 32,
+              borderRadius: 'var(--radius-lg)',
+              background: '#f8fafc',
+              border: '1.5px solid var(--border)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: 24,
+            }}
+          >
+            <div>
+              <span className="badge badge--green">Hargeisa Campus Location</span>
+              <h3 className="title-sm" style={{ marginTop: 6 }}>Visit Our School Offices</h3>
+              <p className="desc-md">
+                Bahsane Building, 2nd Floor, Room 213 · Hargeisa, Somaliland
+              </p>
+            </div>
+            <Link to="/contact" className="btn btn--secondary">
+              Campus Map & Visiting Hours <ArrowRight size={16} />
             </Link>
           </div>
-
-          <ul className="values values--iconed">
-            {ACCREDITATION.map((a) => (
-              <li key={a}>
-                <span className="values__icon"><Globe size={16} /></span>
-                <span>
-                  <b style={{ fontSize: '0.9375rem', fontWeight: 500 }}>{a}</b>
-                </span>
-              </li>
-            ))}
-          </ul>
         </div>
       </section>
+
+      <Ask
+        title="Want to Visit Our Campus?"
+        body="Drop by our school in Bahsane Building or send a WhatsApp message to book a guided walk-through of our study facilities and textbooks."
+      />
     </Shell>
   );
 }

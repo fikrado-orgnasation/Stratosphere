@@ -1,92 +1,168 @@
 import { Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
 import Shell, { Filings, InquiryForm, PageHead } from '../components/Shell';
-import { ACCREDITATION, CONTACT } from '../data/site';
+import { CONTACT } from '../data/site';
 
 export default function Contact() {
   return (
     <Shell>
       <PageHead
-        kicker="Contact"
-        code="CON-01"
-        title="Three phone lines, two inboxes, one address."
-        lede="Use whichever is easiest. The form reaches the same people as the phone, and both reach us within the school day."
+        kicker="Admissions Office"
+        title="Contact Stratosphere Aeronautics"
+        lede="Have questions about aviation ground school, course schedules, or tuition? Reach our admissions desk in Hargeisa through WhatsApp, phone, or email."
       />
 
       <Filings />
 
-      <section className="band">
-        <div className="shell rule rule--split">
-          {/* ── the details ───────────────────────────────────────────────── */}
-          <div>
-            <p className="datum">Where to find us</p>
-            <dl className="details" style={{ marginTop: 20 }}>
-              <div>
-                <dt><MapPin size={14} /> Visit</dt>
-                <dd>
-                  <address>
-                    {CONTACT.lines.map((l) => <span key={l} style={{ display: 'block' }}>{l}</span>)}
-                    <span style={{ display: 'block', marginTop: 6 }}>{CONTACT.city}</span>
-                  </address>
-                </dd>
-              </div>
-              <div>
-                <dt><Phone size={14} /> Telephone</dt>
-                <dd>
-                  {CONTACT.phones.map((p) => (
-                    <a key={p.display} href={p.href}>{p.display}</a>
-                  ))}
-                </dd>
-              </div>
-              <div>
-                <dt><Mail size={14} /> Email</dt>
-                <dd>
-                  {CONTACT.emails.map((e) => (
-                    <a key={e} href={`mailto:${e}`}>{e}</a>
-                  ))}
-                </dd>
-              </div>
-              <div>
-                <dt><MessageCircle size={14} /> WhatsApp</dt>
-                <dd>
+      <section className="section">
+        <div className="shell">
+          <div className="register-layout">
+            {/* Left Col: Direct School Contact Methods */}
+            <div>
+              <h2 className="title-md" style={{ marginBottom: 20 }}>Get in Touch</h2>
+
+              <div style={{ display: 'grid', gap: 18 }}>
+                {/* WhatsApp Admissions Card */}
+                <div
+                  style={{
+                    padding: 24,
+                    borderRadius: 'var(--radius)',
+                    background: '#f0fdf4',
+                    border: '1.5px solid #bbf7d0',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: 16,
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                    <div
+                      style={{
+                        width: 46,
+                        height: 46,
+                        borderRadius: '50%',
+                        background: 'var(--wa)',
+                        color: '#ffffff',
+                        display: 'grid',
+                        placeItems: 'center',
+                      }}
+                    >
+                      <MessageCircle size={24} />
+                    </div>
+                    <div>
+                      <b style={{ color: 'var(--navy)', fontSize: '1.1rem', display: 'block' }}>
+                        WhatsApp Admissions
+                      </b>
+                      <span style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
+                        Instant chat with our flight school registrar
+                      </span>
+                    </div>
+                  </div>
                   <a
                     href={CONTACT.whatsapp}
                     target="_blank"
                     rel="noreferrer"
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: 9 }}
+                    className="btn btn--whatsapp btn--sm"
                   >
-                    {CONTACT.phones[0].display}
+                    Open WhatsApp Chat
                   </a>
-                </dd>
+                </div>
+
+                {/* Telephone Card */}
+                <div
+                  style={{
+                    padding: 24,
+                    borderRadius: 'var(--radius)',
+                    background: '#ffffff',
+                    border: '1px solid var(--border)',
+                    boxShadow: 'var(--shadow-sm)',
+                    display: 'grid',
+                    gap: 10,
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <Phone size={20} style={{ color: 'var(--blue)' }} />
+                    <b style={{ color: 'var(--navy)', fontSize: '1rem' }}>Telephone Direct Lines</b>
+                  </div>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14 }}>
+                    {CONTACT.phones.map((p) => (
+                      <a
+                        key={p.display}
+                        href={p.href}
+                        className="btn btn--sm btn--outline"
+                      >
+                        {p.display}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Physical Location Card */}
+                <div
+                  style={{
+                    padding: 24,
+                    borderRadius: 'var(--radius)',
+                    background: '#ffffff',
+                    border: '1px solid var(--border)',
+                    boxShadow: 'var(--shadow-sm)',
+                    display: 'grid',
+                    gap: 10,
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <MapPin size={20} style={{ color: 'var(--amber)' }} />
+                    <b style={{ color: 'var(--navy)', fontSize: '1rem' }}>Campus Address</b>
+                  </div>
+                  <address style={{ fontStyle: 'normal', color: 'var(--text-muted)', fontSize: '0.9375rem', lineHeight: 1.6 }}>
+                    {CONTACT.lines.map((l) => <span key={l} style={{ display: 'block' }}>{l}</span>)}
+                    <span style={{ display: 'block', fontWeight: 700, color: 'var(--navy)', marginTop: 4 }}>
+                      {CONTACT.city}
+                    </span>
+                  </address>
+                </div>
+
+                {/* Email Inquiries */}
+                <div
+                  style={{
+                    padding: 24,
+                    borderRadius: 'var(--radius)',
+                    background: '#ffffff',
+                    border: '1px solid var(--border)',
+                    boxShadow: 'var(--shadow-sm)',
+                    display: 'grid',
+                    gap: 10,
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <Mail size={20} style={{ color: 'var(--blue)' }} />
+                    <b style={{ color: 'var(--navy)', fontSize: '1rem' }}>Email Inquiries</b>
+                  </div>
+                  <div style={{ display: 'grid', gap: 6, fontSize: '0.9375rem' }}>
+                    {CONTACT.emails.map((e) => (
+                      <a key={e} href={`mailto:${e}`} style={{ color: 'var(--blue)', fontWeight: 600 }}>
+                        {e}
+                      </a>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </dl>
-          </div>
+            </div>
 
-          {/* ── the form ──────────────────────────────────────────────────── */}
-          <div>
-            <p className="datum">Enquiry form</p>
-            <h2 className="h3" style={{ marginTop: 14, marginBottom: 8 }}>Send us a message</h2>
-            <p className="body" style={{ marginBottom: 28 }}>
-              Tell us what you are hoping to do and we will tell you what it takes.
-            </p>
-            <InquiryForm />
-          </div>
-        </div>
-      </section>
+            {/* Right Col: Simple Inquiry Form */}
+            <div>
+              <div className="cart-summary-card">
+                <div>
+                  <span className="badge">Direct Form</span>
+                  <h3 className="title-sm" style={{ marginTop: 4 }}>Send Us a Message</h3>
+                  <p className="desc-md" style={{ marginTop: 6, fontSize: '0.875rem' }}>
+                    Fill out this form and our registrar will get back to you with timetable and tuition details.
+                  </p>
+                </div>
 
-      {/* ── accreditation ─────────────────────────────────────────────────── */}
-      <section className="band band--edge">
-        <div className="shell rule rule--split">
-          <div className="stack">
-            <p className="datum">Recognition</p>
-            <h2 className="h2">Who we are aligned with.</h2>
+                <InquiryForm />
+              </div>
+            </div>
           </div>
-          <ul className="values">
-            {ACCREDITATION.map((a) => (
-              <li key={a}>
-                <b style={{ fontSize: '0.9375rem', fontWeight: 500 }}>{a}</b>
-              </li>
-            ))}
-          </ul>
         </div>
       </section>
     </Shell>

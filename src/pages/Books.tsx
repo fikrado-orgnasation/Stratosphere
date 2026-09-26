@@ -1,138 +1,145 @@
-import { Check, MessageCircle } from 'lucide-react';
+import { MessageCircle, MapPin, Package } from 'lucide-react';
 import Shell, { Filings, PageHead } from '../components/Shell';
 import { BOOKS, CONTACT, PACKS } from '../data/site';
 
 function orderHref(title: string) {
   return `${CONTACT.whatsapp}?text=${encodeURIComponent(
-    `Hello, I would like to order: ${title}. Is it available at the school?`,
+    `Hello, I would like to reserve or enquire about this textbook: ${title} at the Stratosphere Aeronautics school office in Hargeisa.`
   )}`;
 }
 
-function money(n: number) {
-  return `$${n.toFixed(2)}`;
-}
-
 export default function Books() {
-  const held = BOOKS.filter((b) => b.stock === 'held').length;
+  const heldCount = BOOKS.filter((b) => b.stock === 'held').length;
 
   return (
     <Shell>
       <PageHead
-        kicker="Books"
-        code="BKS-01"
-        title="The texts for the ten subjects, kept in stock."
-        lede="Each subject has a book the school holds copies of. Buy at the school, or message us and we will set one aside for you."
-      >
-        <div className="figures" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))' }}>
-          <div><b>{BOOKS.length}</b><span>Titles</span></div>
-          <div><b>{held}</b><span>Held now</span></div>
-        </div>
-      </PageHead>
+        kicker="School Library"
+        title="Aviation Textbooks & Study Manuals"
+        lede="One physical text per subject, held directly in stock at our Hargeisa campus. Reserve your copies or purchase through our school office."
+      />
 
       <Filings />
 
-      {/* ── the shelf ─────────────────────────────────────────────────────── */}
-      <section className="band">
+      {/* ── 01 Textbook Catalog Grid ───────────────────────────────────────── */}
+      <section className="section">
         <div className="shell">
-          <div className="band__head">
-            <p className="datum">By subject</p>
-            <h2 className="h2">One title per subject.</h2>
-            <p className="body">
-              Study them in any order. If you take all ten, you take all ten books.
+          <div className="section-head">
+            <span className="badge">Curriculum Texts</span>
+            <h2 className="title-md">The 10 Core Subject Manuals</h2>
+            <p className="desc-md">
+              Every subject has a dedicated textbook. Currently, {heldCount} of 10 titles are held
+              in physical stock in Hargeisa.
             </p>
           </div>
 
-          <div className="books">
+          <div className="book-cards-grid">
             {BOOKS.map((b) => (
-              <article className={`book ${b.price === null ? 'book--tbc' : ''}`} key={b.ref}>
-                <div className="book__cover" aria-hidden="true">
-                  <span className="book__cover-mark" />
-                  <span className="book__cover-code">{b.ref} · {b.subject}</span>
-                  <span className="book__cover-title">{b.title}</span>
+              <div key={b.ref} className="school-book-card">
+                <div className="school-book-card__cover">
+                  <div>
+                    <span className="school-book-card__code">{b.ref} · {b.subject}</span>
+                    <h3 className="school-book-card__title" style={{ marginTop: 8 }}>{b.title}</h3>
+                  </div>
+                  <span className="school-book-card__edition">{b.edition}</span>
                 </div>
 
-                <div className="book__meta">
-                  <p className="book__ref">{b.ref} · {b.subject}</p>
-                  <h3 className="book__title">{b.title}</h3>
-                  <p className="book__edition">{b.edition}</p>
-                  <p className="book__note">{b.note}</p>
+                <div className="school-book-card__body">
+                  <p className="school-book-card__note">{b.note}</p>
 
-                  <div className="book__buy">
-                    <span className="book__price">
-                      {b.price === null ? 'Price to be confirmed' : money(b.price)}
+                  <div className="school-book-card__foot">
+                    <span className={`stock-pill ${b.stock === 'held' ? 'stock-pill--held' : 'stock-pill--order'}`}>
+                      {b.stock === 'held' ? 'In Stock (Hargeisa)' : 'On Order'}
                     </span>
-                    <span className={`book__stock ${b.stock === 'held' ? 'book__stock--held' : 'book__stock--order'}`}>
-                      {b.stock === 'held' ? 'Held at the school' : 'On order'}
-                    </span>
+                    <b style={{ color: 'var(--navy)', fontSize: '1rem' }}>
+                      {b.price ? `$${b.price}` : 'Theory Included'}
+                    </b>
                   </div>
 
                   <a
-                    className="act book__order"
                     href={orderHref(b.title)}
                     target="_blank"
                     rel="noreferrer"
+                    className="btn btn--sm btn--whatsapp"
+                    style={{ width: '100%', marginTop: 8 }}
                   >
-                    {b.stock === 'held' ? 'Ask to set one aside' : 'Ask about availability'}
-                    <MessageCircle size={14} />
+                    <MessageCircle size={15} />
+                    Reserve on WhatsApp
                   </a>
                 </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── study packs ───────────────────────────────────────────────────── */}
-      <section className="band band--edge">
-        <div className="shell rule rule--split">
-          <div className="stack">
-            <p className="datum">Study packs</p>
-            <h2 className="h2">Or buy the set.</h2>
-            <p className="body">
-              The packs are the books for a licence, bundled. Pack prices are not set
-              yet — message us and we will confirm before you pay anything.
-            </p>
-            <p className="mono mono--xs muted">
-              Held and sold at {CONTACT.lines[0]}, {CONTACT.city}.
-            </p>
-          </div>
-
-          <div>
-            {PACKS.map((p) => (
-              <div className="values" key={p.code} style={{ marginBottom: 4 }}>
-                <li style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) auto', gap: 20, alignItems: 'baseline' }}>
-                  <span style={{ maxWidth: 'none' }}>
-                    <b style={{ display: 'block', fontSize: '1.0625rem', fontWeight: 600, letterSpacing: '-0.015em', color: 'var(--chalk)' }}>
-                      {p.name}
-                    </b>
-                    <span style={{ display: 'block', marginTop: 5 }}>{p.desc}</span>
-                  </span>
-                  <span style={{ textAlign: 'right' }}>
-                    <span className="book__price" style={{ display: 'block' }}>
-                      {p.price === null ? 'TBC' : money(p.price)}
-                    </span>
-                    <span className="choose__meta" style={{ display: 'block', marginTop: 5 }}>
-                      {p.subjects}
-                    </span>
-                  </span>
-                </li>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── honesty about the catalogue ───────────────────────────────────── */}
-      <section className="band band--edge band--tight">
+      {/* ── 02 Study Packs Bundles ─────────────────────────────────────────── */}
+      <section className="section section--subtle">
         <div className="shell">
-          <div className="annunciator" style={{ maxWidth: '62ch' }}>
-            <b><Check size={14} /> Before you order</b>
-            <p>
-              This list is not a confirmed catalogue yet. The titles, editions and
-              stock shown are the school’s current shortlist, not verified supplier
-              records, and pack prices are still to be set. Message us before you
-              travel — we will confirm the exact book and the price, and tell you if
-              it needs ordering in.
+          <div className="section-head">
+            <span className="badge badge--amber">Study Packs</span>
+            <h2 className="title-md">Complete Licence Theory Bundles</h2>
+            <p className="desc-md">
+              Save time and study systematically by getting your full course books together.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
+            {PACKS.map((pack) => (
+              <div
+                key={pack.code}
+                style={{
+                  padding: 28,
+                  borderRadius: 'var(--radius-lg)',
+                  background: '#ffffff',
+                  border: '1px solid var(--border)',
+                  boxShadow: 'var(--shadow-sm)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 12,
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <span className="badge badge--amber">{pack.subjects}</span>
+                  <Package size={20} style={{ color: 'var(--amber)' }} />
+                </div>
+
+                <h3 className="title-sm">{pack.name}</h3>
+                <p className="desc-md">{pack.desc}</p>
+
+                <div style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid var(--border)' }}>
+                  <a
+                    href={`${CONTACT.whatsapp}?text=${encodeURIComponent(`Hello, I would like to enquire about the ${pack.name} bundle at Stratosphere Aeronautics.`)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn btn--whatsapp"
+                    style={{ width: '100%' }}
+                  >
+                    <MessageCircle size={18} />
+                    Enquire on WhatsApp
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div
+            style={{
+              marginTop: 40,
+              padding: 20,
+              borderRadius: 'var(--radius)',
+              background: '#eff6ff',
+              border: '1px solid #bfdbfe',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 14,
+            }}
+          >
+            <MapPin size={24} style={{ color: 'var(--blue)', flexShrink: 0 }} />
+            <p style={{ fontSize: '0.9375rem', color: '#1e3a8a' }}>
+              All books are stored and distributed directly from our campus office:
+              <b> {CONTACT.lines[0]}, {CONTACT.city}</b>. You can collect your textbooks
+              in person upon enrollment.
             </p>
           </div>
         </div>
