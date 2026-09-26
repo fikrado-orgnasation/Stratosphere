@@ -1,14 +1,16 @@
 import { Link } from 'react-router-dom';
-import { ArrowDownRight, ArrowRight } from 'lucide-react';
+import {
+  ArrowDownRight, ArrowRight, BookOpen, GraduationCap, Globe, Users,
+} from 'lucide-react';
 import Shell, { Ask, Filings } from '../components/Shell';
 import FlightCanvas from '../components/FlightCanvasLazy';
 import { BOOKS, RAIL, STUDENT_JOURNEY, SUBJECTS } from '../data/site';
 
 const ADVANTAGE = [
-  { title: 'One to one, always', body: 'Every subject is taught privately. There is no lecture hall version of this course.' },
-  { title: 'Aligned to ICAO', body: 'Built on Doc 7192 and the ERNAM framework, so the theory travels with you.' },
-  { title: 'Taught by ERNAM-trained instructors', body: 'The people teaching you are the people who signed the certificate.' },
-  { title: 'Books kept in stock', body: 'One text per subject, held at the school. You are not hunting for a PDF.' },
+  { icon: Users, title: 'One to one, always', body: 'Every subject is taught privately. There is no lecture hall version of this course.' },
+  { icon: Globe, title: 'Aligned to ICAO', body: 'Built on Doc 7192 and the ERNAM framework, so the theory travels with you.' },
+  { icon: GraduationCap, title: 'Taught by ERNAM-trained instructors', body: 'The people teaching you are the people who signed the certificate.' },
+  { icon: BookOpen, title: 'Books kept in stock', body: 'One text per subject, held at the school. You are not hunting for a PDF.' },
 ];
 
 export default function Home() {
@@ -24,11 +26,14 @@ export default function Home() {
             <div>
               <p className="datum">Theoretical knowledge instruction · Hargeisa</p>
               <h1 className="display hero__title">
-                Stratosphere Aeronautics — School of Theoretical Knowledge Instruction (TKI)
+                Stratosphere Aeronautics
               </h1>
+              <p className="hero__subtitle">
+                School of Theoretical Knowledge Instruction (TKI)
+              </p>
               <p className="lede hero__lede">
-                The theory every pilot is examined on, taught one to one in Hargeisa to
-                ICAO and ERNAM standards. Start with one subject or take all ten.
+                Aviation theory to ICAO standards, taught one to one in Hargeisa.
+                Start with one subject or take all ten.
               </p>
               <div className="hero__actions">
                 <Link to="/register" className="btn btn--primary">
@@ -136,13 +141,16 @@ export default function Home() {
             </div>
           </div>
 
-          <ul className="values">
+          <ul className="values values--iconed">
             {BOOKS.slice(0, 4).map((b) => (
               <li key={b.ref}>
-                <b>{b.title}</b>
+                <span className="values__icon"><BookOpen size={16} /></span>
                 <span>
-                  {b.edition} · for {b.subject} ·{' '}
-                  {b.stock === 'held' ? 'held at the school' : 'on order'}
+                  <b>{b.title}</b>
+                  <span>
+                    {b.edition} · for {b.subject} ·{' '}
+                    {b.stock === 'held' ? 'held at the school' : 'on order'}
+                  </span>
                 </span>
               </li>
             ))}
@@ -165,11 +173,14 @@ export default function Home() {
             </Link>
           </div>
 
-          <ul className="values">
+          <ul className="values values--iconed">
             {ADVANTAGE.map((a) => (
               <li key={a.title}>
-                <b>{a.title}</b>
-                <span>{a.body}</span>
+                <span className="values__icon"><a.icon size={16} /></span>
+                <span>
+                  <b>{a.title}</b>
+                  <span>{a.body}</span>
+                </span>
               </li>
             ))}
           </ul>

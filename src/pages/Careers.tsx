@@ -45,7 +45,7 @@ export default function Careers() {
               If you do want the wings, this is the theory that comes <em>before</em> them.
             </p>
             <p className="body">
-              A Private Pilot Licence and a Commercial Pilot Licence both begin with a
+              A Private Licence and a Commercial Licence both begin with a
               written theoretical knowledge requirement. Passing the ten subjects here
               is how you satisfy it. The flying hours come after, on top.
             </p>

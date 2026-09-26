@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Check } from 'lucide-react';
+import { ArrowRight, Check, Target, Shield, Award, Globe } from 'lucide-react';
 import Shell, { Filings, PageHead } from '../components/Shell';
 import { ACCREDITATION, CONTACT, RAIL } from '../data/site';
 
 const VALUES = [
-  { term: 'Precision', gloss: 'If a number can be checked, it gets checked. Theory is the part you cannot wing.' },
-  { term: 'Safety', gloss: 'The first thing we teach and the first thing we hold ourselves to.' },
-  { term: 'Integrity', gloss: 'We would rather tell you a subject is not ready than sign it off early.' },
-  { term: 'Excellence', gloss: 'The standard is international, and it does not bend because the school is local.' },
+  { icon: Target, term: 'Precision', gloss: 'If a number can be checked, it gets checked. Theory is the part you cannot wing.' },
+  { icon: Shield, term: 'Safety', gloss: 'The first thing we teach and the first thing we hold ourselves to.' },
+  { icon: Award, term: 'Integrity', gloss: 'We would rather tell you a subject is not ready than sign it off early.' },
+  { icon: Globe, term: 'Excellence', gloss: 'The standard is international, and it does not bend because the school is local.' },
 ];
 
 export default function About() {
@@ -17,14 +17,14 @@ export default function About() {
         kicker="About us"
         code="ABT-01"
         title="A ground school, in the country that needed one."
-        lede="Stratosphere Aeronautics was established in 2026 so that the theoretical knowledge behind a pilot licence could be studied in Hargeisa — privately, properly, and to a standard that travels."
+        lede="Stratosphere Aeronautics was established in 2026 so that the theoretical knowledge behind an aviation licence could be studied in Hargeisa — privately, properly, and to a standard that travels."
       />
 
       <section className="band band--tight" style={{ paddingTop: 0 }}>
         <div className="shell rule rule--split">
           <div className="stack">
             <p className="body">
-              Until now, anyone in Somaliland who wanted the theory behind a pilot
+              Until now, anyone in Somaliland who wanted the theory behind an aviation
               licence had to leave the country. Stratosphere was set up in Hargeisa so
               that the syllabus could be studied here, in Somali, at a cost that does
               not require a visa.
@@ -40,7 +40,7 @@ export default function About() {
 
           <div>
             <p className="datum" style={{ marginBottom: 16 }}>What the school is</p>
-            <ul className="values">
+            <ul className="values values--iconed">
               {[
                 'School of Theoretical Knowledge Instruction',
                 'Private tuition, one to one or in a small group',
@@ -48,9 +48,11 @@ export default function About() {
                 'ASECNA and ICAO WACAF office partner',
                 `Based in ${CONTACT.city}`,
               ].map((item) => (
-                <li key={item} style={{ display: 'grid', gridTemplateColumns: '20px 1fr', gap: 12, alignItems: 'start' }}>
-                  <Check size={15} style={{ color: 'var(--amber)', marginTop: 5 }} />
-                  <b style={{ fontSize: '0.9375rem', fontWeight: 500 }}>{item}</b>
+                <li key={item}>
+                  <span className="values__icon"><Check size={15} /></span>
+                  <span>
+                    <b style={{ fontSize: '0.9375rem', fontWeight: 500 }}>{item}</b>
+                  </span>
                 </li>
               ))}
             </ul>
@@ -73,11 +75,14 @@ export default function About() {
               Rigorous air navigation training, and the systems thinking that goes with
               it. <em>Technical mastery and professional judgement, taught together.</em>
             </p>
-            <ul className="values">
+            <ul className="values values--iconed">
               {VALUES.map((v) => (
                 <li key={v.term}>
-                  <b>{v.term}</b>
-                  <span>{v.gloss}</span>
+                  <span className="values__icon"><v.icon size={16} /></span>
+                  <span>
+                    <b>{v.term}</b>
+                    <span>{v.gloss}</span>
+                  </span>
                 </li>
               ))}
             </ul>
@@ -114,10 +119,13 @@ export default function About() {
             </Link>
           </div>
 
-          <ul className="values">
+          <ul className="values values--iconed">
             {ACCREDITATION.map((a) => (
               <li key={a}>
-                <b style={{ fontSize: '0.9375rem', fontWeight: 500 }}>{a}</b>
+                <span className="values__icon"><Globe size={16} /></span>
+                <span>
+                  <b style={{ fontSize: '0.9375rem', fontWeight: 500 }}>{a}</b>
+                </span>
               </li>
             ))}
           </ul>

@@ -277,8 +277,17 @@ type Status = 'idle' | 'busy' | 'ok' | 'error';
 
 const EMPTY = { name: '', email: '', phone: '', message: '' };
 
-export function InquiryForm() {
-  const [values, setValues] = useState(EMPTY);
+export function InquiryForm({ defaultMsg }: { defaultMsg?: string }) {
+  const [values, setValues] = useState(() =>
+    defaultMsg ? { ...EMPTY, message: defaultMsg } : EMPTY,
+  );
+  const prevDefault = useRef(defaultMsg);
+  useEffect(() => {
+    if (defaultMsg && defaultMsg !== prevDefault.current) {
+      setValues((v) => ({ ...v, message: defaultMsg }));
+    }
+    prevDefault.current = defaultMsg;
+  }, [defaultMsg]);
   const [errors, setErrors] = useState<Partial<Record<keyof typeof EMPTY, string>>>({});
   const [status, setStatus] = useState<Status>('idle');
   const [note, setNote] = useState('');

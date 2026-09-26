@@ -124,12 +124,12 @@ export type Book = {
 };
 
 export const BOOKS: Book[] = [
-  { ref: 'B01', subject: 'M01', title: 'Air Law for Student Pilots', edition: '2nd edition', note: 'The core reference for M01. Covers the rules of the air, international regulation and airspace classification.', price: 45, stock: 'held' },
+  { ref: 'B01', subject: 'M01', title: 'Air Law for Aviation Students', edition: '2nd edition', note: 'The core reference for M01. Covers the rules of the air, international regulation and airspace classification.', price: 45, stock: 'held' },
   { ref: 'B02', subject: 'M02', title: 'Principles of Flight', edition: '3rd edition', note: 'Aerodynamics, aircraft systems and performance, for M02 and the performance elements of M05.', price: 40, stock: 'held' },
-  { ref: 'B03', subject: 'M03', title: 'Meteorology for the Private Pilot', edition: '5th edition', note: 'Weather patterns and the go and no-go decisions that M03 is examined on.', price: null, stock: 'order' },
+  { ref: 'B03', subject: 'M03', title: 'Meteorology for Aviation', edition: '5th edition', note: 'Weather patterns and the go and no-go decisions that M03 is examined on.', price: null, stock: 'order' },
   { ref: 'B04', subject: 'M04', title: 'Navigation and Flight Planning', edition: '1st edition', note: 'Route planning, GPS, VOR and ADF, covering M04 end to end.', price: null, stock: 'order' },
   { ref: 'B05', subject: 'M05', title: 'Aircraft General Knowledge Manual', edition: '4th edition', note: 'Systems, powerplants, airframe and electrical systems, for M05.', price: 38, stock: 'held' },
-  { ref: 'B06', subject: 'M06', title: 'Human Factors in Aviation', edition: '2nd edition', note: 'The physiological and psychological material behind M06, written for student pilots.', price: 42, stock: 'held' },
+  { ref: 'B06', subject: 'M06', title: 'Human Factors in Aviation', edition: '2nd edition', note: 'The physiological and psychological material behind M06, written for aviation students.', price: 42, stock: 'held' },
   { ref: 'B07', subject: 'M07', title: 'Radio Communications Manual', edition: '2nd edition', note: 'Standard phraseology, procedures and frequency management for M07.', price: null, stock: 'order' },
   { ref: 'B08', subject: 'M08', title: 'Air Traffic Control and the AIM', edition: '3rd edition', note: 'ATC procedures, airspace structure and aeronautical information, for M08.', price: null, stock: 'order' },
   { ref: 'B09', subject: 'M09', title: 'Safety Management Systems for Aviation', edition: '1st edition', note: 'SMS frameworks, risk assessment and safety culture, for M09.', price: 35, stock: 'held' },
@@ -140,7 +140,7 @@ export const BOOKS: Book[] = [
 export type Pack = { code: string; name: string; desc: string; subjects: string; price: number | null };
 
 export const PACKS: Pack[] = [
-  { code: 'PPL', name: 'PPL theory pack', desc: 'Everything the written requirement for a Private Pilot Licence asks for, in one order.', subjects: '6 subjects', price: null },
+  { code: 'PPL', name: 'PPL theory pack', desc: 'Everything the written requirement for a Private Licence asks for, in one order.', subjects: '6 subjects', price: null },
   { code: 'CPL', name: 'CPL theory pack', desc: 'The full commercial syllabus, taken to ATPL level where it goes beyond PPL.', subjects: '10 subjects', price: null },
   { code: 'SGL', name: 'Single subject', desc: 'One subject, examined and certificated on its own. Most people start here.', subjects: '1 subject', price: 12 },
 ];
