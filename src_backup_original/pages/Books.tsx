@@ -1,6 +1,5 @@
 import { MessageCircle, MapPin, Package } from 'lucide-react';
 import Shell, { Filings, PageHead } from '../components/Shell';
-import TiltCard from '../components/TiltCard';
 import { BOOKS, CONTACT, PACKS } from '../data/site';
 
 function orderHref(title: string) {
@@ -36,7 +35,7 @@ export default function Books() {
 
           <div className="book-cards-grid">
             {BOOKS.map((b) => (
-              <TiltCard key={b.ref} maxTilt={6} className="school-book-card">
+              <div key={b.ref} className="school-book-card">
                 <div className="school-book-card__cover">
                   <div>
                     <span className="school-book-card__code">{b.ref} · {b.subject}</span>
@@ -68,7 +67,7 @@ export default function Books() {
                     Reserve on WhatsApp
                   </a>
                 </div>
-              </TiltCard>
+              </div>
             ))}
           </div>
         </div>
@@ -78,7 +77,7 @@ export default function Books() {
       <section className="section section--subtle">
         <div className="shell">
           <div className="section-head">
-            <span className="badge badge--gold">Study Packs</span>
+            <span className="badge badge--amber">Study Packs</span>
             <h2 className="title-md">Complete Licence Theory Bundles</h2>
             <p className="desc-md">
               Save time and study systematically by getting your full course books together.
@@ -87,29 +86,28 @@ export default function Books() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
             {PACKS.map((pack) => (
-              <TiltCard
+              <div
                 key={pack.code}
-                maxTilt={6}
                 style={{
                   padding: 28,
                   borderRadius: 'var(--radius-lg)',
                   background: '#ffffff',
-                  border: '1px solid var(--card-border)',
-                  boxShadow: 'var(--shadow-3d)',
+                  border: '1px solid var(--border)',
+                  boxShadow: 'var(--shadow-sm)',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: 12,
                 }}
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span className="badge badge--gold">{pack.subjects}</span>
-                  <Package size={20} style={{ color: 'var(--gold-deep)' }} />
+                  <span className="badge badge--amber">{pack.subjects}</span>
+                  <Package size={20} style={{ color: 'var(--amber)' }} />
                 </div>
 
                 <h3 className="title-sm">{pack.name}</h3>
                 <p className="desc-md">{pack.desc}</p>
 
-                <div style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid var(--card-border)' }}>
+                <div style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid var(--border)' }}>
                   <a
                     href={`${CONTACT.whatsapp}?text=${encodeURIComponent(`Hello, I would like to enquire about the ${pack.name} bundle at Stratosphere Aeronautics.`)}`}
                     target="_blank"
@@ -121,25 +119,24 @@ export default function Books() {
                     Enquire on WhatsApp
                   </a>
                 </div>
-              </TiltCard>
+              </div>
             ))}
           </div>
 
           <div
             style={{
               marginTop: 40,
-              padding: 24,
+              padding: 20,
               borderRadius: 'var(--radius)',
-              background: '#f8fafc',
-              border: '1px solid var(--gold-border)',
-              boxShadow: 'var(--shadow-3d-sm)',
+              background: '#eff6ff',
+              border: '1px solid #bfdbfe',
               display: 'flex',
               alignItems: 'center',
-              gap: 16,
+              gap: 14,
             }}
           >
-            <MapPin size={26} style={{ color: 'var(--gold-deep)', flexShrink: 0 }} />
-            <p style={{ fontSize: '0.95rem', color: 'var(--navy)', lineHeight: 1.6 }}>
+            <MapPin size={24} style={{ color: 'var(--blue)', flexShrink: 0 }} />
+            <p style={{ fontSize: '0.9375rem', color: '#1e3a8a' }}>
               All books are stored and distributed directly from our campus office:
               <b> {CONTACT.lines[0]}, {CONTACT.city}</b>. You can collect your textbooks
               in person upon enrollment.

@@ -4,7 +4,6 @@ import {
 } from 'lucide-react';
 import Shell, { Ask, Filings } from '../components/Shell';
 import CinematicAtmosphere from '../components/CinematicAtmosphere';
-import TiltCard from '../components/TiltCard';
 import { CONTACT, FLEET, STUDENT_JOURNEY, SUBJECTS } from '../data/site';
 
 const SUBJECT_PHOTOS: Record<string, string> = {
@@ -35,7 +34,7 @@ export default function Home() {
         <div className="shell school-hero__grid">
           <div className="school-hero__content">
             <span className="badge badge--white">
-              <GraduationCap size={15} style={{ color: 'var(--gold-light)' }} />
+              <GraduationCap size={15} />
               Aviation Ground School · Hargeisa, Somaliland
             </span>
 
@@ -68,7 +67,7 @@ export default function Home() {
               </Link>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginTop: 12, fontSize: '0.875rem', color: '#cbd5e1', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginTop: 12, fontSize: '0.875rem', color: '#cbd5e1' }}>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                 <CheckCircle2 size={16} style={{ color: 'var(--wa)' }} />
                 No prior flight experience required
@@ -80,7 +79,7 @@ export default function Home() {
             </div>
           </div>
 
-          <TiltCard maxTilt={8} className="school-hero__image-card">
+          <div className="school-hero__image-card">
             <img
               src="https://images.pexels.com/photos/36410538/pexels-photo-36410538.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
               alt="Aviation student in flight training cockpit"
@@ -93,7 +92,7 @@ export default function Home() {
               </div>
               <span className="badge badge--green" style={{ margin: 0 }}>Active Enrolment</span>
             </div>
-          </TiltCard>
+          </div>
         </div>
       </section>
 
@@ -138,14 +137,14 @@ export default function Home() {
 
           <div className="features-grid">
             {/* Card 1 */}
-            <TiltCard maxTilt={6} className="photo-feature-card">
+            <div className="photo-feature-card">
               <div className="photo-feature-card__img-wrap">
                 <img
                   src="https://images.pexels.com/photos/18870246/pexels-photo-18870246.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
                   alt="One on one aviation teaching in ground school"
                   className="photo-feature-card__img"
                 />
-                <span className="badge badge--gold photo-feature-card__badge">1-on-1 Learning</span>
+                <span className="badge badge--amber photo-feature-card__badge">1-on-1 Learning</span>
               </div>
               <div className="photo-feature-card__content">
                 <h3 className="photo-feature-card__title">One to One, Always</h3>
@@ -157,10 +156,10 @@ export default function Home() {
                   Learn about our instructors <ChevronRight size={15} />
                 </Link>
               </div>
-            </TiltCard>
+            </div>
 
             {/* Card 2 */}
-            <TiltCard maxTilt={6} className="photo-feature-card">
+            <div className="photo-feature-card">
               <div className="photo-feature-card__img-wrap">
                 <img
                   src="https://images.pexels.com/photos/14324045/pexels-photo-14324045.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
@@ -179,17 +178,17 @@ export default function Home() {
                   Explore the 10 subjects <ChevronRight size={15} />
                 </Link>
               </div>
-            </TiltCard>
+            </div>
 
             {/* Card 3 */}
-            <TiltCard maxTilt={6} className="photo-feature-card">
+            <div className="photo-feature-card">
               <div className="photo-feature-card__img-wrap">
                 <img
                   src="https://images.pexels.com/photos/327882/pexels-photo-327882.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
                   alt="Aviation textbooks on student study desk"
                   className="photo-feature-card__img"
                 />
-                <span className="badge badge--gold photo-feature-card__badge">In Stock</span>
+                <span className="badge photo-feature-card__badge">In Stock</span>
               </div>
               <div className="photo-feature-card__content">
                 <h3 className="photo-feature-card__title">Physical Textbooks in Stock</h3>
@@ -201,7 +200,7 @@ export default function Home() {
                   Browse our library <ChevronRight size={15} />
                 </Link>
               </div>
-            </TiltCard>
+            </div>
           </div>
         </div>
       </section>
@@ -220,7 +219,7 @@ export default function Home() {
 
           <div className="courses-grid">
             {SUBJECTS.slice(0, 6).map((s, i) => (
-              <TiltCard key={s.code} maxTilt={6} className="course-card">
+              <div key={s.code} className="course-card">
                 <div className="course-card__image-wrap">
                   <img
                     src={SUBJECT_PHOTOS[s.code]}
@@ -246,11 +245,11 @@ export default function Home() {
                     </Link>
                   </div>
                 </div>
-              </TiltCard>
+              </div>
             ))}
           </div>
 
-          <div style={{ textAlign: 'center', marginTop: 40 }}>
+          <div style={{ textAlign: 'center', marginTop: 36 }}>
             <Link to="/training" className="btn btn--secondary">
               View All 10 Subjects with Exam Details
               <ArrowRight size={16} />
@@ -263,7 +262,7 @@ export default function Home() {
       <section className="section section--subtle">
         <div className="shell">
           <div className="section-head">
-            <span className="badge badge--gold">Our Fleet</span>
+            <span className="badge badge--amber">Our Fleet</span>
             <h2 className="title-md">The Aircraft You Are Learning About.</h2>
             <p className="desc-md">
               Our theoretical knowledge connects directly with standard training aircraft
@@ -273,7 +272,7 @@ export default function Home() {
 
           <div className="fleet-grid">
             {FLEET.map((f, idx) => (
-              <TiltCard key={f.tail} maxTilt={6} className="fleet-card">
+              <div key={f.tail} className="fleet-card">
                 <img
                   src={FLEET_PHOTOS[idx]}
                   alt={f.type}
@@ -285,7 +284,7 @@ export default function Home() {
                   <h3 className="fleet-card__type">{f.type}</h3>
                   <span className="fleet-card__tail">Tail Identifier: {f.tail}</span>
                 </div>
-              </TiltCard>
+              </div>
             ))}
           </div>
         </div>
@@ -304,33 +303,32 @@ export default function Home() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 24 }}>
             {STUDENT_JOURNEY.map((step) => (
-              <TiltCard
+              <div
                 key={step.code}
-                maxTilt={5}
                 style={{
-                  padding: 28,
+                  padding: 24,
                   borderRadius: 'var(--radius)',
-                  border: '1px solid var(--card-border)',
+                  border: '1px solid var(--border)',
                   background: '#ffffff',
-                  boxShadow: 'var(--shadow-3d)',
+                  boxShadow: 'var(--shadow-sm)',
                   display: 'grid',
-                  gap: 12,
+                  gap: 10,
                 }}
               >
-                <span style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', fontWeight: 700, color: 'var(--gold-deep)' }}>
+                <span style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--blue)' }}>
                   {step.code}
                 </span>
-                <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.2rem', fontWeight: 700, color: 'var(--navy)' }}>
+                <h4 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--navy)' }}>
                   {step.title}
                 </h4>
-                <p style={{ fontSize: '0.9375rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                <p style={{ fontSize: '0.9375rem', color: 'var(--text-muted)' }}>
                   {step.body}
                 </p>
-              </TiltCard>
+              </div>
             ))}
           </div>
 
-          <div style={{ textAlign: 'center', marginTop: 36 }}>
+          <div style={{ textAlign: 'center', marginTop: 32 }}>
             <Link to="/register" className="btn btn--primary">
               Start Step 1: Free Consultation
               <ArrowRight size={16} />

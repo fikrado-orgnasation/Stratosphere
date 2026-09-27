@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, MessageCircle } from 'lucide-react';
 import Shell, { Filings, PageHead } from '../components/Shell';
-import TiltCard from '../components/TiltCard';
 import { CONTACT, SUBJECTS } from '../data/site';
 
 const SUBJECT_PHOTOS: Record<string, string> = {
@@ -49,7 +48,7 @@ export default function Training() {
 
           <div className="courses-grid">
             {SUBJECTS.map((s, i) => (
-              <TiltCard key={s.code} maxTilt={6} className="course-card">
+              <div key={s.code} className="course-card">
                 <div className="course-card__image-wrap">
                   <img
                     src={SUBJECT_PHOTOS[s.code]}
@@ -75,7 +74,7 @@ export default function Training() {
                     </Link>
                   </div>
                 </div>
-              </TiltCard>
+              </div>
             ))}
           </div>
         </div>
@@ -85,7 +84,7 @@ export default function Training() {
       <section className="section section--subtle">
         <div className="shell">
           <div className="section-head">
-            <span className="badge badge--gold">Course Delivery</span>
+            <span className="badge">Course Delivery</span>
             <h2 className="title-md">How Our Ground School Operates</h2>
             <p className="desc-md">
               Structured for serious progress, high exam pass rates, and lasting aviation mastery.
@@ -94,28 +93,27 @@ export default function Training() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 24 }}>
             {LOGISTICS.map((item) => (
-              <TiltCard
+              <div
                 key={item.title}
-                maxTilt={5}
                 style={{
-                  padding: 28,
+                  padding: 24,
                   borderRadius: 'var(--radius)',
                   background: '#ffffff',
-                  border: '1px solid var(--card-border)',
-                  boxShadow: 'var(--shadow-3d)',
+                  border: '1px solid var(--border)',
+                  boxShadow: 'var(--shadow-sm)',
                 }}
               >
-                <b style={{ fontFamily: 'var(--font-serif)', color: 'var(--navy)', fontSize: '1.2rem', display: 'block', marginBottom: 10 }}>
+                <b style={{ color: 'var(--navy)', fontSize: '1.1rem', display: 'block', marginBottom: 8 }}>
                   {item.title}
                 </b>
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.9375rem', lineHeight: 1.6 }}>
                   {item.body}
                 </p>
-              </TiltCard>
+              </div>
             ))}
           </div>
 
-          <div style={{ textAlign: 'center', marginTop: 40, display: 'flex', justifyContent: 'center', gap: 14, flexWrap: 'wrap' }}>
+          <div style={{ textAlign: 'center', marginTop: 36, display: 'flex', justifyContent: 'center', gap: 14, flexWrap: 'wrap' }}>
             <Link to="/register" className="btn btn--primary">
               Enroll for Ground School
               <ArrowRight size={16} />

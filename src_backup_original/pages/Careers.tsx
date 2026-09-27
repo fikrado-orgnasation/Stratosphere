@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle2, MessageCircle } from 'lucide-react';
 import Shell, { Ask, Filings, PageHead } from '../components/Shell';
-import TiltCard from '../components/TiltCard';
 import { CAREERS, CONTACT } from '../data/site';
 
 export default function Careers() {
@@ -29,14 +28,13 @@ export default function Careers() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 32 }}>
             {/* Pathway 1: Flying */}
-            <TiltCard
-              maxTilt={6}
+            <div
               style={{
                 borderRadius: 'var(--radius-lg)',
                 overflow: 'hidden',
-                border: '1.5px solid var(--card-border)',
+                border: '1.5px solid var(--border)',
                 background: '#ffffff',
-                boxShadow: 'var(--shadow-3d)',
+                boxShadow: 'var(--shadow)',
               }}
             >
               <img
@@ -45,7 +43,7 @@ export default function Careers() {
                 style={{ width: '100%', height: '220px', objectFit: 'cover' }}
               />
               <div style={{ padding: 28, display: 'grid', gap: 14 }}>
-                <span className="badge badge--gold">Flying Path</span>
+                <span className="badge badge--amber">Flying Path</span>
                 <h3 className="title-sm">Commercial & Private Licence (PPL / CPL)</h3>
                 <p className="desc-md">
                   Every civil aviation authority requires passing comprehensive theoretical exams before
@@ -53,11 +51,11 @@ export default function Careers() {
                   foundation before flight training hours.
                 </p>
                 <div style={{ display: 'grid', gap: 8, marginTop: 4 }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.875rem', color: 'var(--navy)', fontWeight: 600 }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.875rem', color: 'var(--navy)' }}>
                     <CheckCircle2 size={16} style={{ color: 'var(--wa)' }} />
                     Private Licence (PPL) theory
                   </span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.875rem', color: 'var(--navy)', fontWeight: 600 }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.875rem', color: 'var(--navy)' }}>
                     <CheckCircle2 size={16} style={{ color: 'var(--wa)' }} />
                     Commercial Licence (CPL) theory
                   </span>
@@ -66,17 +64,16 @@ export default function Careers() {
                   Enroll in Licence Theory Package <ArrowRight size={16} />
                 </Link>
               </div>
-            </TiltCard>
+            </div>
 
             {/* Pathway 2: Operations & Ground Careers */}
-            <TiltCard
-              maxTilt={6}
+            <div
               style={{
                 borderRadius: 'var(--radius-lg)',
                 overflow: 'hidden',
-                border: '1.5px solid var(--card-border)',
+                border: '1.5px solid var(--border)',
                 background: '#ffffff',
-                boxShadow: 'var(--shadow-3d)',
+                boxShadow: 'var(--shadow)',
               }}
             >
               <img
@@ -93,11 +90,11 @@ export default function Careers() {
                   No flight hours required.
                 </p>
                 <div style={{ display: 'grid', gap: 8, marginTop: 4 }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.875rem', color: 'var(--navy)', fontWeight: 600 }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.875rem', color: 'var(--navy)' }}>
                     <CheckCircle2 size={16} style={{ color: 'var(--wa)' }} />
                     Flight Dispatch & Operations Officer
                   </span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.875rem', color: 'var(--navy)', fontWeight: 600 }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.875rem', color: 'var(--navy)' }}>
                     <CheckCircle2 size={16} style={{ color: 'var(--wa)' }} />
                     Safety Management Systems (SMS) Coordinator
                   </span>
@@ -113,7 +110,7 @@ export default function Careers() {
                   Consult Career Path on WhatsApp
                 </a>
               </div>
-            </TiltCard>
+            </div>
           </div>
         </div>
       </section>
@@ -122,37 +119,36 @@ export default function Careers() {
       <section className="section section--subtle">
         <div className="shell">
           <div className="section-head">
-            <span className="badge badge--gold">Employment Roles</span>
+            <span className="badge">Employment Roles</span>
             <h2 className="title-md">Aviation Careers Unlocked by Ground School</h2>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 24 }}>
             {CAREERS.map((c) => (
-              <TiltCard
+              <div
                 key={c.code}
-                maxTilt={5}
                 style={{
-                  padding: 26,
+                  padding: 24,
                   borderRadius: 'var(--radius)',
                   background: '#ffffff',
-                  border: '1px solid var(--card-border)',
-                  boxShadow: 'var(--shadow-3d)',
+                  border: '1px solid var(--border)',
+                  boxShadow: 'var(--shadow-sm)',
                 }}
               >
-                <span style={{ fontSize: '0.8125rem', fontWeight: 800, color: 'var(--gold-deep)', fontFamily: 'var(--font-mono)' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--amber)', fontFamily: 'var(--font-mono)' }}>
                   {c.code}
                 </span>
-                <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.15rem', fontWeight: 700, color: 'var(--navy)', marginBlock: '8px 12px' }}>
+                <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--navy)', marginBlock: '6px 12px' }}>
                   {c.title}
                 </h4>
-                <ul style={{ display: 'grid', gap: 8, fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+                <ul style={{ display: 'grid', gap: 6, fontSize: '0.875rem', color: 'var(--text-muted)' }}>
                   {c.roles.map((r) => (
-                    <li key={r} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span style={{ color: 'var(--gold-deep)', fontWeight: 'bold' }}>•</span> {r}
+                    <li key={r} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <span style={{ color: 'var(--blue)' }}>•</span> {r}
                     </li>
                   ))}
                 </ul>
-              </TiltCard>
+              </div>
             ))}
           </div>
         </div>

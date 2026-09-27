@@ -3,7 +3,6 @@ import {
   ArrowRight, Award, CheckCircle2, Globe, MessageCircle, Shield, Target
 } from 'lucide-react';
 import Shell, { Ask, Filings, PageHead } from '../components/Shell';
-import TiltCard from '../components/TiltCard';
 import { ACCREDITATION, CONTACT } from '../data/site';
 
 const VALUES = [
@@ -29,7 +28,7 @@ export default function About() {
         <div className="shell">
           <div className="school-hero__grid" style={{ alignItems: 'center' }}>
             <div style={{ display: 'grid', gap: 18 }}>
-              <span className="badge badge--gold">Founded in Hargeisa</span>
+              <span className="badge">Founded in Hargeisa</span>
               <h2 className="title-md">Bringing World-Class Ground School to the Horn of Africa.</h2>
               <p className="desc-md">
                 Until recently, anyone in Somaliland pursuing a career as a commercial aviator,
@@ -58,21 +57,13 @@ export default function About() {
               </div>
             </div>
 
-            <TiltCard
-              maxTilt={6}
-              style={{
-                borderRadius: 'var(--radius-xl)',
-                overflow: 'hidden',
-                boxShadow: 'var(--shadow-3d)',
-                border: '1.5px solid var(--card-border)',
-              }}
-            >
+            <div style={{ borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: 'var(--shadow-lg)' }}>
               <img
                 src="https://images.pexels.com/photos/7092361/pexels-photo-7092361.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
                 alt="Stratosphere Aeronautics ground school instruction in Hargeisa"
                 style={{ width: '100%', height: '400px', objectFit: 'cover' }}
               />
-            </TiltCard>
+            </div>
           </div>
         </div>
       </section>
@@ -81,7 +72,7 @@ export default function About() {
       <section className="section section--subtle">
         <div className="shell">
           <div className="section-head">
-            <span className="badge badge--gold">Core Principles</span>
+            <span className="badge badge--amber">Core Principles</span>
             <h2 className="title-md">What We Stand For</h2>
             <p className="desc-md">
               Aviation demands uncompromising rigor. Here are the values that govern our academy.
@@ -90,25 +81,24 @@ export default function About() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 24 }}>
             {VALUES.map((v) => (
-              <TiltCard
+              <div
                 key={v.term}
-                maxTilt={5}
                 style={{
                   padding: 28,
                   borderRadius: 'var(--radius)',
                   background: '#ffffff',
-                  border: '1px solid var(--card-border)',
-                  boxShadow: 'var(--shadow-3d)',
+                  border: '1px solid var(--border)',
+                  boxShadow: 'var(--shadow-sm)',
                   display: 'grid',
                   gap: 12,
                 }}
               >
-                <div style={{ width: 48, height: 48, borderRadius: 12, background: 'var(--gold-pale)', color: 'var(--gold-dark)', border: '1px solid var(--gold-border)', display: 'grid', placeItems: 'center' }}>
-                  <v.icon size={24} />
+                <div style={{ width: 44, height: 44, borderRadius: 10, background: 'var(--blue-light)', color: 'var(--blue)', display: 'grid', placeItems: 'center' }}>
+                  <v.icon size={22} />
                 </div>
                 <h3 className="title-sm">{v.term}</h3>
                 <p className="desc-md">{v.gloss}</p>
-              </TiltCard>
+              </div>
             ))}
           </div>
         </div>
@@ -127,35 +117,31 @@ export default function About() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
             {ACCREDITATION.map((a) => (
-              <TiltCard
+              <div
                 key={a}
-                maxTilt={4}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: 14,
                   padding: 20,
                   borderRadius: 'var(--radius)',
-                  background: '#ffffff',
-                  border: '1px solid var(--card-border)',
-                  boxShadow: 'var(--shadow-3d-sm)',
+                  background: 'var(--bg-subtle)',
+                  border: '1px solid var(--border)',
                 }}
               >
-                <CheckCircle2 size={22} style={{ color: 'var(--gold-deep)', flexShrink: 0 }} />
-                <b style={{ color: 'var(--navy)', fontSize: '0.95rem' }}>{a}</b>
-              </TiltCard>
+                <CheckCircle2 size={22} style={{ color: 'var(--blue)', flexShrink: 0 }} />
+                <b style={{ color: 'var(--navy)', fontSize: '0.9375rem' }}>{a}</b>
+              </div>
             ))}
           </div>
 
-          <TiltCard
-            maxTilt={4}
+          <div
             style={{
               marginTop: 48,
-              padding: 36,
+              padding: 32,
               borderRadius: 'var(--radius-lg)',
-              background: '#ffffff',
-              border: '1.5px solid var(--gold-border)',
-              boxShadow: 'var(--shadow-3d)',
+              background: '#f8fafc',
+              border: '1.5px solid var(--border)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -173,7 +159,7 @@ export default function About() {
             <Link to="/contact" className="btn btn--secondary">
               Campus Map & Visiting Hours <ArrowRight size={16} />
             </Link>
-          </TiltCard>
+          </div>
         </div>
       </section>
 

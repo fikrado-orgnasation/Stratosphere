@@ -2,9 +2,7 @@ import { useState, useMemo, useCallback } from 'react';
 import {
   Check, MessageCircle
 } from 'lucide-react';
-import Shell, { Filings, PageHead } from '../components/Shell';
-import TiltCard from '../components/TiltCard';
-import { ZohoCrmForm } from '../components/ZohoCrmForm';
+import Shell, { Filings, InquiryForm, PageHead } from '../components/Shell';
 import { CONTACT, FAQS, SUBJECTS } from '../data/site';
 
 const SUBJECT_PHOTOS: Record<string, string> = {
@@ -74,16 +72,16 @@ export default function Register() {
           <div className="register-layout">
             {/* Left Col: Subject Cards */}
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, flexWrap: 'wrap', gap: 14 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
                 <div>
                   <h2 className="title-md">Choose Your Subjects</h2>
                   <p className="desc-md">Click any module to add or remove it from your enquiry.</p>
                 </div>
                 <div style={{ display: 'flex', gap: 10 }}>
-                  <button type="button" onClick={selectAll} className="btn btn--sm btn--secondary">
+                  <button type="button" onClick={selectAll} className="btn btn--sm btn--outline">
                     Select All 10
                   </button>
-                  <button type="button" onClick={clearAll} className="btn btn--sm btn--outline-white" style={{ color: 'var(--navy)', borderColor: 'var(--card-border)' }}>
+                  <button type="button" onClick={clearAll} className="btn btn--sm btn--outline">
                     Clear
                   </button>
                 </div>
@@ -109,15 +107,14 @@ export default function Register() {
                           <span className="class-card-item__code">{s.code} · ICAO</span>
                           <span
                             style={{
-                              width: 22,
-                              height: 22,
-                              borderRadius: 6,
+                              width: 20,
+                              height: 20,
+                              borderRadius: 4,
                               border: isSelected ? 'none' : '1.5px solid var(--border-subtle)',
-                              backgroundColor: isSelected ? 'var(--gold-deep)' : 'transparent',
+                              backgroundColor: isSelected ? 'var(--blue)' : 'transparent',
                               display: 'grid',
                               placeItems: 'center',
                               color: '#ffffff',
-                              transition: 'all 0.2s var(--ease)',
                             }}
                           >
                             {isSelected && <Check size={14} strokeWidth={3} />}
@@ -129,9 +126,9 @@ export default function Register() {
                             <span
                               key={t}
                               style={{
-                                fontSize: '0.72rem',
-                                padding: '2px 8px',
-                                background: 'var(--bg-subtle)',
+                                fontSize: '0.6875rem',
+                                padding: '2px 6px',
+                                background: 'var(--bg-muted)',
                                 borderRadius: 4,
                                 color: 'var(--text-muted)',
                               }}
@@ -169,13 +166,12 @@ export default function Register() {
                           display: 'inline-flex',
                           alignItems: 'center',
                           gap: 6,
-                          fontSize: '0.78rem',
+                          fontSize: '0.75rem',
                           fontWeight: 700,
-                          padding: '4px 10px',
-                          borderRadius: 6,
-                          background: 'var(--gold-pale)',
-                          color: 'var(--gold-dark)',
-                          border: '1px solid var(--gold-border)',
+                          padding: '4px 8px',
+                          borderRadius: 4,
+                          background: 'var(--blue-light)',
+                          color: 'var(--blue)',
                         }}
                       >
                         {code}
@@ -185,7 +181,7 @@ export default function Register() {
                             e.stopPropagation();
                             toggle(code);
                           }}
-                          style={{ color: 'var(--gold-deep)', fontWeight: 'bold', cursor: 'pointer' }}
+                          style={{ color: 'var(--text-faint)' }}
                         >
                           &times;
                         </button>
@@ -194,7 +190,7 @@ export default function Register() {
                   </div>
                 )}
 
-                {/* Direct WhatsApp CTA */}
+                {/* Direct Green WhatsApp CTA */}
                 <a
                   className="btn btn--whatsapp"
                   href={`${CONTACT.whatsapp}?text=${encodeURIComponent(message)}`}
@@ -210,14 +206,14 @@ export default function Register() {
                   Fast reply directly from our Hargeisa admissions team.
                 </p>
 
-                <hr style={{ border: 0, height: 1, backgroundColor: 'var(--card-border)' }} />
+                <hr style={{ border: 0, height: 1, backgroundColor: 'var(--border)' }} />
 
-                {/* Zoho CRM Form */}
+                {/* Email Inquiry Alternative */}
                 <div>
-                  <b style={{ fontSize: '0.9375rem', color: 'var(--navy)', display: 'block', marginBottom: 16 }}>
-                    Submit Enquiry via Form
+                  <b style={{ fontSize: '0.9375rem', color: 'var(--navy)', display: 'block', marginBottom: 12 }}>
+                    Or send an email inquiry:
                   </b>
-                  <ZohoCrmForm />
+                  <InquiryForm defaultMsg={message} />
                 </div>
               </div>
             </div>
@@ -229,7 +225,7 @@ export default function Register() {
       <section className="section section--subtle">
         <div className="shell">
           <div className="section-head">
-            <span className="badge badge--gold">Simple Process</span>
+            <span className="badge">Simple Process</span>
             <h2 className="title-md">How Enrolment Works</h2>
             <p className="desc-md">
               From your first WhatsApp message to collecting your textbook and sitting
@@ -239,27 +235,26 @@ export default function Register() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 24 }}>
             {STAGES.map((s) => (
-              <TiltCard
+              <div
                 key={s.code}
-                maxTilt={5}
                 style={{
-                  padding: 28,
+                  padding: 24,
                   borderRadius: 'var(--radius)',
                   background: '#ffffff',
-                  border: '1px solid var(--card-border)',
-                  boxShadow: 'var(--shadow-3d)',
+                  border: '1px solid var(--border)',
+                  boxShadow: 'var(--shadow-sm)',
                 }}
               >
-                <span style={{ fontFamily: 'var(--font-serif)', fontSize: '1.75rem', fontWeight: 700, color: 'var(--gold-deep)', display: 'block', marginBottom: 8 }}>
+                <span style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--blue)', display: 'block', marginBottom: 6 }}>
                   {s.code}
                 </span>
-                <b style={{ fontFamily: 'var(--font-serif)', fontSize: '1.15rem', color: 'var(--navy)', display: 'block', marginBottom: 8 }}>
+                <b style={{ fontSize: '1.05rem', color: 'var(--navy)', display: 'block', marginBottom: 6 }}>
                   {s.title}
                 </b>
-                <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: 1.6 }}>
+                <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
                   {s.body}
                 </p>
-              </TiltCard>
+              </div>
             ))}
           </div>
         </div>
@@ -267,32 +262,30 @@ export default function Register() {
 
       {/* ── 03 FAQs ─────────────────────────────────────────────────────────── */}
       <section className="section">
-        <div className="shell" style={{ maxWidth: 860 }}>
+        <div className="shell" style={{ maxWidth: 840 }}>
           <div className="section-head">
             <span className="badge">Frequently Asked Questions</span>
             <h2 className="title-md">Questions Before Enrolling</h2>
           </div>
 
-          <div style={{ display: 'grid', gap: 16 }}>
+          <div style={{ display: 'grid', gap: 14 }}>
             {FAQS.map((faq) => (
-              <TiltCard
+              <div
                 key={faq.q}
-                maxTilt={3}
                 style={{
-                  padding: 24,
+                  padding: 20,
                   borderRadius: 'var(--radius)',
-                  border: '1px solid var(--card-border)',
+                  border: '1px solid var(--border)',
                   background: '#ffffff',
-                  boxShadow: 'var(--shadow-3d-sm)',
                 }}
               >
-                <b style={{ fontFamily: 'var(--font-serif)', color: 'var(--navy)', fontSize: '1.1rem', display: 'block', marginBottom: 8 }}>
+                <b style={{ color: 'var(--navy)', fontSize: '1.05rem', display: 'block', marginBottom: 6 }}>
                   {faq.q}
                 </b>
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: 1.65 }}>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.9375rem', lineHeight: 1.6 }}>
                   {faq.a}
                 </p>
-              </TiltCard>
+              </div>
             ))}
           </div>
         </div>

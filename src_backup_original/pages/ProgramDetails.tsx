@@ -1,7 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, BookOpen, CheckCircle2, MessageCircle } from 'lucide-react';
 import Shell, { Filings, PageHead } from '../components/Shell';
-import TiltCard from '../components/TiltCard';
 import { BOOKS, CONTACT, SUBJECTS } from '../data/site';
 
 const SUBJECT_PHOTOS: Record<string, string> = {
@@ -61,15 +60,15 @@ export default function ProgramDetails() {
           <div className="register-layout">
             {/* Left Col: Course Visual & Curriculum Breakdown */}
             <div>
-              <TiltCard maxTilt={5} style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', marginBottom: 28, boxShadow: 'var(--shadow-3d)', border: '1.5px solid var(--card-border)' }}>
+              <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', marginBottom: 28, boxShadow: 'var(--shadow)' }}>
                 <img
                   src={photo}
                   alt={subject.title}
                   style={{ width: '100%', height: '340px', objectFit: 'cover' }}
                 />
-              </TiltCard>
+              </div>
 
-              <h2 className="title-md" style={{ marginBottom: 20 }}>Topics Covered in {subject.title}</h2>
+              <h2 className="title-md" style={{ marginBottom: 16 }}>Topics Covered in {subject.title}</h2>
               <div style={{ display: 'grid', gap: 12, marginBottom: 32 }}>
                 {subject.topics.map((t) => (
                   <div
@@ -78,29 +77,26 @@ export default function ProgramDetails() {
                       display: 'flex',
                       alignItems: 'center',
                       gap: 12,
-                      padding: 18,
+                      padding: 16,
                       borderRadius: 'var(--radius-sm)',
-                      background: '#ffffff',
-                      border: '1px solid var(--card-border)',
-                      boxShadow: 'var(--shadow-3d-sm)',
+                      background: 'var(--bg-subtle)',
+                      border: '1px solid var(--border)',
                     }}
                   >
-                    <CheckCircle2 size={18} style={{ color: 'var(--gold-deep)', flexShrink: 0 }} />
-                    <b style={{ color: 'var(--navy)', fontSize: '1rem', fontFamily: 'var(--font-serif)' }}>{t}</b>
+                    <CheckCircle2 size={18} style={{ color: 'var(--blue)', flexShrink: 0 }} />
+                    <b style={{ color: 'var(--navy)', fontSize: '1rem' }}>{t}</b>
                   </div>
                 ))}
               </div>
 
               {/* Textbook Cross Reference */}
               {book && (
-                <TiltCard
-                  maxTilt={4}
+                <div
                   style={{
-                    padding: 26,
+                    padding: 24,
                     borderRadius: 'var(--radius)',
-                    background: '#ffffff',
-                    border: '1.5px solid var(--gold-border)',
-                    boxShadow: 'var(--shadow-3d)',
+                    background: 'var(--bg-subtle)',
+                    border: '1.5px solid var(--border)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
@@ -109,21 +105,21 @@ export default function ProgramDetails() {
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                    <div style={{ width: 48, height: 48, borderRadius: 12, background: 'var(--gold-pale)', color: 'var(--gold-dark)', border: '1px solid var(--gold-border)', display: 'grid', placeItems: 'center' }}>
-                      <BookOpen size={24} />
+                    <div style={{ width: 44, height: 44, borderRadius: 10, background: 'var(--blue-light)', color: 'var(--blue)', display: 'grid', placeItems: 'center' }}>
+                      <BookOpen size={22} />
                     </div>
                     <div>
-                      <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--gold-deep)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--amber)', textTransform: 'uppercase' }}>
                         Course Manual
                       </span>
-                      <h4 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.15rem', fontWeight: 700, color: 'var(--navy)' }}>{book.title}</h4>
+                      <h4 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--navy)' }}>{book.title}</h4>
                       <span style={{ fontSize: '0.8125rem', color: 'var(--text-muted)' }}>{book.edition} · {book.stock === 'held' ? 'Held at school' : 'On order'}</span>
                     </div>
                   </div>
-                  <Link to="/books" className="btn btn--sm btn--secondary">
+                  <Link to="/books" className="btn btn--sm btn--outline">
                     View in Library
                   </Link>
-                </TiltCard>
+                </div>
               )}
             </div>
 
@@ -138,16 +134,16 @@ export default function ProgramDetails() {
                   </p>
                 </div>
 
-                <div style={{ display: 'grid', gap: 14, fontSize: '0.9375rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--card-border)', paddingBottom: 10 }}>
+                <div style={{ display: 'grid', gap: 12, fontSize: '0.9375rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border)', paddingBottom: 8 }}>
                     <span style={{ color: 'var(--text-muted)' }}>Standard</span>
                     <b style={{ color: 'var(--navy)' }}>ICAO Doc 7192</b>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--card-border)', paddingBottom: 10 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border)', paddingBottom: 8 }}>
                     <span style={{ color: 'var(--text-muted)' }}>Format</span>
                     <b style={{ color: 'var(--navy)' }}>1-on-1 Instruction</b>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--card-border)', paddingBottom: 10 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border)', paddingBottom: 8 }}>
                     <span style={{ color: 'var(--text-muted)' }}>Location</span>
                     <b style={{ color: 'var(--navy)' }}>Hargeisa, Somaliland</b>
                   </div>
@@ -181,14 +177,14 @@ export default function ProgramDetails() {
           </div>
 
           {/* Prev / Next Pagination */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 48, paddingTop: 24, borderTop: '1px solid var(--card-border)', flexWrap: 'wrap', gap: 16 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 48, paddingTop: 24, borderTop: '1px solid var(--border)', flexWrap: 'wrap', gap: 16 }}>
             {previous ? (
-              <Link to={`/training/${index - 1}`} className="btn btn--secondary btn--sm">
+              <Link to={`/training/${index - 1}`} className="btn btn--outline btn--sm">
                 <ArrowLeft size={15} /> Previous: {previous.code} {previous.title}
               </Link>
             ) : <span />}
             {next && (
-              <Link to={`/training/${index + 1}`} className="btn btn--secondary btn--sm">
+              <Link to={`/training/${index + 1}`} className="btn btn--outline btn--sm">
                 Next: {next.code} {next.title} <ArrowRight size={15} />
               </Link>
             )}

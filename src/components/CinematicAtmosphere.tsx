@@ -20,27 +20,27 @@ export default function CinematicAtmosphere() {
     }
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x06112a, 0.038);
+    scene.fog = new THREE.FogExp2(0x06112a, 0.035);
 
     const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100);
     camera.position.set(0, 0, 15);
 
-    // Particle Cloud: Atmospheric Navigation Motes & Stars
-    const particleCount = 650;
+    // ── 01 Stratospheric Particle Starfield & Atmospheric Motes ──────────────
+    const particleCount = 750;
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
-    const goldColor = new THREE.Color(0xd9a441);
-    const blueColor = new THREE.Color(0x4e8fd6);
-    const cyanColor = new THREE.Color(0x3fdc97);
+    const goldColor = new THREE.Color(0xdfb743);
+    const blueColor = new THREE.Color(0x38bdf8);
+    const whiteColor = new THREE.Color(0xffffff);
 
     for (let i = 0; i < particleCount; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * 36;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * 44;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * 32;
+      positions[i * 3] = (Math.random() - 0.5) * 42;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 46;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 36;
 
       const choice = Math.random();
-      const col = choice > 0.65 ? goldColor : choice > 0.15 ? blueColor : cyanColor;
+      const col = choice > 0.6 ? goldColor : choice > 0.25 ? blueColor : whiteColor;
       colors[i * 3] = col.r;
       colors[i * 3 + 1] = col.g;
       colors[i * 3 + 2] = col.b;
@@ -51,10 +51,10 @@ export default function CinematicAtmosphere() {
     particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
     const particleMaterial = new THREE.PointsMaterial({
-      size: 0.09,
+      size: 0.11,
       vertexColors: true,
       transparent: true,
-      opacity: 0.75,
+      opacity: 0.8,
       sizeAttenuation: true,
       blending: THREE.AdditiveBlending,
     });
@@ -62,152 +62,197 @@ export default function CinematicAtmosphere() {
     const particles = new THREE.Points(particleGeometry, particleMaterial);
     scene.add(particles);
 
-    // 3D Geometric Flight Navigation Rings / Coordinate Beacons
+    // ── 02 3D Flight Navigation Rings & Compass Heading Gyros ────────────────
     const ringsGroup = new THREE.Group();
     scene.add(ringsGroup);
 
-    const ringRadii = [3.2, 5.0, 7.4];
-    const rings: THREE.LineLoop[] = [];
+    const ringConfigs = [
+      { radius: 3.4, color: 0xc59b27, opacity: 0.28, y: -2, rotSpeed: 0.003 },
+      { radius: 5.6, color: 0x2563eb, opacity: 0.22, y: -7, rotSpeed: -0.002 },
+      { radius: 8.0, color: 0xdfb743, opacity: 0.25, y: -12, rotSpeed: 0.0015 },
+    ];
 
-    ringRadii.forEach((rad, idx) => {
+    const rings: { mesh: THREE.LineLoop; speed: number }[] = [];
+
+    ringConfigs.forEach((cfg) => {
       const ringGeom = new THREE.BufferGeometry();
-      const segments = 64;
+      const segments = 80;
       const pts: THREE.Vector3[] = [];
       for (let s = 0; s <= segments; s++) {
         const theta = (s / segments) * Math.PI * 2;
-        pts.push(new THREE.Vector3(Math.cos(theta) * rad, 0, Math.sin(theta) * rad));
+        pts.push(new THREE.Vector3(Math.cos(theta) * cfg.radius, 0, Math.sin(theta) * cfg.radius));
       }
       ringGeom.setFromPoints(pts);
 
       const ringMat = new THREE.LineBasicMaterial({
-        color: idx % 2 === 0 ? 0x2c6fd6 : 0xd9a441,
+        color: cfg.color,
         transparent: true,
-        opacity: 0.18 + idx * 0.05,
+        opacity: cfg.opacity,
       });
 
       const ring = new THREE.LineLoop(ringGeom, ringMat);
-      ring.position.y = -idx * 5 - 2;
-      ring.rotation.x = 0.25;
-      ring.rotation.z = idx * 0.4;
+      ring.position.y = cfg.y;
+      ring.rotation.x = 0.28;
       ringsGroup.add(ring);
-      rings.push(ring);
+      rings.push({ mesh: ring, speed: cfg.rotSpeed });
     });
 
-    // 3D Aeronautical Flight Vectors / Streamlines
+    // ── 03 Aeronautical Flight Streamlines & Altitude Vectors ─────────────────
     const vectorsGroup = new THREE.Group();
     scene.add(vectorsGroup);
 
-    for (let v = 0; v < 6; v++) {
+    for (let v = 0; v < 8; v++) {
       const vGeom = new THREE.BufferGeometry();
-      const startX = (Math.random() - 0.5) * 24;
-      const startY = (Math.random() - 0.5) * 30;
-      const startZ = (Math.random() - 0.5) * 16 - 4;
-      const length = 6 + Math.random() * 8;
+      const startX = (Math.random() - 0.5) * 26;
+      const startY = (Math.random() - 0.5) * 32;
+      const startZ = (Math.random() - 0.5) * 18 - 3;
+      const length = 7 + Math.random() * 9;
 
       const vPts = [
         new THREE.Vector3(startX, startY, startZ),
-        new THREE.Vector3(startX + 1.2, startY + length, startZ - 1.5),
+        new THREE.Vector3(startX + 1.4, startY + length, startZ - 1.8),
       ];
       vGeom.setFromPoints(vPts);
 
       const vMat = new THREE.LineBasicMaterial({
-        color: v % 2 === 0 ? 0x4e8fd6 : 0xd9a441,
+        color: v % 2 === 0 ? 0xdfb743 : 0x38bdf8,
         transparent: true,
-        opacity: 0.22,
+        opacity: 0.24,
       });
       const vLine = new THREE.Line(vGeom, vMat);
       vectorsGroup.add(vLine);
     }
 
-    // ── Floating low-poly airplane ──────────────────────────────────────
-    // A simple geometric plane: fuselage (elongated box) + wings (flat box)
-    // + tail (small box). Kept intentionally low-poly for performance.
+    // ── 04 Heraldic 3D Interceptor Jet (Modeled after the School Crest) ───────
     const planeGroup = new THREE.Group();
     scene.add(planeGroup);
 
-    const planeMat = new THREE.MeshBasicMaterial({
-      color: 0x2c6fd6,
+    const bodyMat = new THREE.MeshBasicMaterial({
+      color: 0x152a4e,
       transparent: true,
-      opacity: 0.28,
+      opacity: 0.55,
     });
-    const planeMatAccent = new THREE.MeshBasicMaterial({
-      color: 0xd9a441,
+    const goldTrimMat = new THREE.MeshBasicMaterial({
+      color: 0xdfb743,
       transparent: true,
-      opacity: 0.35,
+      opacity: 0.85,
+    });
+    const glassMat = new THREE.MeshBasicMaterial({
+      color: 0x60a5fa,
+      transparent: true,
+      opacity: 0.75,
     });
 
-    // Fuselage
+    // Main fuselage (aerodynamic body)
     const fuselage = new THREE.Mesh(
-      new THREE.BoxGeometry(0.35, 0.35, 2.6),
-      planeMat,
+      new THREE.CylinderGeometry(0.12, 0.28, 3.2, 8),
+      bodyMat
     );
+    fuselage.rotation.x = Math.PI / 2;
     planeGroup.add(fuselage);
 
-    // Main wings
-    const wings = new THREE.Mesh(
-      new THREE.BoxGeometry(3.0, 0.08, 0.5),
-      planeMat,
+    // Jet nosecone (sharp ascent)
+    const nose = new THREE.Mesh(
+      new THREE.ConeGeometry(0.12, 0.7, 8),
+      goldTrimMat
     );
-    wings.position.y = -0.05;
-    planeGroup.add(wings);
+    nose.rotation.x = -Math.PI / 2;
+    nose.position.z = -1.95;
+    planeGroup.add(nose);
 
-    // Tail wings
-    const tail = new THREE.Mesh(
-      new THREE.BoxGeometry(1.2, 0.06, 0.3),
-      planeMat,
+    // Cockpit canopy
+    const canopy = new THREE.Mesh(
+      new THREE.BoxGeometry(0.2, 0.18, 0.9),
+      glassMat
     );
-    tail.position.z = 1.1;
-    planeGroup.add(tail);
+    canopy.position.set(0, 0.2, -0.4);
+    planeGroup.add(canopy);
 
-    // Vertical stabilizer
-    const vStab = new THREE.Mesh(
-      new THREE.BoxGeometry(0.06, 0.55, 0.35),
-      planeMatAccent,
-    );
-    vStab.position.z = 1.15;
-    vStab.position.y = 0.25;
-    planeGroup.add(vStab);
+    // Delta wings (swept supersonic wings)
+    const wingShape = new THREE.Shape();
+    wingShape.moveTo(0, 0.5);
+    wingShape.lineTo(2.2, -0.6);
+    wingShape.lineTo(2.1, -1.0);
+    wingShape.lineTo(0, -0.4);
+    wingShape.lineTo(-2.1, -1.0);
+    wingShape.lineTo(-2.2, -0.6);
+    wingShape.closePath();
 
-    // Position the airplane floating in the upper-right area
-    planeGroup.position.set(7, 6, -6);
-    planeGroup.rotation.y = -0.5;
-    planeGroup.rotation.z = 0.15;
+    const wingGeom = new THREE.ShapeGeometry(wingShape);
+    const wingsMesh = new THREE.Mesh(wingGeom, bodyMat);
+    wingsMesh.rotation.x = Math.PI / 2;
+    wingsMesh.position.y = -0.04;
+    wingsMesh.position.z = 0.2;
+    planeGroup.add(wingsMesh);
 
-    // ── Soft cloud puffs (low-poly icosahedrons) ───────────────────────
+    // Wing leading-edge gold trim
+    const wingEdgeShape = new THREE.Shape();
+    wingEdgeShape.moveTo(0, 0.52);
+    wingEdgeShape.lineTo(2.22, -0.58);
+    wingEdgeShape.lineTo(2.2, -0.62);
+    wingEdgeShape.lineTo(0, 0.46);
+    wingEdgeShape.lineTo(-2.2, -0.62);
+    wingEdgeShape.lineTo(-2.22, -0.58);
+    wingEdgeShape.closePath();
+    const wingEdgeGeom = new THREE.ShapeGeometry(wingEdgeShape);
+    const wingEdgeMesh = new THREE.Mesh(wingEdgeGeom, goldTrimMat);
+    wingEdgeMesh.rotation.x = Math.PI / 2;
+    wingEdgeMesh.position.y = -0.03;
+    wingEdgeMesh.position.z = 0.2;
+    planeGroup.add(wingEdgeMesh);
+
+    // Twin vertical stabilizers / rudders
+    const finGeom = new THREE.BoxGeometry(0.05, 0.65, 0.5);
+    const finLeft = new THREE.Mesh(finGeom, goldTrimMat);
+    finLeft.position.set(-0.45, 0.35, 1.2);
+    finLeft.rotation.z = -0.15;
+    planeGroup.add(finLeft);
+
+    const finRight = new THREE.Mesh(finGeom, goldTrimMat);
+    finRight.position.set(0.45, 0.35, 1.2);
+    finRight.rotation.z = 0.15;
+    planeGroup.add(finRight);
+
+    // Initial airplane position in the hero viewport
+    planeGroup.position.set(6.8, 5.2, -5);
+    planeGroup.rotation.y = -0.6;
+    planeGroup.rotation.z = 0.18;
+
+    // ── 05 Volumetric Cloud Formations (Soft Low-Poly Puffs) ───────────────────
     const cloudsGroup = new THREE.Group();
     scene.add(cloudsGroup);
 
     const cloudMat = new THREE.MeshBasicMaterial({
-      color: 0x1e3a6e,
+      color: 0x0f2444,
       transparent: true,
-      opacity: 0.10,
+      opacity: 0.14,
     });
 
-    for (let c = 0; c < 8; c++) {
-      const cloudCluster = new THREE.Group();
-      const puffCount = 3 + Math.floor(Math.random() * 3);
-      for (let p = 0; p < puffCount; p++) {
+    for (let c = 0; c < 9; c++) {
+      const cluster = new THREE.Group();
+      const count = 3 + Math.floor(Math.random() * 3);
+      for (let p = 0; p < count; p++) {
         const puff = new THREE.Mesh(
-          new THREE.IcosahedronGeometry(0.6 + Math.random() * 0.5, 0),
-          cloudMat,
+          new THREE.IcosahedronGeometry(0.7 + Math.random() * 0.5, 0),
+          cloudMat
         );
         puff.position.set(
-          (Math.random() - 0.5) * 2.2,
-          (Math.random() - 0.5) * 0.6,
-          (Math.random() - 0.5) * 1.2,
+          (Math.random() - 0.5) * 2.4,
+          (Math.random() - 0.5) * 0.7,
+          (Math.random() - 0.5) * 1.4
         );
-        cloudCluster.add(puff);
+        cluster.add(puff);
       }
-      cloudCluster.position.set(
-        (Math.random() - 0.5) * 28,
-        (Math.random() - 0.5) * 20 - 3,
-        (Math.random() - 0.5) * 18 - 8,
+      cluster.position.set(
+        (Math.random() - 0.5) * 32,
+        (Math.random() - 0.5) * 22 - 3,
+        (Math.random() - 0.5) * 20 - 9
       );
-      cloudCluster.scale.setScalar(0.8 + Math.random() * 1.2);
-      cloudsGroup.add(cloudCluster);
+      cluster.scale.setScalar(0.9 + Math.random() * 1.3);
+      cloudsGroup.add(cluster);
     }
 
-    // Dynamic cursor lighting / spotlight
+    // ── Interaction & Gyroscopic Parallax ─────────────────────────────────────
     const mouse = new THREE.Vector2(0, 0);
     const targetMouse = new THREE.Vector2(0, 0);
 
@@ -216,7 +261,6 @@ export default function CinematicAtmosphere() {
       targetMouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
     };
 
-    // Scroll depth tracking
     let scrollProgress = 0;
     const onScroll = () => {
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
@@ -250,7 +294,6 @@ export default function CinematicAtmosphere() {
     let animId = 0;
     let isVisible = true;
 
-    // Intersection observer to pause when offscreen
     const observer = new IntersectionObserver(
       (entries) => {
         isVisible = entries[0]?.isIntersecting ?? true;
@@ -267,38 +310,42 @@ export default function CinematicAtmosphere() {
       mouse.lerp(targetMouse, 0.04);
 
       if (!reducedMotion) {
-        // Slow atmospheric rotation
-        particles.rotation.y = elapsed * 0.015;
-        particles.rotation.x = Math.sin(elapsed * 0.01) * 0.05;
+        // Slow celestial particle drift
+        particles.rotation.y = elapsed * 0.012;
+        particles.rotation.x = Math.sin(elapsed * 0.008) * 0.04;
 
-        ringsGroup.children.forEach((r, idx) => {
-          r.rotation.y += 0.002 * (idx + 1);
-          r.rotation.x = Math.sin(elapsed * 0.2 + idx) * 0.08 + 0.2;
+        // Navigational beacon rings rotation
+        rings.forEach(({ mesh, speed }) => {
+          mesh.rotation.y += speed;
+          mesh.rotation.z = Math.sin(elapsed * 0.25) * 0.04;
         });
 
-        vectorsGroup.rotation.y = elapsed * 0.008;
+        // Altitude streamlines
+        vectorsGroup.rotation.y = elapsed * 0.006;
 
-        // Floating airplane: gentle bob and slow yaw
-        planeGroup.position.y = 6 + Math.sin(elapsed * 0.4) * 0.6;
-        planeGroup.rotation.y = -0.5 + Math.sin(elapsed * 0.15) * 0.12;
-        planeGroup.rotation.z = 0.15 + Math.sin(elapsed * 0.3) * 0.04;
+        // Supersonic aircraft banking and floating responsive to mouse
+        const bankTarget = -mouse.x * 0.35 + 0.18;
+        const pitchTarget = mouse.y * 0.25 - 0.15;
+        planeGroup.rotation.z += (bankTarget - planeGroup.rotation.z) * 0.05;
+        planeGroup.rotation.x += (pitchTarget - planeGroup.rotation.x) * 0.05;
+        planeGroup.position.y = 5.2 + Math.sin(elapsed * 0.5) * 0.45;
+        planeGroup.position.x = 6.8 + Math.cos(elapsed * 0.2) * 0.3 + mouse.x * 0.8;
 
-        // Clouds drift slowly across the scene
-        cloudsGroup.rotation.y = elapsed * 0.006;
-        cloudsGroup.position.x = Math.sin(elapsed * 0.02) * 2;
+        // Clouds slowly drift
+        cloudsGroup.rotation.y = elapsed * 0.005;
+        cloudsGroup.position.x = Math.sin(elapsed * 0.015) * 2;
       }
 
-      // Depth-based camera flight based on scroll
-      // Camera moves downwards and forwards as user scrolls deeper into theory
-      const targetCamY = -scrollProgress * 22;
-      const targetCamZ = 15 - scrollProgress * 5;
-      camera.position.y += (targetCamY - camera.position.y) * 0.05;
-      camera.position.z += (targetCamZ - camera.position.z) * 0.05;
+      // Camera elevation descent on scroll
+      const targetCamY = -scrollProgress * 20;
+      const targetCamZ = 15 - scrollProgress * 4;
+      camera.position.y += (targetCamY - camera.position.y) * 0.06;
+      camera.position.z += (targetCamZ - camera.position.z) * 0.06;
 
       // Mouse parallax tilt
-      camera.position.x += (mouse.x * 1.8 - camera.position.x) * 0.03;
-      camera.rotation.y = -mouse.x * 0.04;
-      camera.rotation.x = mouse.y * 0.03;
+      camera.position.x += (mouse.x * 1.5 - camera.position.x) * 0.03;
+      camera.rotation.y = -mouse.x * 0.035;
+      camera.rotation.x = mouse.y * 0.025;
 
       renderer.render(scene, camera);
     };
@@ -318,9 +365,9 @@ export default function CinematicAtmosphere() {
 
       particleGeometry.dispose();
       particleMaterial.dispose();
-      rings.forEach((r) => {
-        r.geometry.dispose();
-        (r.material as THREE.Material).dispose();
+      rings.forEach(({ mesh }) => {
+        mesh.geometry.dispose();
+        (mesh.material as THREE.Material).dispose();
       });
       vectorsGroup.traverse((obj) => {
         if (obj instanceof THREE.Line) {

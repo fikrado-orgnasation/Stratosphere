@@ -1,6 +1,5 @@
 import { Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
 import Shell, { Filings, InquiryForm, PageHead } from '../components/Shell';
-import TiltCard from '../components/TiltCard';
 import { CONTACT } from '../data/site';
 
 export default function Contact() {
@@ -19,18 +18,16 @@ export default function Contact() {
           <div className="register-layout">
             {/* Left Col: Direct School Contact Methods */}
             <div>
-              <h2 className="title-md" style={{ marginBottom: 24 }}>Get in Touch</h2>
+              <h2 className="title-md" style={{ marginBottom: 20 }}>Get in Touch</h2>
 
-              <div style={{ display: 'grid', gap: 20 }}>
+              <div style={{ display: 'grid', gap: 18 }}>
                 {/* WhatsApp Admissions Card */}
-                <TiltCard
-                  maxTilt={4}
+                <div
                   style={{
-                    padding: 26,
+                    padding: 24,
                     borderRadius: 'var(--radius)',
-                    background: 'linear-gradient(145deg, #ffffff 0%, #f0fdf4 100%)',
-                    border: '1.5px solid #86efac',
-                    boxShadow: 'var(--shadow-3d)',
+                    background: '#f0fdf4',
+                    border: '1.5px solid #bbf7d0',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
@@ -41,20 +38,19 @@ export default function Contact() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
                     <div
                       style={{
-                        width: 48,
-                        height: 48,
+                        width: 46,
+                        height: 46,
                         borderRadius: '50%',
-                        background: 'linear-gradient(135deg, #2fe06f, #1ea952)',
+                        background: 'var(--wa)',
                         color: '#ffffff',
                         display: 'grid',
                         placeItems: 'center',
-                        boxShadow: '0 4px 12px rgba(37, 211, 102, 0.4)',
                       }}
                     >
-                      <MessageCircle size={26} />
+                      <MessageCircle size={24} />
                     </div>
                     <div>
-                      <b style={{ color: 'var(--navy)', fontSize: '1.15rem', display: 'block', fontFamily: 'var(--font-serif)' }}>
+                      <b style={{ color: 'var(--navy)', fontSize: '1.1rem', display: 'block' }}>
                         WhatsApp Admissions
                       </b>
                       <span style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>
@@ -70,88 +66,85 @@ export default function Contact() {
                   >
                     Open WhatsApp Chat
                   </a>
-                </TiltCard>
+                </div>
 
                 {/* Telephone Card */}
-                <TiltCard
-                  maxTilt={4}
+                <div
                   style={{
-                    padding: 26,
+                    padding: 24,
                     borderRadius: 'var(--radius)',
                     background: '#ffffff',
-                    border: '1px solid var(--card-border)',
-                    boxShadow: 'var(--shadow-3d)',
+                    border: '1px solid var(--border)',
+                    boxShadow: 'var(--shadow-sm)',
                     display: 'grid',
-                    gap: 12,
+                    gap: 10,
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <Phone size={20} style={{ color: 'var(--gold-deep)' }} />
-                    <b style={{ color: 'var(--navy)', fontSize: '1.05rem', fontFamily: 'var(--font-serif)' }}>Telephone Direct Lines</b>
+                    <Phone size={20} style={{ color: 'var(--blue)' }} />
+                    <b style={{ color: 'var(--navy)', fontSize: '1rem' }}>Telephone Direct Lines</b>
                   </div>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14 }}>
                     {CONTACT.phones.map((p) => (
                       <a
                         key={p.display}
                         href={p.href}
-                        className="btn btn--sm btn--secondary"
+                        className="btn btn--sm btn--outline"
                       >
                         {p.display}
                       </a>
                     ))}
                   </div>
-                </TiltCard>
+                </div>
 
                 {/* Physical Location Card */}
-                <TiltCard
-                  maxTilt={4}
+                <div
                   style={{
-                    padding: 26,
+                    padding: 24,
                     borderRadius: 'var(--radius)',
                     background: '#ffffff',
-                    border: '1px solid var(--card-border)',
-                    boxShadow: 'var(--shadow-3d)',
+                    border: '1px solid var(--border)',
+                    boxShadow: 'var(--shadow-sm)',
                     display: 'grid',
-                    gap: 12,
+                    gap: 10,
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <MapPin size={20} style={{ color: 'var(--gold-deep)' }} />
-                    <b style={{ color: 'var(--navy)', fontSize: '1.05rem', fontFamily: 'var(--font-serif)' }}>Campus Address</b>
+                    <MapPin size={20} style={{ color: 'var(--amber)' }} />
+                    <b style={{ color: 'var(--navy)', fontSize: '1rem' }}>Campus Address</b>
                   </div>
-                  <address style={{ fontStyle: 'normal', color: 'var(--text-muted)', fontSize: '0.95rem', lineHeight: 1.6 }}>
+                  <address style={{ fontStyle: 'normal', color: 'var(--text-muted)', fontSize: '0.9375rem', lineHeight: 1.6 }}>
                     {CONTACT.lines.map((l) => <span key={l} style={{ display: 'block' }}>{l}</span>)}
                     <span style={{ display: 'block', fontWeight: 700, color: 'var(--navy)', marginTop: 4 }}>
                       {CONTACT.city}
                     </span>
                   </address>
-                </TiltCard>
+                </div>
 
                 {/* Email Inquiries */}
-                <TiltCard
-                  maxTilt={4}
+                <div
                   style={{
-                    padding: 26,
+                    padding: 24,
                     borderRadius: 'var(--radius)',
                     background: '#ffffff',
-                    border: '1px solid var(--card-border)',
-                    boxShadow: 'var(--shadow-3d)',
+                    border: '1px solid var(--border)',
+                    boxShadow: 'var(--shadow-sm)',
                     display: 'grid',
-                    gap: 12,
+                    gap: 10,
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <Mail size={20} style={{ color: 'var(--gold-deep)' }} />
-                    <b style={{ color: 'var(--navy)', fontSize: '1.05rem', fontFamily: 'var(--font-serif)' }}>Email Inquiries</b>
+                    <Mail size={20} style={{ color: 'var(--blue)' }} />
+                    <b style={{ color: 'var(--navy)', fontSize: '1rem' }}>Email Inquiries</b>
                   </div>
-                  <div style={{ display: 'grid', gap: 6, fontSize: '0.95rem' }}>
+                  <div style={{ display: 'grid', gap: 6, fontSize: '0.9375rem' }}>
                     {CONTACT.emails.map((e) => (
-                      <a key={e} href={`mailto:${e}`} style={{ color: 'var(--gold-deep)', fontWeight: 600 }}>
+                      <a key={e} href={`mailto:${e}`} style={{ color: 'var(--blue)', fontWeight: 600 }}>
                         {e}
                       </a>
                     ))}
                   </div>
-                </TiltCard>
+                </div>
               </div>
             </div>
 
@@ -159,7 +152,7 @@ export default function Contact() {
             <div>
               <div className="cart-summary-card">
                 <div>
-                  <span className="badge badge--gold">Direct Form</span>
+                  <span className="badge">Direct Form</span>
                   <h3 className="title-sm" style={{ marginTop: 4 }}>Send Us a Message</h3>
                   <p className="desc-md" style={{ marginTop: 6, fontSize: '0.875rem' }}>
                     Fill out this form and our registrar will get back to you with timetable and tuition details.
