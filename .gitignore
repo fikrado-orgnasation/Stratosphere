@@ -23,3 +23,4 @@ dist-ssr
 .env
 .env.local
 .env.*.local
+src_backup_original/

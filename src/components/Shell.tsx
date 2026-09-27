@@ -6,6 +6,7 @@ import {
 import { CONTACT } from '../data/site';
 import { useLang, type Lang } from '../i18n';
 import CinematicAtmosphere from './CinematicAtmosphere';
+import ZohoLeadForm from './ZohoLeadForm';
 
 export const NAV_LINKS = [
   { to: '/', key: 'home' as const },
@@ -59,7 +60,7 @@ function TopBar() {
 }
 
 /* ── Simple School Header ────────────────────────────────────────────────── */
-function LanguageSwitcher() {
+function LanguageSwitcher({ isGlowing }: { isGlowing?: boolean }) {
   const { lang, setLang } = useLang();
   const [open, setOpen] = useState(false);
 
@@ -74,7 +75,7 @@ function LanguageSwitcher() {
   return (
     <div className="lang-switcher" onClick={(e) => e.stopPropagation()}>
       <button
-        className="lang-switcher__btn"
+        className={`lang-switcher__btn ${isGlowing ? 'lang-switcher__btn--glowing' : ''}`}
         onClick={() => setOpen((o) => !o)}
         aria-label="Switch language"
         aria-expanded={open}
@@ -105,7 +106,7 @@ function LanguageSwitcher() {
   );
 }
 
-function Header() {
+function Header({ isGlowingTranslate }: { isGlowingTranslate?: boolean }) {
   const [isOpen, setIsOpen] = useState(false);
   const { pathname } = useLocation();
   const { t } = useLang();
@@ -118,14 +119,10 @@ function Header() {
     <>
       <header className="site-header">
         <div className="shell site-header__in">
-          {/* School Brand */}
-          <Link to="/" className="school-brand" aria-label="Stratosphere Aeronautics, Home">
-            <div className="school-brand__logo">
-              <img src="/logo-removebg-preview.png" alt="Stratosphere Logo" />
-            </div>
-            <div className="school-brand__text">
-              <span className="school-brand__name">Stratosphere Aeronautics</span>
-              <span className="school-brand__sub">Theoretical Knowledge Instruction · Hargeisa</span>
+          {/* School Brand — Circular Glowing Emblem */}
+          <Link to="/" className="school-brand" aria-label="Stratosphere Aeronautics Home">
+            <div className="school-brand__logo circular-glowing-logo">
+              <img src="/logo-removebg-preview.png" alt="Stratosphere Aeronautics Crest" />
             </div>
           </Link>
 
@@ -145,7 +142,7 @@ function Header() {
             })}
           </nav>
 
-          <LanguageSwitcher />
+          <LanguageSwitcher isGlowing={isGlowingTranslate} />
 
           {/* Header Action Button */}
           <div className="school-header__actions">
@@ -322,101 +319,9 @@ export function Ask({ title, body }: { title: string; body: string }) {
   );
 }
 
-/* ── Simple Inquiry Form ─────────────────────────────────────────────────── */
+/* ── Zoho CRM Web-to-Lead Inquiry Form ──────────────────────────────────── */
 export function InquiryForm({ defaultMsg = '' }: { defaultMsg?: string }) {
-  const [name, setName] = useState('');
-  const [contactInfo, setContactInfo] = useState('');
-  const [message, setMessage] = useState(defaultMsg);
-  const [submitted, setSubmitted] = useState(false);
-
-  useEffect(() => {
-    if (defaultMsg) setMessage(defaultMsg);
-  }, [defaultMsg]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-  };
-
-  if (submitted) {
-    return (
-      <div style={{ padding: 28, background: '#f0fdf4', borderRadius: 'var(--radius)', border: '1px solid #bbf7d0' }}>
-        <h4 style={{ color: '#15803d', fontSize: '1.15rem', fontWeight: 700, marginBottom: 8 }}>
-          Enquiry Received
-        </h4>
-        <p style={{ color: '#166534', fontSize: '0.9375rem' }}>
-          Thank you, {name}. Our admissions desk will reply to you within 24 hours.
-          You can also reach us immediately on WhatsApp.
-        </p>
-        <a
-          href={`${CONTACT.whatsapp}?text=${encodeURIComponent(`Hello, my name is ${name}. ${message}`)}`}
-          target="_blank"
-          rel="noreferrer"
-          className="btn btn--whatsapp btn--sm"
-          style={{ marginTop: 14 }}
-        >
-          <MessageCircle size={16} />
-          Continue on WhatsApp
-        </a>
-      </div>
-    );
-  }
-
-  return (
-    <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 16 }}>
-      <div className="form-group">
-        <label className="form-label">Your Full Name</label>
-        <input
-          type="text"
-          className="form-input"
-          placeholder="e.g. Ahmed Dahir"
-          required
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
-
-      <div className="form-group">
-        <label className="form-label">Phone Number or Email</label>
-        <input
-          type="text"
-          className="form-input"
-          placeholder="e.g. +252 63 XXXXXXX or name@example.com"
-          required
-          value={contactInfo}
-          onChange={(e) => setContactInfo(e.target.value)}
-        />
-      </div>
-
-      <div className="form-group">
-        <label className="form-label">Message / Subjects of Interest</label>
-        <textarea
-          className="form-textarea"
-          rows={4}
-          required
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Let us know what you want to study..."
-        />
-      </div>
-
-      <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
-        <button type="submit" className="btn btn--primary">
-          Submit School Enquiry
-          <ArrowRight size={16} />
-        </button>
-        <a
-          href={CONTACT.whatsapp}
-          target="_blank"
-          rel="noreferrer"
-          className="btn btn--whatsapp"
-        >
-          <MessageCircle size={18} />
-          Fast WhatsApp Reply
-        </a>
-      </div>
-    </form>
-  );
+  return <ZohoLeadForm defaultDescription={defaultMsg} />;
 }
 
 /* ── Simple School Footer ────────────────────────────────────────────────── */
@@ -523,23 +428,135 @@ export function Footer() {
   );
 }
 
+/* ── Language Welcome Spotlight Modal ────────────────────────────────────── */
+function LanguageWelcomeModal({
+  isOpen,
+  onSelect,
+  onClose,
+}: {
+  isOpen: boolean;
+  onSelect: (lang: Lang) => void;
+  onClose: () => void;
+}) {
+  const { lang } = useLang();
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className="lang-welcome-overlay"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Select Language"
+    >
+      <div className="lang-welcome-card" onClick={(e) => e.stopPropagation()}>
+        {/* Heraldic Circular Crest with Glowing Aura */}
+        <div className="circular-glowing-logo" style={{ width: 72, height: 72, margin: '0 auto 16px' }}>
+          <img src="/logo-removebg-preview.png" alt="Stratosphere Crest" />
+        </div>
+
+        <span className="badge badge--gold" style={{ margin: '0 auto 10px' }}>
+          Aviation Ground School · Hargeisa
+        </span>
+
+        <h2 className="lang-welcome-card__title">
+          Stratosphere Aeronautics
+        </h2>
+
+        <p className="lang-welcome-card__sub">
+          School of Theoretical Knowledge Instruction
+        </p>
+
+        <p className="lang-welcome-card__prompt">
+          Select your preferred language / Fadlan dooro luqaddaada:
+        </p>
+
+        <div className="lang-welcome-card__grid">
+          <button
+            type="button"
+            className={`lang-welcome-choice ${lang === 'en' ? 'is-active' : ''}`}
+            onClick={() => onSelect('en')}
+          >
+            <span className="lang-welcome-choice__flag">🇬🇧</span>
+            <div className="lang-welcome-choice__meta">
+              <strong>English</strong>
+              <small>ICAO Aviation Standard</small>
+            </div>
+            {lang === 'en' && <Check size={18} className="lang-welcome-choice__check" />}
+          </button>
+
+          <button
+            type="button"
+            className={`lang-welcome-choice ${lang === 'so' ? 'is-active' : ''}`}
+            onClick={() => onSelect('so')}
+          >
+            <span className="lang-welcome-choice__flag">🇸🇴</span>
+            <div className="lang-welcome-choice__meta">
+              <strong>Soomaali</strong>
+              <small>Af-Soomaali</small>
+            </div>
+            {lang === 'so' && <Check size={18} className="lang-welcome-choice__check" />}
+          </button>
+        </div>
+
+        <button
+          type="button"
+          className="btn btn--primary lang-welcome-enter"
+          onClick={onClose}
+        >
+          Enter Website / Gal Websaytka
+          <ArrowRight size={16} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 /* ── Primary Shell ───────────────────────────────────────────────────────── */
 export default function Shell({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation();
+  const { setLang } = useLang();
+  const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
+  useEffect(() => {
+    const hasVisited = sessionStorage.getItem('stratosphere_welcomed');
+    if (!hasVisited) {
+      setShowWelcome(true);
+    }
+  }, []);
+
+  const handleSelectLang = (selectedLang: Lang) => {
+    setLang(selectedLang);
+    sessionStorage.setItem('stratosphere_welcomed', 'true');
+    setShowWelcome(false);
+  };
+
+  const handleCloseWelcome = () => {
+    sessionStorage.setItem('stratosphere_welcomed', 'true');
+    setShowWelcome(false);
+  };
+
   return (
     <>
       <TopBar />
-      <Header />
-      <main id="main">
+      <Header isGlowingTranslate={showWelcome} />
+      <main id="main" className={showWelcome ? 'is-blurred-welcome' : 'is-unblurred'}>
         {children}
       </main>
-      <Footer />
+      <div className={showWelcome ? 'is-blurred-welcome' : 'is-unblurred'}>
+        <Footer />
+      </div>
       <WhatsApp />
+
+      <LanguageWelcomeModal
+        isOpen={showWelcome}
+        onSelect={handleSelectLang}
+        onClose={handleCloseWelcome}
+      />
     </>
   );
 }

@@ -400,55 +400,78 @@ ul, ol { list-style: none; }
   gap: 24px;
 }
 
-/* School Heraldic Brand Presentation */
+/* School Heraldic Brand Presentation — Only Circular Crest */
 .school-brand {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 14px;
+  justify-content: center;
   cursor: pointer;
   text-decoration: none;
 }
-.school-brand__logo {
-  width: 52px;
-  height: 52px;
+
+/* ── Circular Glowing Crest Emblem ───────────────────────────────────────── */
+.circular-glowing-logo {
+  width: 58px;
+  height: 58px;
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: radial-gradient(circle, #0e2246 0%, #06112a 100%);
-  border: 1.5px solid var(--gold-light);
-  padding: 3px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 12px var(--gold-glow);
-  transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease);
+  background: radial-gradient(circle at 35% 35%, #183d7a 0%, #0c2044 50%, #050e20 100%);
+  border: 2px solid var(--gold-light);
+  padding: 4px;
+  position: relative;
+  box-shadow: 
+    0 0 0 2px rgba(223, 183, 67, 0.4),
+    0 0 18px rgba(223, 183, 67, 0.55),
+    0 0 35px rgba(29, 78, 216, 0.4),
+    inset 0 0 10px rgba(223, 183, 67, 0.25);
+  animation: logoOrbGlow 3.5s ease-in-out infinite alternate;
+  transition: transform 0.4s var(--ease-spring), box-shadow 0.4s var(--ease);
+  flex-shrink: 0;
 }
-.school-brand:hover .school-brand__logo {
-  transform: scale(1.08) rotate(3deg);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), 0 0 18px var(--gold-light);
+
+@keyframes logoOrbGlow {
+  0% {
+    box-shadow: 
+      0 0 0 2px rgba(223, 183, 67, 0.35),
+      0 0 15px rgba(223, 183, 67, 0.4),
+      0 0 28px rgba(29, 78, 216, 0.3),
+      inset 0 0 8px rgba(223, 183, 67, 0.2);
+    border-color: #dfb743;
+  }
+  50% {
+    box-shadow: 
+      0 0 0 3px rgba(243, 211, 118, 0.8),
+      0 0 28px rgba(243, 211, 118, 0.75),
+      0 0 48px rgba(37, 99, 235, 0.6),
+      inset 0 0 16px rgba(243, 211, 118, 0.4);
+    border-color: #f3d376;
+  }
+  100% {
+    box-shadow: 
+      0 0 0 2px rgba(223, 183, 67, 0.35),
+      0 0 18px rgba(223, 183, 67, 0.45),
+      0 0 32px rgba(29, 78, 216, 0.35),
+      inset 0 0 10px rgba(223, 183, 67, 0.25);
+    border-color: #dfb743;
+  }
 }
-.school-brand__logo img {
+
+.circular-glowing-logo:hover,
+.school-brand:hover .circular-glowing-logo {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 
+    0 0 0 3px #f3d376,
+    0 0 35px rgba(243, 211, 118, 0.9),
+    0 0 65px rgba(37, 99, 235, 0.75),
+    inset 0 0 20px rgba(243, 211, 118, 0.5);
+}
+
+.circular-glowing-logo img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
-}
-.school-brand__text {
-  display: flex;
-  flex-direction: column;
-}
-.school-brand__name {
-  font-family: var(--font-serif);
-  font-size: 1.22rem;
-  font-weight: 700;
-  color: #ffffff;
-  letter-spacing: 0.02em;
-  line-height: 1.15;
-}
-.school-brand__sub {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: var(--gold-light);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin-top: 3px;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
 }
 
 /* Navigation Links */
@@ -541,6 +564,190 @@ ul, ol { list-style: none; }
 .lang-switcher__item.is-active {
   color: var(--gold-bright);
   font-weight: 700;
+}
+
+/* ── Glowing Translate Button When Visiting Website ─────────────────────── */
+.lang-switcher__btn--glowing {
+  border-color: var(--gold-bright) !important;
+  color: #ffffff !important;
+  background: linear-gradient(135deg, rgba(223, 183, 67, 0.35) 0%, rgba(29, 78, 216, 0.3) 100%) !important;
+  box-shadow: 
+    0 0 0 2px rgba(243, 211, 118, 0.7),
+    0 0 16px rgba(223, 183, 67, 0.7),
+    0 0 32px rgba(37, 99, 235, 0.45);
+  animation: translatePulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes translatePulse {
+  0% {
+    box-shadow: 
+      0 0 0 2px rgba(223, 183, 67, 0.4),
+      0 0 12px rgba(223, 183, 67, 0.45),
+      0 0 24px rgba(37, 99, 235, 0.3);
+    transform: scale(1);
+  }
+  100% {
+    box-shadow: 
+      0 0 0 3px rgba(243, 211, 118, 0.85),
+      0 0 24px rgba(243, 211, 118, 0.8),
+      0 0 40px rgba(37, 99, 235, 0.6);
+    transform: scale(1.05);
+  }
+}
+
+/* ── Website Backdrop Blur On Initial Visit ──────────────────────────────── */
+.is-blurred-welcome {
+  filter: blur(14px) brightness(0.82);
+  -webkit-filter: blur(14px) brightness(0.82);
+  pointer-events: none;
+  user-select: none;
+  transition: filter 0.6s var(--ease), -webkit-filter 0.6s var(--ease), opacity 0.6s var(--ease);
+}
+
+.is-unblurred {
+  filter: blur(0px) brightness(1);
+  -webkit-filter: blur(0px) brightness(1);
+  pointer-events: auto;
+  user-select: auto;
+  transition: filter 0.6s var(--ease), -webkit-filter 0.6s var(--ease), opacity 0.6s var(--ease);
+}
+
+/* ── Language Welcome Spotlight Modal ────────────────────────────────────── */
+.lang-welcome-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(3, 8, 20, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: langOverlayFadeIn 0.35s var(--ease);
+}
+
+@keyframes langOverlayFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.lang-welcome-card {
+  width: 100%;
+  max-width: 480px;
+  background: linear-gradient(150deg, #0d2249 0%, #06112a 60%, #030814 100%);
+  border: 2px solid var(--gold-light);
+  border-radius: var(--radius-xl);
+  padding: clamp(24px, 5vw, 36px);
+  text-align: center;
+  color: #ffffff;
+  box-shadow: 
+    0 25px 60px -10px rgba(0, 0, 0, 0.9),
+    0 0 35px rgba(223, 183, 67, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  animation: langCardPop 0.4s var(--ease-spring);
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes langCardPop {
+  from { opacity: 0; transform: scale(0.92) translateY(16px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.lang-welcome-card__title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.3rem, 3.5vw, 1.65rem);
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ffffff 40%, var(--gold-bright) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 4px;
+}
+
+.lang-welcome-card__sub {
+  font-size: 0.8125rem;
+  color: var(--gold-light);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 18px;
+}
+
+.lang-welcome-card__prompt {
+  font-size: 0.9375rem;
+  color: #cbd5e1;
+  margin-bottom: 22px;
+  line-height: 1.5;
+}
+
+.lang-welcome-card__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.lang-welcome-choice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(223, 183, 67, 0.25);
+  border-radius: var(--radius);
+  color: #ffffff;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.25s var(--ease-spring);
+  gap: 6px;
+}
+
+.lang-welcome-choice:hover {
+  background: rgba(223, 183, 67, 0.15);
+  border-color: var(--gold-bright);
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 8px 24px rgba(223, 183, 67, 0.25);
+}
+
+.lang-welcome-choice.is-active {
+  background: linear-gradient(135deg, rgba(223, 183, 67, 0.22) 0%, rgba(29, 78, 216, 0.22) 100%);
+  border-color: var(--gold-bright);
+  box-shadow: 0 0 20px rgba(223, 183, 67, 0.35);
+}
+
+.lang-welcome-choice__flag {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.lang-welcome-choice__meta strong {
+  display: block;
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.lang-welcome-choice__meta small {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--gold-light);
+  margin-top: 2px;
+}
+
+.lang-welcome-choice__check {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  color: var(--gold-bright);
+}
+
+.lang-welcome-enter {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 0.95rem;
+  justify-content: center;
+  box-shadow: 0 4px 18px rgba(223, 183, 67, 0.35);
 }
 
 /* Mobile Hamburger Menu */
