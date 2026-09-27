@@ -213,7 +213,6 @@ function Header({ isGlowingTranslate }: { isGlowingTranslate?: boolean }) {
 
 /* ── Floating Green WhatsApp Button ──────────────────────────────────────── */
 export function WhatsApp() {
-  const { t } = useLang();
   return (
     <a
       className="whatsapp-float"
@@ -223,10 +222,9 @@ export function WhatsApp() {
       aria-label="Message Stratosphere Aeronautics Admissions on WhatsApp"
     >
       <div className="whatsapp-float__pulse">
-        <MessageCircle size={24} />
+        <MessageCircle size={26} />
         <span className="whatsapp-float__dot" />
       </div>
-      <span>{t.whatsappAdmissions}</span>
     </a>
   );
 }
@@ -295,8 +293,8 @@ export function Ask({ title, body }: { title: string; body: string }) {
             <span className="badge badge--amber" style={{ marginBottom: 12 }}>
               Ground School Admissions
             </span>
-            <h3 className="title-md">{title}</h3>
-            <p className="desc-lg" style={{ color: '#cbd5e1' }}>{body}</p>
+            <h3 className="title-md" style={{ color: '#ffffff' }}>{title}</h3>
+            <p className="desc-lg" style={{ color: '#94a3b8' }}>{body}</p>
           </div>
           <div className="school-cta-card__actions">
             <Link to="/register" className="btn btn--primary">

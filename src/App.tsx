@@ -13,7 +13,7 @@ import { SUBJECTS } from './data/site';
 const SITE = 'Stratosphere Aeronautics';
 const DESC =
   'Stratosphere Aeronautics Theoretical Knowledge Instruction — aviation ground school in Hargeisa, Somaliland. Ten ICAO-aligned subjects taught one to one by ERNAM-trained instructors.';
-const OG_IMAGE = 'https://images.pexels.com/photos/36410538/pexels-photo-36410538.jpeg?auto=compress&cs=tinysrgb&h=650&w=940';
+const OG_IMAGE = '/somali_teacher_hero.jpg';
 
 const TITLES: Record<string, string> = {
   '/': `${SITE} Theoretical Knowledge Instruction`,

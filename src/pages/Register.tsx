@@ -5,20 +5,7 @@ import {
 import Shell, { Filings, PageHead } from '../components/Shell';
 import TiltCard from '../components/TiltCard';
 import { ZohoCrmForm } from '../components/ZohoCrmForm';
-import { CONTACT, FAQS, SUBJECTS } from '../data/site';
-
-const SUBJECT_PHOTOS: Record<string, string> = {
-  M01: 'https://images.pexels.com/photos/38231891/pexels-photo-38231891.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-  M02: 'https://images.pexels.com/photos/14400667/pexels-photo-14400667.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-  M03: 'https://images.pexels.com/photos/4028958/pexels-photo-4028958.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-  M04: 'https://images.pexels.com/photos/6861359/pexels-photo-6861359.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-  M05: 'https://images.pexels.com/photos/11213147/pexels-photo-11213147.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-  M06: 'https://images.pexels.com/photos/4269510/pexels-photo-4269510.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-  M07: 'https://images.pexels.com/photos/15778615/pexels-photo-15778615.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-  M08: 'https://images.pexels.com/photos/34298439/pexels-photo-34298439.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-  M09: 'https://images.pexels.com/photos/37616798/pexels-photo-37616798.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-  M10: 'https://images.pexels.com/photos/17184744/pexels-photo-17184744.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-};
+import { CONTACT, FAQS, SUBJECTS, SUBJECT_PHOTOS } from '../data/site';
 
 const STAGES = [
   { code: '01', title: 'Tell Us Where You Are', body: 'Starting from zero or already flying — both work. It changes the order we suggest, not whether you can begin.' },

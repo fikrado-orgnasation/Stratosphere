@@ -68,7 +68,7 @@ export default function About() {
               }}
             >
               <img
-                src="https://images.pexels.com/photos/7092361/pexels-photo-7092361.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+                src="/images/aviation/about.jpg"
                 alt="Stratosphere Aeronautics ground school instruction in Hargeisa"
                 style={{ width: '100%', height: '400px', objectFit: 'cover' }}
               />

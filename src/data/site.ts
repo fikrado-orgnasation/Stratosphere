@@ -185,3 +185,23 @@ export const RAIL = {
   wind: '12 KT / 090/12',
   established: '2026',
 } as const;
+
+export const SUBJECT_PHOTOS: Record<string, string> = {
+  M01: '/images/aviation/m01.jpg',
+  M02: '/images/aviation/m02.jpg',
+  M03: '/images/aviation/m03.jpg',
+  M04: '/images/aviation/m04.jpg',
+  M05: '/images/aviation/m05.jpg',
+  M06: '/images/aviation/m06.jpg',
+  M07: '/images/aviation/m07.jpg',
+  M08: '/images/aviation/m08.jpg',
+  M09: '/images/aviation/m09.jpg',
+  M10: '/images/aviation/m10.jpg',
+};
+
+export const FLEET_PHOTOS = [
+  '/images/aviation/fleet_0.jpg',
+  '/images/aviation/fleet_1.jpg',
+  '/images/aviation/fleet_2.jpg',
+];
+

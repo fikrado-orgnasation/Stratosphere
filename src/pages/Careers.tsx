@@ -40,7 +40,7 @@ export default function Careers() {
               }}
             >
               <img
-                src="https://images.pexels.com/photos/7276731/pexels-photo-7276731.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+                src="/images/aviation/careers_pilot.jpg"
                 alt="Commercial aviator in cockpit"
                 style={{ width: '100%', height: '220px', objectFit: 'cover' }}
               />
@@ -80,7 +80,7 @@ export default function Careers() {
               }}
             >
               <img
-                src="https://images.pexels.com/photos/4267524/pexels-photo-4267524.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+                src="/images/aviation/careers_dispatch.jpg"
                 alt="Flight dispatch and air traffic management"
                 style={{ width: '100%', height: '220px', objectFit: 'cover' }}
               />
