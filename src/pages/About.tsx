@@ -17,7 +17,7 @@ export default function About() {
     <Shell>
       <PageHead
         kicker="Our Mission"
-        title="Somalia & Somaliland’s Aviation Ground School"
+        title="Somaliland's Aviation Ground School"
         lede="Stratosphere Aeronautics was founded in Hargeisa so that the theoretical knowledge behind an international aviation licence could be studied locally — thoroughly, affordably, and to a standard that travels globally."
       />
 
@@ -31,7 +31,7 @@ export default function About() {
               <span className="badge">Founded in Hargeisa</span>
               <h2 className="title-md">Bringing World-Class Ground School to the Horn of Africa.</h2>
               <p className="desc-md">
-                Until recently, anyone in Somaliland or Somalia pursuing a career as a commercial pilot,
+                Until recently, anyone in Somaliland pursuing a career as a commercial aviator,
                 flight dispatcher, or aviation manager had to travel to Europe, South Africa, or the
                 Middle East just to complete their basic aviation theory exams.
               </p>
@@ -59,7 +59,7 @@ export default function About() {
 
             <div style={{ borderRadius: 'var(--radius-xl)', overflow: 'hidden', boxShadow: 'var(--shadow-lg)' }}>
               <img
-                src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80"
+                src="https://images.pexels.com/photos/7092361/pexels-photo-7092361.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
                 alt="Stratosphere Aeronautics ground school instruction in Hargeisa"
                 style={{ width: '100%', height: '400px', objectFit: 'cover' }}
               />

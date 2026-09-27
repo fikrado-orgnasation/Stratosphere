@@ -7,22 +7,22 @@ import CinematicAtmosphere from '../components/CinematicAtmosphere';
 import { CONTACT, FLEET, STUDENT_JOURNEY, SUBJECTS } from '../data/site';
 
 const SUBJECT_PHOTOS: Record<string, string> = {
-  M01: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=700&q=80', // Air Law / Airfield
-  M02: 'https://images.unsplash.com/photo-1506015391300-4802dc74de2e?auto=format&fit=crop&w=700&q=80', // Principles of Flight / Wing
-  M03: 'https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&w=700&q=80', // Meteorology / Cloud front
-  M04: 'https://images.unsplash.com/photo-1520437358207-323b43b50729?auto=format&fit=crop&w=700&q=80', // Navigation / Flight deck
-  M05: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=700&q=80', // Aircraft Knowledge / Engine
-  M06: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=700&q=80', // Human Performance / Pilot
-  M07: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=700&q=80', // Radio Comms / Headset
-  M08: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=700&q=80', // ATC & Runway lights
-  M09: 'https://images.unsplash.com/photo-1474302770737-173ee21bab63?auto=format&fit=crop&w=700&q=80', // Safety Management / Inspection
-  M10: 'https://images.unsplash.com/photo-1488085061387-422e29b40080?auto=format&fit=crop&w=700&q=80', // Language & Global routes
+  M01: 'https://images.pexels.com/photos/38231891/pexels-photo-38231891.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  M02: 'https://images.pexels.com/photos/14400667/pexels-photo-14400667.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  M03: 'https://images.pexels.com/photos/4028958/pexels-photo-4028958.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  M04: 'https://images.pexels.com/photos/6861359/pexels-photo-6861359.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  M05: 'https://images.pexels.com/photos/11213147/pexels-photo-11213147.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  M06: 'https://images.pexels.com/photos/4269510/pexels-photo-4269510.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  M07: 'https://images.pexels.com/photos/15778615/pexels-photo-15778615.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  M08: 'https://images.pexels.com/photos/34298439/pexels-photo-34298439.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  M09: 'https://images.pexels.com/photos/37616798/pexels-photo-37616798.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  M10: 'https://images.pexels.com/photos/17184744/pexels-photo-17184744.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
 };
 
 const FLEET_PHOTOS = [
-  'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=700&q=80',
-  'https://images.unsplash.com/photo-1506015391300-4802dc74de2e?auto=format&fit=crop&w=700&q=80',
-  'https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?auto=format&fit=crop&w=700&q=80',
+  'https://images.pexels.com/photos/18348295/pexels-photo-18348295.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  'https://images.pexels.com/photos/11848893/pexels-photo-11848893.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  'https://images.pexels.com/photos/38940718/pexels-photo-38940718.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
 ];
 
 export default function Home() {
@@ -39,13 +39,13 @@ export default function Home() {
             </span>
 
             <h1 className="title-lg">
-              Your Path to the Cockpit Starts with Aviation Theory.
+              Stratosphere Aeronautics Theoretical Knowledge Instruction.
             </h1>
 
             <p className="desc-lg" style={{ color: '#e2e8f0' }}>
-              Somalia & Somaliland’s premier aviation ground school. We teach the complete
-              ten-subject ICAO curriculum one-on-one with certified ERNAM instructors.
-              Start with one subject or complete the full course for your pilot licence.
+              Somaliland's premier aviation ground school. Ten ICAO-aligned subjects
+              taught one to one by ERNAM-trained instructors. Start with one subject
+              or complete the full course.
             </p>
 
             <div className="school-hero__actions">
@@ -81,8 +81,8 @@ export default function Home() {
 
           <div className="school-hero__image-card">
             <img
-              src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=900&q=80"
-              alt="Aviation student pilot in flight training cockpit"
+              src="https://images.pexels.com/photos/36410538/pexels-photo-36410538.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+              alt="Aviation student in flight training cockpit"
               className="school-hero__image"
             />
             <div className="school-hero__overlay-badge">
@@ -117,7 +117,7 @@ export default function Home() {
             </div>
             <div className="stat-item">
               <span className="stat-val">ERNAM</span>
-              <span className="stat-label">Certified Flight Instructors</span>
+              <span className="stat-label">Certified Instructors</span>
             </div>
           </div>
         </div>
@@ -130,8 +130,8 @@ export default function Home() {
             <span className="badge">Why Study With Us</span>
             <h2 className="title-md">Designed for Serious Aviation Careers.</h2>
             <p className="desc-md">
-              Aviation ground school is the foundation of every pilot, flight dispatcher,
-              and safety officer. Here is how we make sure you master it.
+              Aviation ground school is the foundation of every aviation professional,
+              flight dispatcher, and safety officer. Here is how we make sure you master it.
             </p>
           </div>
 
@@ -140,7 +140,7 @@ export default function Home() {
             <div className="photo-feature-card">
               <div className="photo-feature-card__img-wrap">
                 <img
-                  src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=700&q=80"
+                  src="https://images.pexels.com/photos/18870246/pexels-photo-18870246.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
                   alt="One on one aviation teaching in ground school"
                   className="photo-feature-card__img"
                 />
@@ -162,7 +162,7 @@ export default function Home() {
             <div className="photo-feature-card">
               <div className="photo-feature-card__img-wrap">
                 <img
-                  src="https://images.unsplash.com/photo-1506015391300-4802dc74de2e?auto=format&fit=crop&w=700&q=80"
+                  src="https://images.pexels.com/photos/14324045/pexels-photo-14324045.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
                   alt="Aircraft wing in flight over clouds"
                   className="photo-feature-card__img"
                 />
@@ -172,7 +172,7 @@ export default function Home() {
                 <h3 className="photo-feature-card__title">ICAO Doc 7192 Aligned</h3>
                 <p className="photo-feature-card__desc">
                   Our curriculum follows the international civil aviation syllabus.
-                  The certificate you earn travels with you to any flight academy abroad.
+                  The certificate you earn travels with you to any academy abroad.
                 </p>
                 <Link to="/training" className="course-card__link" style={{ marginTop: 'auto' }}>
                   Explore the 10 subjects <ChevronRight size={15} />
@@ -184,7 +184,7 @@ export default function Home() {
             <div className="photo-feature-card">
               <div className="photo-feature-card__img-wrap">
                 <img
-                  src="https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=700&q=80"
+                  src="https://images.pexels.com/photos/327882/pexels-photo-327882.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
                   alt="Aviation textbooks on student study desk"
                   className="photo-feature-card__img"
                 />
@@ -212,7 +212,7 @@ export default function Home() {
             <span className="badge">Curriculum</span>
             <h2 className="title-md">The Ten Theoretical Knowledge Subjects.</h2>
             <p className="desc-md">
-              Everything the written requirement for a pilot licence asks you to master.
+              Everything the written requirement for an aviation licence asks you to master.
               Enroll in individual subjects or complete the full programme.
             </p>
           </div>
@@ -263,10 +263,10 @@ export default function Home() {
         <div className="shell">
           <div className="section-head">
             <span className="badge badge--amber">Our Fleet</span>
-            <h2 className="title-md">The Aircraft You Are Learning to Fly.</h2>
+            <h2 className="title-md">The Aircraft You Are Learning About.</h2>
             <p className="desc-md">
               Our theoretical knowledge connects directly with standard training aircraft
-              used worldwide for Private and Commercial Pilot training.
+              used worldwide for Private and Commercial licence training.
             </p>
           </div>
 

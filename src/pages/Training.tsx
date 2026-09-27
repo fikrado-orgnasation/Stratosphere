@@ -4,23 +4,23 @@ import Shell, { Filings, PageHead } from '../components/Shell';
 import { CONTACT, SUBJECTS } from '../data/site';
 
 const SUBJECT_PHOTOS: Record<string, string> = {
-  M01: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=600&q=80',
-  M02: 'https://images.unsplash.com/photo-1506015391300-4802dc74de2e?auto=format&fit=crop&w=600&q=80',
-  M03: 'https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&w=600&q=80',
-  M04: 'https://images.unsplash.com/photo-1520437358207-323b43b50729?auto=format&fit=crop&w=600&q=80',
-  M05: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=600&q=80',
-  M06: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=600&q=80',
-  M07: 'https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=600&q=80',
-  M08: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&w=600&q=80',
-  M09: 'https://images.unsplash.com/photo-1474302770737-173ee21bab63?auto=format&fit=crop&w=600&q=80',
-  M10: 'https://images.unsplash.com/photo-1488085061387-422e29b40080?auto=format&fit=crop&w=600&q=80',
+  M01: 'https://images.pexels.com/photos/38231891/pexels-photo-38231891.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  M02: 'https://images.pexels.com/photos/14400667/pexels-photo-14400667.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  M03: 'https://images.pexels.com/photos/4028958/pexels-photo-4028958.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  M04: 'https://images.pexels.com/photos/6861359/pexels-photo-6861359.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  M05: 'https://images.pexels.com/photos/11213147/pexels-photo-11213147.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  M06: 'https://images.pexels.com/photos/4269510/pexels-photo-4269510.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  M07: 'https://images.pexels.com/photos/15778615/pexels-photo-15778615.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  M08: 'https://images.pexels.com/photos/34298439/pexels-photo-34298439.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  M09: 'https://images.pexels.com/photos/37616798/pexels-photo-37616798.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
+  M10: 'https://images.pexels.com/photos/17184744/pexels-photo-17184744.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
 };
 
 const LOGISTICS = [
   { title: 'Separate Assessment', body: 'Each of the ten subjects is examined individually. You pass on its own terms without having to repeat others.' },
   { title: '1-on-1 Instruction', body: 'Taught privately or in small cohorts of your choosing. Your questions are answered thoroughly.' },
   { title: 'Custom Pace', body: 'Morning, evening, or weekend sessions designed around your employment or flight commitments.' },
-  { title: 'Licence Prerequisite', body: 'This theoretical knowledge satisfies the written prerequisite for both PPL and CPL pilot licences.' },
+  { title: 'Licence Prerequisite', body: 'This theoretical knowledge satisfies the written prerequisite for both PPL and CPL licences.' },
 ];
 
 export default function Training() {

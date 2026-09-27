@@ -27,7 +27,7 @@ export default function Careers() {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 32 }}>
-            {/* Pathway 1: Pilot */}
+            {/* Pathway 1: Flying */}
             <div
               style={{
                 borderRadius: 'var(--radius-lg)',
@@ -38,30 +38,30 @@ export default function Careers() {
               }}
             >
               <img
-                src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=700&q=80"
-                alt="Commercial pilot in cockpit"
+                src="https://images.pexels.com/photos/7276731/pexels-photo-7276731.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
+                alt="Commercial aviator in cockpit"
                 style={{ width: '100%', height: '220px', objectFit: 'cover' }}
               />
               <div style={{ padding: 28, display: 'grid', gap: 14 }}>
                 <span className="badge badge--amber">Flying Path</span>
-                <h3 className="title-sm">Commercial & Private Pilot (PPL / CPL)</h3>
+                <h3 className="title-sm">Commercial & Private Licence (PPL / CPL)</h3>
                 <p className="desc-md">
                   Every civil aviation authority requires passing comprehensive theoretical exams before
-                  granting pilot wings. Completing our 10 ICAO subjects gives you the certified written
+                  granting licence wings. Completing our 10 ICAO subjects gives you the certified written
                   foundation before flight training hours.
                 </p>
                 <div style={{ display: 'grid', gap: 8, marginTop: 4 }}>
                   <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.875rem', color: 'var(--navy)' }}>
                     <CheckCircle2 size={16} style={{ color: 'var(--wa)' }} />
-                    Private Pilot Licence (PPL) theory
+                    Private Licence (PPL) theory
                   </span>
                   <span style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.875rem', color: 'var(--navy)' }}>
                     <CheckCircle2 size={16} style={{ color: 'var(--wa)' }} />
-                    Commercial Pilot Licence (CPL) theory
+                    Commercial Licence (CPL) theory
                   </span>
                 </div>
                 <Link to="/register" className="btn btn--primary" style={{ marginTop: 10 }}>
-                  Enroll in Pilot Theory Package <ArrowRight size={16} />
+                  Enroll in Licence Theory Package <ArrowRight size={16} />
                 </Link>
               </div>
             </div>
@@ -77,7 +77,7 @@ export default function Careers() {
               }}
             >
               <img
-                src="https://images.unsplash.com/photo-1569154941061-e231b4725ef1?auto=format&fit=crop&w=700&q=80"
+                src="https://images.pexels.com/photos/4267524/pexels-photo-4267524.jpeg?auto=compress&cs=tinysrgb&h=650&w=940"
                 alt="Flight dispatch and air traffic management"
                 style={{ width: '100%', height: '220px', objectFit: 'cover' }}
               />

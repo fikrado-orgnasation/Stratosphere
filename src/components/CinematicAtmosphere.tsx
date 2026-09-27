@@ -119,6 +119,94 @@ export default function CinematicAtmosphere() {
       vectorsGroup.add(vLine);
     }
 
+    // ── Floating low-poly airplane ──────────────────────────────────────
+    // A simple geometric plane: fuselage (elongated box) + wings (flat box)
+    // + tail (small box). Kept intentionally low-poly for performance.
+    const planeGroup = new THREE.Group();
+    scene.add(planeGroup);
+
+    const planeMat = new THREE.MeshBasicMaterial({
+      color: 0x2c6fd6,
+      transparent: true,
+      opacity: 0.28,
+    });
+    const planeMatAccent = new THREE.MeshBasicMaterial({
+      color: 0xd9a441,
+      transparent: true,
+      opacity: 0.35,
+    });
+
+    // Fuselage
+    const fuselage = new THREE.Mesh(
+      new THREE.BoxGeometry(0.35, 0.35, 2.6),
+      planeMat,
+    );
+    planeGroup.add(fuselage);
+
+    // Main wings
+    const wings = new THREE.Mesh(
+      new THREE.BoxGeometry(3.0, 0.08, 0.5),
+      planeMat,
+    );
+    wings.position.y = -0.05;
+    planeGroup.add(wings);
+
+    // Tail wings
+    const tail = new THREE.Mesh(
+      new THREE.BoxGeometry(1.2, 0.06, 0.3),
+      planeMat,
+    );
+    tail.position.z = 1.1;
+    planeGroup.add(tail);
+
+    // Vertical stabilizer
+    const vStab = new THREE.Mesh(
+      new THREE.BoxGeometry(0.06, 0.55, 0.35),
+      planeMatAccent,
+    );
+    vStab.position.z = 1.15;
+    vStab.position.y = 0.25;
+    planeGroup.add(vStab);
+
+    // Position the airplane floating in the upper-right area
+    planeGroup.position.set(7, 6, -6);
+    planeGroup.rotation.y = -0.5;
+    planeGroup.rotation.z = 0.15;
+
+    // ── Soft cloud puffs (low-poly icosahedrons) ───────────────────────
+    const cloudsGroup = new THREE.Group();
+    scene.add(cloudsGroup);
+
+    const cloudMat = new THREE.MeshBasicMaterial({
+      color: 0x1e3a6e,
+      transparent: true,
+      opacity: 0.10,
+    });
+
+    for (let c = 0; c < 8; c++) {
+      const cloudCluster = new THREE.Group();
+      const puffCount = 3 + Math.floor(Math.random() * 3);
+      for (let p = 0; p < puffCount; p++) {
+        const puff = new THREE.Mesh(
+          new THREE.IcosahedronGeometry(0.6 + Math.random() * 0.5, 0),
+          cloudMat,
+        );
+        puff.position.set(
+          (Math.random() - 0.5) * 2.2,
+          (Math.random() - 0.5) * 0.6,
+          (Math.random() - 0.5) * 1.2,
+        );
+        cloudCluster.add(puff);
+      }
+      cloudCluster.position.set(
+        (Math.random() - 0.5) * 28,
+        (Math.random() - 0.5) * 20 - 3,
+        (Math.random() - 0.5) * 18 - 8,
+      );
+      cloudCluster.scale.setScalar(0.8 + Math.random() * 1.2);
+      cloudsGroup.add(cloudCluster);
+    }
+
     // Dynamic cursor lighting / spotlight
     const mouse = new THREE.Vector2(0, 0);
     const targetMouse = new THREE.Vector2(0, 0);
@@ -189,6 +277,15 @@ export default function CinematicAtmosphere() {
         });
 
         vectorsGroup.rotation.y = elapsed * 0.008;
+
+        // Floating airplane: gentle bob and slow yaw
+        planeGroup.position.y = 6 + Math.sin(elapsed * 0.4) * 0.6;
+        planeGroup.rotation.y = -0.5 + Math.sin(elapsed * 0.15) * 0.12;
+        planeGroup.rotation.z = 0.15 + Math.sin(elapsed * 0.3) * 0.04;
+
+        // Clouds drift slowly across the scene
+        cloudsGroup.rotation.y = elapsed * 0.006;
+        cloudsGroup.position.x = Math.sin(elapsed * 0.02) * 2;
       }
 
       // Depth-based camera flight based on scroll
@@ -227,6 +324,18 @@ export default function CinematicAtmosphere() {
       });
       vectorsGroup.traverse((obj) => {
         if (obj instanceof THREE.Line) {
+          obj.geometry.dispose();
+          (obj.material as THREE.Material).dispose();
+        }
+      });
+      planeGroup.traverse((obj) => {
+        if (obj instanceof THREE.Mesh) {
+          obj.geometry.dispose();
+          (obj.material as THREE.Material).dispose();
+        }
+      });
+      cloudsGroup.traverse((obj) => {
+        if (obj instanceof THREE.Mesh) {
           obj.geometry.dispose();
           (obj.material as THREE.Material).dispose();
         }

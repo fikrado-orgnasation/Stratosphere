@@ -1,35 +1,36 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
-  ArrowRight, Award, Globe, Phone, Radio, ShieldCheck, MapPin, Mail, MessageCircle, X
+  ArrowRight, Award, Check, Globe, Phone, Radio, ShieldCheck, MapPin, Mail, MessageCircle, X, Languages, ChevronDown
 } from 'lucide-react';
 import { CONTACT } from '../data/site';
+import { useLang, type Lang } from '../i18n';
 import CinematicAtmosphere from './CinematicAtmosphere';
 
 export const NAV_LINKS = [
-  { to: '/', label: 'Home' },
-  { to: '/training', label: 'Courses & Syllabus' },
-  { to: '/register', label: 'Enroll' },
-  { to: '/books', label: 'Books' },
-  { to: '/student-life', label: 'Student Life' },
-  { to: '/careers', label: 'Careers' },
-  { to: '/about', label: 'About Us' },
-  { to: '/contact', label: 'Contact' },
+  { to: '/', key: 'home' as const },
+  { to: '/training', key: 'training' as const },
+  { to: '/register', key: 'enroll' as const },
+  { to: '/books', key: 'books' as const },
+  { to: '/careers', key: 'careers' as const },
+  { to: '/about', key: 'about' as const },
+  { to: '/contact', key: 'contact' as const },
 ] as const;
 
 /* ── Simple Top Notification Bar ─────────────────────────────────────────── */
 function TopBar() {
+  const { t } = useLang();
   return (
     <div className="top-notice-bar">
       <div className="shell top-notice-bar__in">
         <div className="top-notice-bar__left">
           <span className="top-notice-bar__item">
             <Award size={14} style={{ color: 'var(--amber)' }} />
-            <span>Admissions Open for 2026–2027 Ground School</span>
+            <span>{t.admissionsOpen}</span>
           </span>
           <span className="top-notice-bar__item" style={{ opacity: 0.8 }}>
             <MapPin size={14} />
-            <span>Hargeisa, Somaliland</span>
+            <span>{t.hargeisa}</span>
           </span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -49,7 +50,7 @@ function TopBar() {
             style={{ color: '#25d366', fontWeight: 700 }}
           >
             <MessageCircle size={13} />
-            <span>WhatsApp Admissions</span>
+            <span>{t.whatsappAdmissions}</span>
           </a>
         </div>
       </div>
@@ -58,9 +59,56 @@ function TopBar() {
 }
 
 /* ── Simple School Header ────────────────────────────────────────────────── */
+function LanguageSwitcher() {
+  const { lang, setLang } = useLang();
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const close = () => setOpen(false);
+    if (open) {
+      window.addEventListener('click', close);
+      return () => window.removeEventListener('click', close);
+    }
+  }, [open]);
+
+  return (
+    <div className="lang-switcher" onClick={(e) => e.stopPropagation()}>
+      <button
+        className="lang-switcher__btn"
+        onClick={() => setOpen((o) => !o)}
+        aria-label="Switch language"
+        aria-expanded={open}
+      >
+        <Languages size={16} />
+        <span>{lang === 'en' ? 'EN' : 'SO'}</span>
+        <ChevronDown size={13} style={{ opacity: 0.6 }} />
+      </button>
+      {open && (
+        <div className="lang-switcher__menu">
+          <button
+            className={`lang-switcher__item ${lang === 'en' ? 'is-active' : ''}`}
+            onClick={() => { setLang('en' as Lang); setOpen(false); }}
+          >
+            English
+            {lang === 'en' && <Check size={14} />}
+          </button>
+          <button
+            className={`lang-switcher__item ${lang === 'so' ? 'is-active' : ''}`}
+            onClick={() => { setLang('so' as Lang); setOpen(false); }}
+          >
+            Soomaali
+            {lang === 'so' && <Check size={14} />}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const { pathname } = useLocation();
+  const { t } = useLang();
 
   useEffect(() => {
     setIsOpen(false);
@@ -77,13 +125,13 @@ function Header() {
             </div>
             <div className="school-brand__text">
               <span className="school-brand__name">Stratosphere Aeronautics</span>
-              <span className="school-brand__sub">Aviation Ground School · Hargeisa</span>
+              <span className="school-brand__sub">Theoretical Knowledge Instruction · Hargeisa</span>
             </div>
           </Link>
 
           {/* Simple Navigation */}
           <nav className="school-nav" aria-label="Main Navigation">
-            {NAV_LINKS.slice(0, 7).map((item) => {
+            {NAV_LINKS.map((item) => {
               const active = pathname === item.to || (item.to !== '/' && pathname.startsWith(item.to));
               return (
                 <Link
@@ -91,16 +139,18 @@ function Header() {
                   to={item.to}
                   aria-current={active ? 'page' : undefined}
                 >
-                  {item.label}
+                  {t.nav[item.key]}
                 </Link>
               );
             })}
           </nav>
 
+          <LanguageSwitcher />
+
           {/* Header Action Button */}
           <div className="school-header__actions">
             <Link to="/register" className="btn btn--primary btn--sm">
-              Enroll Now
+              {t.enrollNow}
               <ArrowRight size={15} />
             </Link>
             <button
@@ -124,7 +174,7 @@ function Header() {
         <div className="mobile-nav-content" onClick={(e) => e.stopPropagation()}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--navy)' }}>
-              Menu
+              {t.menu}
             </span>
             <button
               type="button"
@@ -139,7 +189,7 @@ function Header() {
           <div className="mobile-nav-links">
             {NAV_LINKS.map((item) => (
               <Link key={item.to} to={item.to}>
-                {item.label}
+                {t.nav[item.key]}
               </Link>
             ))}
           </div>
@@ -152,10 +202,10 @@ function Header() {
               className="btn btn--whatsapp"
             >
               <MessageCircle size={18} />
-              WhatsApp Admissions
+              {t.whatsappAdmissions}
             </a>
             <Link to="/register" className="btn btn--primary">
-              Enroll in Courses
+              {t.enrollCourses}
             </Link>
           </div>
         </div>
@@ -166,6 +216,7 @@ function Header() {
 
 /* ── Floating Green WhatsApp Button ──────────────────────────────────────── */
 export function WhatsApp() {
+  const { t } = useLang();
   return (
     <a
       className="whatsapp-float"
@@ -178,7 +229,7 @@ export function WhatsApp() {
         <MessageCircle size={24} />
         <span className="whatsapp-float__dot" />
       </div>
-      <span>Chat on WhatsApp</span>
+      <span>{t.whatsappAdmissions}</span>
     </a>
   );
 }
@@ -370,6 +421,7 @@ export function InquiryForm({ defaultMsg = '' }: { defaultMsg?: string }) {
 
 /* ── Simple School Footer ────────────────────────────────────────────────── */
 export function Footer() {
+  const { t } = useLang();
   return (
     <footer className="school-footer">
       <div className="shell">
@@ -386,7 +438,7 @@ export function Footer() {
               </div>
             </div>
             <p style={{ fontSize: '0.9375rem', color: '#94a3b8', lineHeight: 1.6, maxWidth: '38ch' }}>
-              Somalia & Somaliland’s premier aviation ground school. Theoretical knowledge instruction
+              Somaliland’s premier aviation ground school. Theoretical knowledge instruction
               to ICAO standards, taught one to one in Hargeisa.
             </p>
             <address style={{ fontStyle: 'normal', color: '#cbd5e1', fontSize: '0.875rem', lineHeight: 1.6 }}>
@@ -397,32 +449,31 @@ export function Footer() {
 
           {/* Col 2: Academic Programs */}
           <div className="school-footer__col">
-            <h4>Courses</h4>
+            <h4>{t.courses}</h4>
             <ul>
-              <li><Link to="/training">All 10 ICAO Subjects</Link></li>
+              <li><Link to="/training">{t.allSubjects}</Link></li>
               <li><Link to="/training/1">Air Law (M01)</Link></li>
               <li><Link to="/training/2">Principles of Flight (M02)</Link></li>
               <li><Link to="/training/3">Meteorology (M03)</Link></li>
               <li><Link to="/training/4">Navigation & Planning (M04)</Link></li>
-              <li><Link to="/books">Textbooks & Manuals</Link></li>
+              <li><Link to="/books">{t.textbooks}</Link></li>
             </ul>
           </div>
 
           {/* Col 3: Student Life & Careers */}
           <div className="school-footer__col">
-            <h4>School Life</h4>
+            <h4>{t.schoolLife}</h4>
             <ul>
-              <li><Link to="/student-life">Inside Student Life</Link></li>
-              <li><Link to="/careers">Aviation Career Routes</Link></li>
-              <li><Link to="/about">About Instructors</Link></li>
-              <li><Link to="/register">Enrollment Guide</Link></li>
-              <li><Link to="/contact">Campus Map & Directions</Link></li>
+              <li><Link to="/careers">{t.aviationCareerRoutes}</Link></li>
+              <li><Link to="/about">{t.aboutInstructors}</Link></li>
+              <li><Link to="/register">{t.enrollmentGuide}</Link></li>
+              <li><Link to="/contact">{t.campusMap}</Link></li>
             </ul>
           </div>
 
           {/* Col 4: Reach Admissions */}
           <div className="school-footer__col">
-            <h4>Admissions Desk</h4>
+            <h4>{t.admissionsDesk}</h4>
             <ul>
               {CONTACT.phones.slice(0, 2).map((p) => (
                 <li key={p.display}>
@@ -455,7 +506,7 @@ export function Footer() {
 
         {/* Bottom Bar with Fikrado Security */}
         <div className="school-footer__bottom">
-          <span>&copy; {new Date().getFullYear()} Stratosphere Aeronautics. Precision in theory. Excellence in flight.</span>
+          <span>&copy; {new Date().getFullYear()} Stratosphere Aeronautics. {t.rights}</span>
           <a
             className="fikrado-security-badge"
             href="https://fikrado2.github.io/fikrado/"
@@ -464,7 +515,7 @@ export function Footer() {
             aria-label="Powered by Fikrado Security"
           >
             <img src="/fikrado_sec_(1).png" alt="Fikrado Security" />
-            <span>Powered by Fikrado Security</span>
+            <span>{t.poweredBy}</span>
           </a>
         </div>
       </div>
