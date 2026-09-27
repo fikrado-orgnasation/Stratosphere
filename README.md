@@ -127,28 +127,11 @@ git push origin your-branch
 
 Please run typecheck, lint, and build before opening a pull request.
 
-## Standards and affiliations
-
-- **ICAO** — International Civil Aviation Organization
-- **ERNAM** — Regional School of Air Navigation and Management
-- **ASECNA** — Agency for Aerial Navigation Safety
-- **ICAO WACAF** — regional office partner
-
-## Contact
-
-**Stratosphere Aeronautics**
-Bahsane Building, 2nd Floor, Room 213
-Western entrance, facing west · Opposite the former National Cinema
-Hargeisa, Somaliland
-
-- **Phone:** +252 63 4482830 · +252 65 4482830 · +252 63 3347512
-- **Email:** info@stratosphereaeronautics.com
-- **WhatsApp:** [wa.me/252634482830](https://wa.me/252634482830)
 
 ---
 
 <div align="center">
 
-© 2026 Stratosphere Aeronautics. All rights reserved.
+© 2026 Fikrado Security . All rights reserved.
 
 </div>
