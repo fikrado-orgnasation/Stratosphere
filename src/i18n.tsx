@@ -45,30 +45,30 @@ export const STRINGS = {
     menu: 'Liiska',
     whatsappAdmissions: 'WhatsApp iska diwan gali',
     enrollCourses: 'Isdiwan gali hada',
-    admissionsOpen: 'Diiwaangelinta laga furan yahay 2026–2027',
+    admissionsOpen: 'Diiwaangelinta waa la bilabay galasyada 2026–2027',
     hargeisa: 'Hargaysa, Soomaaliland',
     poweredBy: 'waxa dhisay website gan shirkada Fikrado Security',
-    rights: 'Saxnidood waa aragti. Ficil gadood waa dayaxgalka.',
+    rights: 'Khaliya mahan barasho ee waa xirfada lagu duulo hawada',
     courses: 'Koorsooyinka',
-    schoolLife: 'Nolosha Dugsiga',
-    admissionsDesk: 'Qabashada Aragti',
+    schoolLife: 'Ardayda Waxa la baraya',
+    admissionsDesk: 'xalkan iska diwan gali',
     aviationCareerRoutes: 'Jadwalka Shaqada Diyaaradaha',
-    aboutInstructors: 'Barayaasha da',
+    aboutInstructors: 'baro malinkaga ku dhigaya',
     enrollmentGuide: 'Xalka la iska Diiwaangelinta',
-    campusMap: 'Khariidada Kolejka & Saacadaha Martida',
+    campusMap: 'goobta iyo xalku iskulku ku yalo',
     allSubjects: 'Dhammaan madooyinka',
     textbooks: 'Buugaggata',
   },
 };
 
-type Strings = typeof STRINGS['en'];
+type Strings = typeof STRINGS['so'];
 
 export const LangContext = createContext<{
   lang: Lang;
   setLang: (l: Lang) => void;
   t: Strings;
 }>({
-  lang: 'en',
+  lang: 'so',
   setLang: () => {},
   t: STRINGS.en as Strings,
 });
