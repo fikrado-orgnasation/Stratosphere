@@ -1,5 +1,5 @@
 import { Mail, MapPin, MessageCircle, Phone } from 'lucide-react';
-import Shell, { Filings, InquiryForm, PageHead } from '../components/Shell';
+import Shell, { Filings, PageHead } from '../components/Shell';
 import TiltCard from '../components/TiltCard';
 import { CONTACT } from '../data/site';
 
@@ -16,12 +16,9 @@ export default function Contact() {
 
       <section className="section">
         <div className="shell">
-          <div className="register-layout">
-            {/* Left Col: Direct School Contact Methods */}
-            <div>
-              <h2 className="title-md" style={{ marginBottom: 24 }}>Get in Touch</h2>
+          <h2 className="title-md" style={{ marginBottom: 24 }}>Get in Touch</h2>
 
-              <div style={{ display: 'grid', gap: 20 }}>
+          <div style={{ display: 'grid', gap: 20, maxWidth: 720 }}>
                 {/* WhatsApp Admissions Card */}
                 <TiltCard
                   maxTilt={4}
@@ -153,23 +150,6 @@ export default function Contact() {
                   </div>
                 </TiltCard>
               </div>
-            </div>
-
-            {/* Right Col: Simple Inquiry Form */}
-            <div>
-              <div className="cart-summary-card">
-                <div>
-                  <span className="badge badge--gold">Direct Form</span>
-                  <h3 className="title-sm" style={{ marginTop: 4 }}>Send Us a Message</h3>
-                  <p className="desc-md" style={{ marginTop: 6, fontSize: '0.875rem' }}>
-                    Fill out this form and our registrar will get back to you with timetable and tuition details.
-                  </p>
-                </div>
-
-                <InquiryForm />
-              </div>
-            </div>
-          </div>
         </div>
       </section>
     </Shell>
