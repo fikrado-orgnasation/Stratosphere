@@ -411,14 +411,18 @@ export function Footer() {
         <div className="school-footer__bottom">
           <span>&copy; {new Date().getFullYear()} Stratosphere Aeronautics. {t.rights}</span>
           <a
-            className="fikrado-security-badge"
-            href="https://fikrado2.github.io/fikrado/"
+            className="fikrado-powered"
+            href="https://fikrado2.github.io/"
             target="_blank"
             rel="noreferrer"
             aria-label="Powered by Fikrado Security"
           >
-            <img src="/fikrado_sec_(1).png" alt="Fikrado Security" />
-            <span>{t.poweredBy}</span>
+            <span className="fikrado-powered__label">Powered by</span>
+            <img src="/fikrado_sec_(1).png" alt="Fikrado Security" className="fikrado-powered__logo" />
+            <div className="fikrado-powered__name">
+              <span className="fikrado-powered__fikrado">FIKRADO</span>
+              <span className="fikrado-powered__security">Security</span>
+            </div>
           </a>
         </div>
       </div>
