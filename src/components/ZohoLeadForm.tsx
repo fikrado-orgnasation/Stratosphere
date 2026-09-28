@@ -15,9 +15,33 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
       const script = document.createElement('script');
       script.id = scriptId;
       script.src =
-        'https://crm.zohopublic.com/crm/WebFormAnalyticsServeServlet?rid=815da50714b4cda3f6543cf9aa6ab571074fde08a43325dbf6b834840b2e32128c632473dfc20b976c7ea462e37a13f9gidd55a74e8893541f9e561d1a34596e7a4be78ddcccc5bbdbd6b54d99967e08482gid888dbb7110ad5cc70338d4dd3d8f62eba756f881c412de034846eb0d686cfc63gid0aaaa2d332fee54a92f1efb6a74c0e85e3a66410055d9bd466d55242e119b255&tw=88f8060b19a97ab7fe2efb26a02b426db5e52d950684c590d6b5aed89a589754&version=v2';
+        'https://crm.zohopublic.com/crm/WebFormAnalyticsServeServlet?rid=ae2f2f5b3f33fb77d6d62255a0c6d89ac330ef9c49f7df5b77a38775f2bd0faf003eeedcda9af20462f8338b91225b83gid9b1a6dab5a9190c94a8f58dc6d9589fe08922fd9be913e760420abe7954619d9gid96dc8d967d1338f49bac634354ca071ee5305316fa3d325290c22aedd30c7a33gid47645073dcbaab4dcd8361b4546b98942cb2c26a2c5cbd4fc2e219b9a2efbbba&tw=297d892ce7d19401e1adc861b2f159608909b198ea485cfa5eb3a40060705073&version=v2';
       script.async = true;
       document.body.appendChild(script);
+    }
+
+    // Inject Zoho SalesIQ Visitor Tracking script
+    const visitorScriptId = 'zsiqscript';
+    if (!document.getElementById(visitorScriptId)) {
+      const visitorScript = document.createElement('script');
+      visitorScript.id = visitorScriptId;
+      visitorScript.type = 'text/javascript';
+      visitorScript.defer = true;
+      visitorScript.src = 'https://salesiq.zoho.com/widget';
+      document.body.appendChild(visitorScript);
+
+      // Initialize $zoho.salesiq
+      const initScript = document.createElement('script');
+      initScript.type = 'text/javascript';
+      initScript.text = `
+        var $zoho = $zoho || {};
+        $zoho.salesiq = $zoho.salesiq || {
+          widgetcode: 'siq6386989ba7298709523a8c2bb4de40aa75439234e0900b15e5c11c68b7621bbd',
+          values: {},
+          ready: function() {}
+        };
+      `;
+      document.body.appendChild(initScript);
     }
   }, []);
 
@@ -25,10 +49,11 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
     const form = formRef.current;
     if (!form) return;
 
-    // Validate mandatory fields: Last Name, Mobile, Email
+    // Validate mandatory fields: Last Name, Mobile, Email, Address - City
     const lastName = (form.elements.namedItem('Last Name') as HTMLInputElement)?.value.trim();
     const mobile = (form.elements.namedItem('Mobile') as HTMLInputElement)?.value.trim();
     const email = (form.elements.namedItem('Email') as HTMLInputElement)?.value.trim();
+    const city = (form.elements.namedItem('Address - City') as HTMLInputElement)?.value.trim();
 
     if (!lastName) {
       alert('Last Name cannot be empty.');
@@ -45,6 +70,11 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
       e.preventDefault();
       return false;
     }
+    if (!city) {
+      alert('Address - City cannot be empty.');
+      e.preventDefault();
+      return false;
+    }
 
     const atpos = email.indexOf('@');
     const dotpos = email.lastIndexOf('.');
@@ -52,6 +82,30 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
       alert('Please enter a valid email address.');
       e.preventDefault();
       return false;
+    }
+
+    // Track visitor for SalesIQ
+    try {
+      if ((window as any).$zoho && (window as any).$zoho.salesiq) {
+        const LDTuvidObj = form.elements.namedItem('LDTuvid') as HTMLInputElement;
+        if (LDTuvidObj) {
+          LDTuvidObj.value = (window as any).$zoho.salesiq.visitor?.uniqueid?.() || '';
+        }
+        const firstnameObj = form.elements.namedItem('First Name') as HTMLInputElement;
+        let name = '';
+        if (firstnameObj) {
+          name = firstnameObj.value + ' ' + lastName;
+        }
+        if (name.trim()) {
+          (window as any).$zoho.salesiq.visitor?.name?.(name);
+        }
+        const emailObj = form.elements.namedItem('Email') as HTMLInputElement;
+        if (emailObj) {
+          (window as any).$zoho.salesiq.visitor?.email?.(emailObj.value);
+        }
+      }
+    } catch (err) {
+      // Silently ignore tracking errors
     }
 
     // Append smarturl if present in query parameters
@@ -62,6 +116,11 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
       smarturlfield.value = urlparams.get('service') || '';
       smarturlfield.name = 'service';
       form.appendChild(smarturlfield);
+    }
+
+    const submitBtn = form.querySelector('.formsubmit') as HTMLButtonElement;
+    if (submitBtn) {
+      submitBtn.disabled = true;
     }
 
     return true;
@@ -98,15 +157,10 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
       />
 
       <div style={{ marginBottom: 22, position: 'relative', zIndex: 1 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
-          <span className="badge badge--white" style={{ marginBottom: 0 }}>
-            <ShieldCheck size={14} style={{ color: 'var(--gold-light)' }} />
-            Official Admissions Application
-          </span>
-          <span style={{ fontSize: '0.78rem', color: 'var(--gold-bright)', fontWeight: 600 }}>
-            Zoho CRM Integrated
-          </span>
-        </div>
+        <span className="badge badge--white" style={{ marginBottom: 0 }}>
+          <ShieldCheck size={14} style={{ color: 'var(--gold-light)' }} />
+          Official Admissions Application
+        </span>
         <h3
           className="title-sm"
           style={{
@@ -139,7 +193,7 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
           type="text"
           style={{ display: 'none' }}
           name="xnQsjsdp"
-          value="5fa7f3cecafa8dd392d3a0c07d95fc4e977b9e054adc5f8c8c7aad2933db272d"
+          value="e54411e174dc8563e21ca61a77ffaa4c71dc690d77acd4ce3e293f274072c57e"
           readOnly
         />
         <input type="hidden" name="zc_gad" id="zc_gad" value="" />
@@ -147,7 +201,7 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
           type="text"
           style={{ display: 'none' }}
           name="xmIwtLD"
-          value="02bb54dd3af2e7bf01565fd2d4e6e67de0b0d00ff7aca9d4c9e0a4c8829018d2829dd03572271d030e35488fc4a80eb2"
+          value="1187a131b3b17aca128bd51fa6854964b78f9f42802cf747d15c63304bc1d3d53479224ff11fa5bf9b0325501c96bb07"
           readOnly
         />
         <input type="text" style={{ display: 'none' }} name="actionType" value="TGVhZHM=" readOnly />
@@ -155,9 +209,11 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
           type="text"
           style={{ display: 'none' }}
           name="returnURL"
-          value="https://stratosphereaeronautics.com"
+          value="https://stratosphereaeronautics.com/careers"
           readOnly
         />
+        <input type="text" style={{ display: 'none' }} id="ldeskuid" name="ldeskuid" readOnly />
+        <input type="text" style={{ display: 'none' }} id="LDTuvid" name="LDTuvid" readOnly />
         <input type="text" style={{ display: 'none' }} name="aG9uZXlwb3Q" value="" readOnly />
 
         {/* First & Last Name */}
@@ -247,15 +303,16 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
           </div>
         </div>
 
-        {/* City / Location */}
+        {/* City / Location - NOW REQUIRED */}
         <div className="form-group">
           <label className="form-label" htmlFor="Address_-_City" style={{ color: '#e2e8f0', fontSize: '0.84rem' }}>
-            City / Campus Location
+            Address - City <span style={{ color: 'var(--gold-light)' }}>*</span>
           </label>
           <input
             type="text"
             id="Address_-_City"
             name="Address - City"
+            required
             maxLength={255}
             defaultValue="Hargeisa"
             placeholder="e.g. Hargeisa, Somaliland"
@@ -272,7 +329,7 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
         {/* Description / Flight Goals */}
         <div className="form-group">
           <label className="form-label" htmlFor="Description" style={{ color: '#e2e8f0', fontSize: '0.84rem' }}>
-            Subjects of Interest / Flight Career Goals
+            Description
           </label>
           <textarea
             id="Description"
