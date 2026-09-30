@@ -1,4 +1,4 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 
 interface TiltCardProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
@@ -6,6 +6,28 @@ interface TiltCardProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
   glow?: boolean;
 }
+
+/** Tracks a media query and re-renders if it changes mid-session. The initial
+    value is read lazily so there is no post-mount setState (TiltCard renders
+    ~17 times on Home, so that redundant second pass was worth avoiding). */
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() => window.matchMedia(query).matches);
+
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    const sync = () => setMatches(mq.matches);
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, [query]);
+
+  return matches;
+}
+
+/** 3D pointer tilt is a mouse-only affordance — on touch it fights the scroll. */
+const useCanHover = () => useMediaQuery('(hover: hover) and (pointer: fine)');
+
+/** Tracks the OS-level motion preference. */
+const usePrefersReducedMotion = () => useMediaQuery('(prefers-reduced-motion: reduce)');
 
 export default function TiltCard({
   children,
@@ -18,6 +40,11 @@ export default function TiltCard({
   const cardRef = useRef<HTMLDivElement>(null);
   const [transform, setTransform] = useState('');
   const [glare, setGlare] = useState({ x: 50, y: 50, opacity: 0 });
+  const canHover = useCanHover();
+  const prefersReducedMotion = usePrefersReducedMotion();
+  // The CSS reduced-motion block already neutralises the transform, but
+  // skipping the handlers avoids a re-render on every pointermove.
+  const tiltEnabled = canHover && !prefersReducedMotion;
 
   const handlePointerMove = useCallback(
     (e: React.PointerEvent<HTMLDivElement>) => {
@@ -54,8 +81,8 @@ export default function TiltCard({
     <div
       ref={cardRef}
       className={`card-3d-wrap ${className}`}
-      onPointerMove={handlePointerMove}
-      onPointerLeave={handlePointerLeave}
+      onPointerMove={tiltEnabled ? handlePointerMove : undefined}
+      onPointerLeave={tiltEnabled ? handlePointerLeave : undefined}
       style={{
         transform,
         transition: 'transform 0.28s cubic-bezier(0.16, 1, 0.3, 1)',
@@ -66,7 +93,7 @@ export default function TiltCard({
       {...props}
     >
       {children}
-      {glow && (
+      {glow && tiltEnabled && (
         <div
           className="card-3d-glare"
           style={{

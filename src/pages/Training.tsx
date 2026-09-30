@@ -40,7 +40,7 @@ export default function Training() {
                 <div className="course-card__image-wrap">
                   <img
                     src={SUBJECT_PHOTOS[s.code]}
-                    alt={s.title}
+                    alt=""
                     className="course-card__image"
                     loading="lazy"
                   />
@@ -79,18 +79,12 @@ export default function Training() {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: 24 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(250px, 100%), 1fr))', gap: 24 }}>
             {LOGISTICS.map((item) => (
               <TiltCard
                 key={item.title}
                 maxTilt={5}
-                style={{
-                  padding: 28,
-                  borderRadius: 'var(--radius)',
-                  background: '#ffffff',
-                  border: '1px solid var(--card-border)',
-                  boxShadow: 'var(--shadow-3d)',
-                }}
+                className="panel"
               >
                 <b style={{ fontFamily: 'var(--font-serif)', color: 'var(--navy)', fontSize: '1.2rem', display: 'block', marginBottom: 10 }}>
                   {item.title}

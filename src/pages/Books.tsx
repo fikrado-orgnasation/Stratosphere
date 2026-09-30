@@ -85,21 +85,12 @@ export default function Books() {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))', gap: 24 }}>
             {PACKS.map((pack) => (
               <TiltCard
                 key={pack.code}
                 maxTilt={6}
-                style={{
-                  padding: 28,
-                  borderRadius: 'var(--radius-lg)',
-                  background: '#ffffff',
-                  border: '1px solid var(--card-border)',
-                  boxShadow: 'var(--shadow-3d)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: 12,
-                }}
+                className="panel panel--lg panel--flex panel--col"
               >
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <span className="badge badge--gold">{pack.subjects}</span>

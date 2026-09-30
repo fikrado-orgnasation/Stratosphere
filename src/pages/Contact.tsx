@@ -72,15 +72,7 @@ export default function Contact() {
                 {/* Telephone Card */}
                 <TiltCard
                   maxTilt={4}
-                  style={{
-                    padding: 26,
-                    borderRadius: 'var(--radius)',
-                    background: '#ffffff',
-                    border: '1px solid var(--card-border)',
-                    boxShadow: 'var(--shadow-3d)',
-                    display: 'grid',
-                    gap: 12,
-                  }}
+                  className="panel"
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <Phone size={20} style={{ color: 'var(--gold-deep)' }} />
@@ -102,15 +94,7 @@ export default function Contact() {
                 {/* Physical Location Card */}
                 <TiltCard
                   maxTilt={4}
-                  style={{
-                    padding: 26,
-                    borderRadius: 'var(--radius)',
-                    background: '#ffffff',
-                    border: '1px solid var(--card-border)',
-                    boxShadow: 'var(--shadow-3d)',
-                    display: 'grid',
-                    gap: 12,
-                  }}
+                  className="panel"
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <MapPin size={20} style={{ color: 'var(--gold-deep)' }} />
@@ -127,15 +111,7 @@ export default function Contact() {
                 {/* Email Inquiries */}
                 <TiltCard
                   maxTilt={4}
-                  style={{
-                    padding: 26,
-                    borderRadius: 'var(--radius)',
-                    background: '#ffffff',
-                    border: '1px solid var(--card-border)',
-                    boxShadow: 'var(--shadow-3d)',
-                    display: 'grid',
-                    gap: 12,
-                  }}
+                  className="panel"
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <Mail size={20} style={{ color: 'var(--gold-deep)' }} />

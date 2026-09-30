@@ -27,17 +27,11 @@ export default function Careers() {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 32 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))', gap: 32 }}>
             {/* Pathway 1: Flying */}
             <TiltCard
               maxTilt={6}
-              style={{
-                borderRadius: 'var(--radius-lg)',
-                overflow: 'hidden',
-                border: '1.5px solid var(--card-border)',
-                background: '#ffffff',
-                boxShadow: 'var(--shadow-3d)',
-              }}
+              className="panel panel--lg panel--flush"
             >
               <img
                 src="/images/aviation/careers_pilot.jpg"
@@ -71,13 +65,7 @@ export default function Careers() {
             {/* Pathway 2: Operations & Ground Careers */}
             <TiltCard
               maxTilt={6}
-              style={{
-                borderRadius: 'var(--radius-lg)',
-                overflow: 'hidden',
-                border: '1.5px solid var(--card-border)',
-                background: '#ffffff',
-                boxShadow: 'var(--shadow-3d)',
-              }}
+              className="panel panel--lg panel--flush"
             >
               <img
                 src="/images/aviation/careers_dispatch.jpg"
@@ -126,18 +114,12 @@ export default function Careers() {
             <h2 className="title-md">Aviation Careers Unlocked by Ground School</h2>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 24 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(240px, 100%), 1fr))', gap: 24 }}>
             {CAREERS.map((c) => (
               <TiltCard
                 key={c.code}
                 maxTilt={5}
-                style={{
-                  padding: 26,
-                  borderRadius: 'var(--radius)',
-                  background: '#ffffff',
-                  border: '1px solid var(--card-border)',
-                  boxShadow: 'var(--shadow-3d)',
-                }}
+                className="panel"
               >
                 <span style={{ fontSize: '0.8125rem', fontWeight: 800, color: 'var(--gold-deep)', fontFamily: 'var(--font-mono)' }}>
                   {c.code}

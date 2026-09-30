@@ -51,7 +51,7 @@ export default function ProgramDetails() {
               <TiltCard maxTilt={5} style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', marginBottom: 28, boxShadow: 'var(--shadow-3d)', border: '1.5px solid var(--card-border)' }}>
                 <img
                   src={photo}
-                  alt={subject.title}
+                  alt=""
                   style={{ width: '100%', height: '340px', objectFit: 'cover' }}
                 />
               </TiltCard>
@@ -82,18 +82,8 @@ export default function ProgramDetails() {
               {book && (
                 <TiltCard
                   maxTilt={4}
-                  style={{
-                    padding: 26,
-                    borderRadius: 'var(--radius)',
-                    background: '#ffffff',
-                    border: '1.5px solid var(--gold-border)',
-                    boxShadow: 'var(--shadow-3d)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    flexWrap: 'wrap',
-                    gap: 18,
-                  }}
+                  className="panel panel--gold panel--flex"
+                  style={{ padding: 26, gap: 18 }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
                     <div style={{ width: 48, height: 48, borderRadius: 12, background: 'var(--gold-pale)', color: 'var(--gold-dark)', border: '1px solid var(--gold-border)', display: 'grid', placeItems: 'center' }}>
@@ -116,7 +106,7 @@ export default function ProgramDetails() {
 
             {/* Right Col: Course Logistics Card & WhatsApp Button */}
             <div>
-              <div className="cart-summary-card">
+              <div className="panel panel--lg panel--gold cart-summary-card">
                 <div>
                   <span className="badge badge--green">Enrolment Open</span>
                   <h3 className="title-sm" style={{ marginTop: 4 }}>Enroll in {subject.code}</h3>

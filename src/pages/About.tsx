@@ -88,20 +88,12 @@ export default function About() {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 24 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(260px, 100%), 1fr))', gap: 24 }}>
             {VALUES.map((v) => (
               <TiltCard
                 key={v.term}
                 maxTilt={5}
-                style={{
-                  padding: 28,
-                  borderRadius: 'var(--radius)',
-                  background: '#ffffff',
-                  border: '1px solid var(--card-border)',
-                  boxShadow: 'var(--shadow-3d)',
-                  display: 'grid',
-                  gap: 12,
-                }}
+                className="panel"
               >
                 <div style={{ width: 48, height: 48, borderRadius: 12, background: 'var(--gold-pale)', color: 'var(--gold-dark)', border: '1px solid var(--gold-border)', display: 'grid', placeItems: 'center' }}>
                   <v.icon size={24} />
@@ -125,21 +117,13 @@ export default function About() {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))', gap: 20 }}>
             {ACCREDITATION.map((a) => (
               <TiltCard
                 key={a}
                 maxTilt={4}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 14,
-                  padding: 20,
-                  borderRadius: 'var(--radius)',
-                  background: '#ffffff',
-                  border: '1px solid var(--card-border)',
-                  boxShadow: 'var(--shadow-3d-sm)',
-                }}
+                className="panel panel--tight panel--flex"
+                style={{ justifyContent: 'flex-start' }}
               >
                 <CheckCircle2 size={22} style={{ color: 'var(--gold-deep)', flexShrink: 0 }} />
                 <b style={{ color: 'var(--navy)', fontSize: '0.95rem' }}>{a}</b>
@@ -149,19 +133,8 @@ export default function About() {
 
           <TiltCard
             maxTilt={4}
-            style={{
-              marginTop: 48,
-              padding: 36,
-              borderRadius: 'var(--radius-lg)',
-              background: '#ffffff',
-              border: '1.5px solid var(--gold-border)',
-              boxShadow: 'var(--shadow-3d)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: 24,
-            }}
+            className="panel panel--roomy panel--lg panel--gold panel--flex"
+            style={{ marginTop: 48, gap: 24 }}
           >
             <div>
               <span className="badge badge--green">Hargeisa Campus Location</span>

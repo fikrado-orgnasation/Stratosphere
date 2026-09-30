@@ -78,26 +78,11 @@ export const CAREERS = [
   },
 ] as const;
 
-export const ENROLLMENT_STEPS = [
-  { code: '01', title: 'Send an inquiry', body: 'Use the form or WhatsApp below. Someone answers within 24 hours.' },
-  { code: '02', title: 'Talk it through', body: 'A free consultation about your goals, your schedule, and how you learn best.' },
-  { code: '03', title: 'Enroll', body: 'Complete registration and start private instruction at a pace you set.' },
-] as const;
-
 export const STUDENT_JOURNEY = [
   { code: '01', title: 'Enroll', body: 'Send your inquiry and book a consultation.' },
   { code: '02', title: 'Learn', body: 'Begin private theoretical knowledge instruction.' },
   { code: '03', title: 'Practise', body: 'Apply what you have learned in practical exercises.' },
   { code: '04', title: 'Graduate', body: 'Receive your certificate and start toward a licence.' },
-] as const;
-
-export const ADVANTAGES = [
-  { title: 'Private, one to one', body: 'Uninterrupted instruction at your pace, not a lecture hall.' },
-  { title: 'ICAO aligned', body: 'Built on ICAO Doc 7192 and the ERNAM instructional framework.' },
-  { title: 'Trained instructors', body: 'Taught by ERNAM-trained specialists with operational backgrounds.' },
-  { title: 'A certificate that counts', body: 'A recognised completion certificate, and the theory PPL and CPL require.' },
-  { title: 'Real career routes', body: 'Operations, safety, dispatch, education and more open up after it.' },
-  { title: 'Your schedule', body: 'Mornings, evenings or weekends. We build around your week.' },
 ] as const;
 
 /* ── books ───────────────────────────────────────────────────────────────── */
@@ -144,47 +129,6 @@ export const PACKS: Pack[] = [
   { code: 'CPL', name: 'CPL theory pack', desc: 'The full commercial syllabus, taken to ATPL level where it goes beyond PPL.', subjects: '10 subjects', price: null },
   { code: 'SGL', name: 'Single subject', desc: 'One subject, examined and certificated on its own. Most people start here.', subjects: '1 subject', price: 12 },
 ];
-
-/* href is null where the material is still being written. The page says so
-   rather than shipping a link that goes nowhere. */
-export const RESOURCES = [
-  { code: 'DOC', title: 'ICAO documents', body: 'Official ICAO documentation and the standards our curriculum is built on.', href: 'https://www.icao.int/' },
-  { code: 'MAT', title: 'Study materials', body: 'Guides and reference material covering each of the ten subjects.', href: '/books' },
-  { code: 'WEB', title: 'Air navigation services', body: 'ICAO air navigation resources, including the AIM and Doc 7192.', href: 'https://www.icao.int/safety/airnavigation/Pages/default.aspx' },
-  { code: 'CRT', title: 'Certification guide', body: 'What the certificate covers, and what it leads to.', href: null },
-  { code: 'CAR', title: 'Career resources', body: 'Templates and guidance for applying into aviation roles.', href: '/careers' },
-  { code: 'LOC', title: 'Local information', body: 'Practical information for students based in Hargeisa.', href: null },
-] as const;
-
-export const FAQS = [
-  {
-    q: 'What do I need to get in?',
-    a: 'No prior aviation experience. The programme is built for people starting from zero as well as for those already flying.',
-  },
-  {
-    q: 'How long does it take?',
-    a: 'It depends on your schedule and how many hours a week you can commit. We will give you a realistic timeline at your consultation rather than a brochure number.',
-  },
-  {
-    q: 'Is the certificate recognised?',
-    a: 'The curriculum and certificate are built on ICAO frameworks and signed by ERNAM-trained instructors, which is what makes them portable across borders.',
-  },
-  {
-    q: 'Is it really one to one?',
-    a: 'Yes. Every subject is taught privately, or in a small group if you would rather learn alongside other students.',
-  },
-] as const;
-
-/* Readouts for the instrument rail. These are real: the school is at Hargeisa
-   International (HGR / HMEI), and the numbers are a plausible evening arrival. */
-export const RAIL = {
-  field: 'HGR',
-  position: "09°32'16\" N",
-  altitude: '1,024 M',
-  heading: '090°',
-  wind: '12 KT / 090/12',
-  established: '2026',
-} as const;
 
 export const SUBJECT_PHOTOS: Record<string, string> = {
   M01: '/images/aviation/m01.jpg',

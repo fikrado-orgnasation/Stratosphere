@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
   ArrowRight, Award, Check, Globe, Phone, Radio, ShieldCheck, MapPin, Mail, MessageCircle, X, Languages, ChevronDown
@@ -6,7 +6,79 @@ import {
 import { CONTACT } from '../data/site';
 import { useLang, type Lang } from '../i18n';
 import CinematicAtmosphere from './CinematicAtmosphere';
-import ZohoLeadForm from './ZohoLeadForm';
+
+const WELCOME_KEY = 'stratosphere_welcomed';
+
+/* sessionStorage throws in some privacy modes, so a missing/blocked store must
+   degrade to "show the picker" rather than crash the first render. */
+function readWelcomeFlag() {
+  try {
+    return sessionStorage.getItem(WELCOME_KEY) === 'true';
+  } catch {
+    return false;
+  }
+}
+
+function writeWelcomeFlag() {
+  try {
+    sessionStorage.setItem(WELCOME_KEY, 'true');
+  } catch {
+    // Private browsing can block writes; the modal still closes for this visit.
+  }
+}
+
+/* Keeps Tab inside an open dialog: moves focus in on open, cycles within, and
+   restores it to whatever was focused before. Without this the drawer and the
+   language modal are keyboard-reachable but not keyboard-operable. */
+function useFocusTrap(isOpen: boolean, onEscape?: () => void) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const panel = ref.current;
+    if (!panel) return;
+
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const focusables = () =>
+      Array.from(
+        panel.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => el.offsetParent !== null);
+
+    focusables()[0]?.focus();
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onEscape?.();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+
+      const items = focusables();
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener('keydown', onKey, true);
+    return () => {
+      document.removeEventListener('keydown', onKey, true);
+      previouslyFocused?.focus?.();
+    };
+  }, [isOpen, onEscape]);
+
+  return ref;
+}
 
 export const NAV_LINKS = [
   { to: '/', key: 'home' as const },
@@ -65,11 +137,17 @@ function LanguageSwitcher({ isGlowing }: { isGlowing?: boolean }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    if (!open) return;
     const close = () => setOpen(false);
-    if (open) {
-      window.addEventListener('click', close);
-      return () => window.removeEventListener('click', close);
-    }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('click', close);
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('click', close);
+      window.removeEventListener('keydown', onKey);
+    };
   }, [open]);
 
   return (
@@ -111,9 +189,19 @@ function Header({ isGlowingTranslate }: { isGlowingTranslate?: boolean }) {
   const { pathname } = useLocation();
   const { t } = useLang();
 
+  // Traps Tab, focuses the panel on open, closes on Escape, restores focus.
+  const closeDrawer = useCallback(() => setIsOpen(false), []);
+  const drawerRef = useFocusTrap(isOpen, closeDrawer);
+
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
+
+  // Keep the page from scrolling behind the drawer while it is open
+  useEffect(() => {
+    document.body.classList.toggle('nav-open', isOpen);
+    return () => document.body.classList.remove('nav-open');
+  }, [isOpen]);
 
   return (
     <>
@@ -162,13 +250,14 @@ function Header({ isGlowingTranslate }: { isGlowingTranslate?: boolean }) {
         </div>
       </header>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer. When closed, .mobile-nav-drawer sets visibility: hidden,
+          which already removes it from the tab order and the a11y tree — an
+          aria-hidden here would wrap focusable links, which is a violation. */}
       <div
         className={`mobile-nav-drawer ${isOpen ? 'is-open' : ''}`}
         onClick={() => setIsOpen(false)}
-        aria-hidden={!isOpen}
       >
-        <div className="mobile-nav-content" onClick={(e) => e.stopPropagation()}>
+        <div className="mobile-nav-content" onClick={(e) => e.stopPropagation()} ref={drawerRef}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <span style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--navy)' }}>
               {t.menu}
@@ -191,6 +280,21 @@ function Header({ isGlowingTranslate }: { isGlowingTranslate?: boolean }) {
             ))}
           </div>
 
+          <div className="mobile-nav-contact">
+            <a href={CONTACT.phones[0].href}>
+              <Phone size={15} />
+              {CONTACT.phones[0].display}
+            </a>
+            <a href={`mailto:${CONTACT.emails[0]}`}>
+              <Mail size={15} />
+              {CONTACT.emails[0]}
+            </a>
+            <span>
+              <MapPin size={15} />
+              {CONTACT.city}
+            </span>
+          </div>
+
           <div style={{ marginTop: 'auto', display: 'grid', gap: 10 }}>
             <a
               href={CONTACT.whatsapp}
@@ -211,21 +315,28 @@ function Header({ isGlowingTranslate }: { isGlowingTranslate?: boolean }) {
   );
 }
 
-/* ── Floating Green WhatsApp Button ──────────────────────────────────────── */
-export function WhatsApp() {
+/* ── Sticky Mobile Action Bar: Call · WhatsApp · Enrol ──────────────────── */
+function MobileActionBar() {
+  const { t } = useLang();
   return (
-    <a
-      className="whatsapp-float"
-      href={CONTACT.whatsapp}
-      target="_blank"
-      rel="noreferrer"
-      aria-label="Message Stratosphere Aeronautics Admissions on WhatsApp"
-    >
-      <div className="whatsapp-float__pulse">
-        <MessageCircle size={26} />
-        <span className="whatsapp-float__dot" />
-      </div>
-    </a>
+    <nav className="mobile-action-bar" aria-label="Quick contact">
+      <a href={CONTACT.phones[0].href} className="mobile-action-bar__call">
+        <Phone size={17} />
+        {t.call}
+      </a>
+      <a
+        href={CONTACT.whatsapp}
+        target="_blank"
+        rel="noreferrer"
+        className="btn btn--whatsapp"
+      >
+        <MessageCircle size={17} />
+        WhatsApp
+      </a>
+      <Link to="/register" className="btn btn--primary">
+        {t.nav.enroll}
+      </Link>
+    </nav>
   );
 }
 
@@ -315,11 +426,6 @@ export function Ask({ title, body }: { title: string; body: string }) {
       </div>
     </section>
   );
-}
-
-/* ── Zoho CRM Web-to-Lead Inquiry Form ──────────────────────────────────── */
-export function InquiryForm({ defaultMsg = '' }: { defaultMsg?: string }) {
-  return <ZohoLeadForm defaultDescription={defaultMsg} />;
 }
 
 /* ── Simple School Footer ────────────────────────────────────────────────── */
@@ -441,6 +547,8 @@ function LanguageWelcomeModal({
   onClose: () => void;
 }) {
   const { lang } = useLang();
+  const cardRef = useFocusTrap(isOpen, onClose);
+
   if (!isOpen) return null;
 
   return (
@@ -451,7 +559,7 @@ function LanguageWelcomeModal({
       aria-modal="true"
       aria-label="Select Language"
     >
-      <div className="lang-welcome-card" onClick={(e) => e.stopPropagation()}>
+      <div className="lang-welcome-card" onClick={(e) => e.stopPropagation()} ref={cardRef}>
         {/* Heraldic Circular Crest with Glowing Aura */}
         <div className="circular-glowing-logo" style={{ width: 72, height: 72, margin: '0 auto 16px' }}>
           <img src="/logo-removebg-preview.png" alt="Stratosphere Crest" />
@@ -518,28 +626,26 @@ function LanguageWelcomeModal({
 export default function Shell({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation();
   const { setLang } = useLang();
-  const [showWelcome, setShowWelcome] = useState(false);
+
+  // Read during the first render, not in an effect: setting this from an effect
+  // meant the page painted once unblurred and interactive behind the modal
+  // before the blur was applied.
+  const [showWelcome, setShowWelcome] = useState(
+    () => !readWelcomeFlag()
+  );
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  useEffect(() => {
-    const hasVisited = sessionStorage.getItem('stratosphere_welcomed');
-    if (!hasVisited) {
-      setShowWelcome(true);
-    }
+  const dismissWelcome = useCallback(() => {
+    writeWelcomeFlag();
+    setShowWelcome(false);
   }, []);
 
   const handleSelectLang = (selectedLang: Lang) => {
     setLang(selectedLang);
-    sessionStorage.setItem('stratosphere_welcomed', 'true');
-    setShowWelcome(false);
-  };
-
-  const handleCloseWelcome = () => {
-    sessionStorage.setItem('stratosphere_welcomed', 'true');
-    setShowWelcome(false);
+    dismissWelcome();
   };
 
   return (
@@ -552,12 +658,12 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       <div className={showWelcome ? 'is-blurred-welcome' : 'is-unblurred'}>
         <Footer />
       </div>
-      <WhatsApp />
+      {!showWelcome && <MobileActionBar />}
 
       <LanguageWelcomeModal
         isOpen={showWelcome}
         onSelect={handleSelectLang}
-        onClose={handleCloseWelcome}
+        onClose={dismissWelcome}
       />
     </>
   );

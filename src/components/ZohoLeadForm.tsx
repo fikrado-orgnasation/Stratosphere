@@ -5,6 +5,56 @@ interface ZohoLeadFormProps {
   defaultDescription?: string;
 }
 
+/* Zoho SalesIQ attaches itself to `window` at runtime; nothing in the bundle
+   types it, so declare only the surface this form actually touches. */
+interface SalesIq {
+  salesiq: {
+    visitor?: {
+      uniqueid?: () => string;
+      name?: (n: string) => void;
+      email?: (e: string) => void;
+    };
+  };
+}
+declare global {
+  interface Window {
+    $zoho?: SalesIq;
+  }
+}
+
+/* If the POST fails the page never navigates, so re-arm the button after this
+   long enough for a normal submission but before the user gives up. */
+const SUBMIT_REARM_MS = 8000;
+
+const REQUIRED_FIELDS = [
+  { name: 'Last Name', label: 'Last Name' },
+  { name: 'Address - City', label: 'Address - City' },
+  { name: 'Mobile', label: 'Mobile' },
+  { name: 'Email', label: 'Email' },
+] as const;
+
+/** Same rule Zoho's own validator uses: one char before @, a dot at least two
+    chars after it, and at least one char after the dot. */
+function isValidEmail(value: string) {
+  const at = value.indexOf('@');
+  const dot = value.lastIndexOf('.');
+  if (at < 1 || dot < at + 2 || dot + 2 >= value.length) return false;
+  return true;
+}
+
+const fieldStyle = {
+  background: 'rgba(255, 255, 255, 0.08)',
+  color: '#ffffff',
+  border: '1px solid rgba(223, 183, 67, 0.3)',
+  padding: '11px 14px',
+} as const;
+
+const labelStyle = { color: '#e2e8f0', fontSize: '0.84rem' } as const;
+
+function RequiredMark() {
+  return <span style={{ color: 'var(--gold-light)' }} aria-hidden="true">*</span>;
+}
+
 export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -15,7 +65,7 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
       const script = document.createElement('script');
       script.id = scriptId;
       script.src =
-        'https://crm.zohopublic.com/crm/WebFormAnalyticsServeServlet?rid=ae2f2f5b3f33fb77d6d62255a0c6d89ac330ef9c49f7df5b77a38775f2bd0faf003eeedcda9af20462f8338b91225b83gid9b1a6dab5a9190c94a8f58dc6d9589fe08922fd9be913e760420abe7954619d9gid96dc8d967d1338f49bac634354ca071ee5305316fa3d325290c22aedd30c7a33gid47645073dcbaab4dcd8361b4546b98942cb2c26a2c5cbd4fc2e219b9a2efbbba&tw=297d892ce7d19401e1adc861b2f159608909b198ea485cfa5eb3a40060705073&version=v2';
+        'https://crm.zohopublic.com/crm/WebFormAnalyticsServeServlet?rid=d118864687aa38dd3472ff8a4596dafaf6f3c2ada429158850d8e3eda4777bce747d29237ae8c5dfbe11cc3cdb203011gid48cc751cd14b103c945b2be22d4336b633c30f5b5efcd5184fddf939f9e2354cgidb2583355937033e279bde3a45c5a64f30df1509c11fe0918da709648b52dba45gid20ab82ea89db8c7ec110d977e2364c4195d3111c3e0b714ea1b40242702ed70a&tw=0b1c2b40296d97298dd8624420b3e4e3e76257f7f053d1b133b7d1fb2c2a5acf&version=v2';
       script.async = true;
       document.body.appendChild(script);
     }
@@ -49,87 +99,74 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
     const form = formRef.current;
     if (!form) return;
 
-    // Validate mandatory fields: Last Name, Mobile, Email, Address - City
-    const lastName = (form.elements.namedItem('Last Name') as HTMLInputElement)?.value.trim();
-    const mobile = (form.elements.namedItem('Mobile') as HTMLInputElement)?.value.trim();
-    const email = (form.elements.namedItem('Email') as HTMLInputElement)?.value.trim();
-    const city = (form.elements.namedItem('Address - City') as HTMLInputElement)?.value.trim();
+    // The form already declares acceptCharset="UTF-8", so the encoding is set;
+    // no need to touch document.characterSet (typed read-only anyway).
 
-    if (!lastName) {
-      alert('Last Name cannot be empty.');
+    const field = (name: string) =>
+      (form.elements.namedItem(name) as HTMLInputElement | null)?.value.trim() ?? '';
+
+    // Read each required field once, then reuse the values below.
+    const values = Object.fromEntries(REQUIRED_FIELDS.map((f) => [f.name, field(f.name)]));
+    const { 'Last Name': lastName, Email: email } = values;
+
+    // Note: React's synthetic onSubmit ignores return values, so every bail-out
+    // below must call preventDefault() itself.
+    const missing = REQUIRED_FIELDS.find((f) => !values[f.name]);
+    if (missing) {
       e.preventDefault();
-      return false;
-    }
-    if (!mobile) {
-      alert('Mobile number cannot be empty.');
-      e.preventDefault();
-      return false;
-    }
-    if (!email) {
-      alert('Email address cannot be empty.');
-      e.preventDefault();
-      return false;
-    }
-    if (!city) {
-      alert('Address - City cannot be empty.');
-      e.preventDefault();
-      return false;
+      alert(`${missing.label} cannot be empty.`);
+      (form.elements.namedItem(missing.name) as HTMLInputElement | null)?.focus();
+      return;
     }
 
-    const atpos = email.indexOf('@');
-    const dotpos = email.lastIndexOf('.');
-    if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= email.length) {
+    if (!isValidEmail(email)) {
+      e.preventDefault();
       alert('Please enter a valid email address.');
-      e.preventDefault();
-      return false;
+      (form.elements.namedItem('Email') as HTMLInputElement | null)?.focus();
+      return;
     }
 
-    // Track visitor for SalesIQ
+    // Track visitor for SalesIQ. Never let tracking block a real submission.
     try {
-      if ((window as any).$zoho && (window as any).$zoho.salesiq) {
-        const LDTuvidObj = form.elements.namedItem('LDTuvid') as HTMLInputElement;
-        if (LDTuvidObj) {
-          LDTuvidObj.value = (window as any).$zoho.salesiq.visitor?.uniqueid?.() || '';
+      const salesiq = window.$zoho?.salesiq;
+      if (salesiq) {
+        const ldTuvid = form.elements.namedItem('LDTuvid') as HTMLInputElement | null;
+        if (ldTuvid) {
+          ldTuvid.value = salesiq.visitor?.uniqueid?.() || '';
         }
-        const firstnameObj = form.elements.namedItem('First Name') as HTMLInputElement;
-        let name = '';
-        if (firstnameObj) {
-          name = firstnameObj.value + ' ' + lastName;
-        }
-        if (name.trim()) {
-          (window as any).$zoho.salesiq.visitor?.name?.(name);
-        }
-        const emailObj = form.elements.namedItem('Email') as HTMLInputElement;
-        if (emailObj) {
-          (window as any).$zoho.salesiq.visitor?.email?.(emailObj.value);
-        }
+        const name = `${field('First Name')} ${lastName}`.trim();
+        if (name) salesiq.visitor?.name?.(name);
+        salesiq.visitor?.email?.(email);
       }
-    } catch (err) {
-      // Silently ignore tracking errors
+    } catch {
+      // Tracking is best-effort; swallow failures and submit regardless.
     }
 
     // Append smarturl if present in query parameters
     const urlparams = new URLSearchParams(window.location.search);
-    if (urlparams.has('service') && urlparams.get('service') === 'smarturl') {
+    if (urlparams.get('service') === 'smarturl') {
       const smarturlfield = document.createElement('input');
       smarturlfield.type = 'hidden';
-      smarturlfield.value = urlparams.get('service') || '';
+      smarturlfield.value = 'smarturl';
       smarturlfield.name = 'service';
       form.appendChild(smarturlfield);
     }
 
-    const submitBtn = form.querySelector('.formsubmit') as HTMLButtonElement;
+    const submitBtn = form.querySelector('.formsubmit') as HTMLButtonElement | null;
     if (submitBtn) {
       submitBtn.disabled = true;
+      // If the POST fails the page never navigates and the button would stay
+      // dead with the user's answers still in place. Re-enable it on return.
+      window.setTimeout(() => {
+        submitBtn.disabled = false;
+      }, SUBMIT_REARM_MS);
     }
-
-    return true;
   };
 
   return (
     <div
       id="crmWebToEntityForm"
-      className="crmWebToEntityForm zoho-crm-3d-card"
+      className="crmWebToEntityForm zcwf_lblLeft zoho-crm-3d-card"
       style={{
         background: 'linear-gradient(150deg, #0d2249 0%, #06112a 60%, #030814 100%)',
         border: '1.5px solid var(--gold-border)',
@@ -139,6 +176,7 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
         color: '#ffffff',
         position: 'relative',
         overflow: 'hidden',
+        textAlign: 'left',
       }}
     >
       {/* Decorative ambient radial gold corner glow */}
@@ -193,7 +231,7 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
           type="text"
           style={{ display: 'none' }}
           name="xnQsjsdp"
-          value="e54411e174dc8563e21ca61a77ffaa4c71dc690d77acd4ce3e293f274072c57e"
+          value="809e3874bd0829d95f5726bc3a6af3673546d9b79061d29146272cc2a3347a0b"
           readOnly
         />
         <input type="hidden" name="zc_gad" id="zc_gad" value="" />
@@ -201,7 +239,7 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
           type="text"
           style={{ display: 'none' }}
           name="xmIwtLD"
-          value="1187a131b3b17aca128bd51fa6854964b78f9f42802cf747d15c63304bc1d3d53479224ff11fa5bf9b0325501c96bb07"
+          value="133ef095b894c77b7028aff782dba59f29031fbfa47ef13c5b736c2565817a01d6bc5b5dfd246f10f82c42cd6fd85399"
           readOnly
         />
         <input type="text" style={{ display: 'none' }} name="actionType" value="TGVhZHM=" readOnly />
@@ -209,7 +247,7 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
           type="text"
           style={{ display: 'none' }}
           name="returnURL"
-          value="https://stratosphereaeronautics.com/careers"
+          value="https://stratosphereaeronautics.com"
           readOnly
         />
         <input type="text" style={{ display: 'none' }} id="ldeskuid" name="ldeskuid" readOnly />
@@ -219,121 +257,117 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
         {/* First & Last Name */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 12 }}>
           <div className="form-group">
-            <label className="form-label" htmlFor="First_Name" style={{ color: '#e2e8f0', fontSize: '0.84rem' }}>
+            <label className="form-label" htmlFor="First_Name" style={labelStyle}>
               First Name
             </label>
             <input
               type="text"
               id="First_Name"
               name="First Name"
+              aria-label="First Name"
+              aria-required="false"
+              aria-valuemax={40}
               maxLength={40}
               placeholder="e.g. Ahmed"
               className="form-input"
-              style={{
-                background: 'rgba(255, 255, 255, 0.08)',
-                color: '#ffffff',
-                border: '1px solid rgba(223, 183, 67, 0.3)',
-                padding: '11px 14px',
-              }}
+              style={fieldStyle}
             />
           </div>
           <div className="form-group">
-            <label className="form-label" htmlFor="Last_Name" style={{ color: '#e2e8f0', fontSize: '0.84rem' }}>
-              Last Name <span style={{ color: 'var(--gold-light)' }}>*</span>
+            <label className="form-label" htmlFor="Last_Name" style={labelStyle}>
+              Last Name <RequiredMark />
             </label>
             <input
               type="text"
               id="Last_Name"
               name="Last Name"
+              aria-label="Last Name"
+              aria-required="true"
+              aria-valuemax={80}
               required
               maxLength={80}
               placeholder="e.g. Dahir"
               className="form-input"
-              style={{
-                background: 'rgba(255, 255, 255, 0.08)',
-                color: '#ffffff',
-                border: '1px solid rgba(223, 183, 67, 0.3)',
-                padding: '11px 14px',
-              }}
+              style={fieldStyle}
             />
           </div>
         </div>
 
-        {/* Mobile & Email */}
+        {/* City & Mobile */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: 12 }}>
           <div className="form-group">
-            <label className="form-label" htmlFor="Mobile" style={{ color: '#e2e8f0', fontSize: '0.84rem' }}>
-              Mobile Number <span style={{ color: 'var(--gold-light)' }}>*</span>
+            <label className="form-label" htmlFor="Address_-_City" style={labelStyle}>
+              Address - City <RequiredMark />
+            </label>
+            <input
+              type="text"
+              id="Address_-_City"
+              name="Address - City"
+              aria-label="Address - City"
+              aria-required="true"
+              aria-valuemax={255}
+              required
+              maxLength={255}
+              defaultValue="Hargeisa"
+              placeholder="e.g. Hargeisa, Somaliland"
+              className="form-input"
+              style={fieldStyle}
+            />
+          </div>
+          <div className="form-group">
+            <label className="form-label" htmlFor="Mobile" style={labelStyle}>
+              Mobile <RequiredMark />
             </label>
             <input
               type="text"
               id="Mobile"
               name="Mobile"
+              aria-label="Mobile"
+              aria-required="true"
+              aria-valuemax={30}
               required
               maxLength={30}
               placeholder="+252 63 XXXXXXX"
               className="form-input"
-              style={{
-                background: 'rgba(255, 255, 255, 0.08)',
-                color: '#ffffff',
-                border: '1px solid rgba(223, 183, 67, 0.3)',
-                padding: '11px 14px',
-              }}
-            />
-          </div>
-          <div className="form-group">
-            <label className="form-label" htmlFor="Email" style={{ color: '#e2e8f0', fontSize: '0.84rem' }}>
-              Email Address <span style={{ color: 'var(--gold-light)' }}>*</span>
-            </label>
-            <input
-              type="text"
-              id="Email"
-              name="Email"
-              required
-              maxLength={100}
-              placeholder="student@example.com"
-              className="form-input"
-              style={{
-                background: 'rgba(255, 255, 255, 0.08)',
-                color: '#ffffff',
-                border: '1px solid rgba(223, 183, 67, 0.3)',
-                padding: '11px 14px',
-              }}
+              style={fieldStyle}
             />
           </div>
         </div>
 
-        {/* City / Location - NOW REQUIRED */}
+        {/* Email */}
         <div className="form-group">
-          <label className="form-label" htmlFor="Address_-_City" style={{ color: '#e2e8f0', fontSize: '0.84rem' }}>
-            Address - City <span style={{ color: 'var(--gold-light)' }}>*</span>
+          <label className="form-label" htmlFor="Email" style={labelStyle}>
+            Email <RequiredMark />
           </label>
           <input
             type="text"
-            id="Address_-_City"
-            name="Address - City"
+            id="Email"
+            name="Email"
+            aria-label="Email"
+            aria-required="true"
+            aria-valuemax={100}
             required
-            maxLength={255}
-            defaultValue="Hargeisa"
-            placeholder="e.g. Hargeisa, Somaliland"
+            maxLength={100}
+            placeholder="student@example.com"
             className="form-input"
-            style={{
-              background: 'rgba(255, 255, 255, 0.08)',
-              color: '#ffffff',
-              border: '1px solid rgba(223, 183, 67, 0.3)',
-              padding: '11px 14px',
-            }}
+            style={fieldStyle}
+            /* Zoho selects the email input by [ftype=email]; React needs the
+               spread because `ftype` is not a known DOM attribute. */
+            {...{ ftype: 'email' }}
           />
         </div>
 
         {/* Description / Flight Goals */}
         <div className="form-group">
-          <label className="form-label" htmlFor="Description" style={{ color: '#e2e8f0', fontSize: '0.84rem' }}>
+          <label className="form-label" htmlFor="Description" style={labelStyle}>
             Description
           </label>
           <textarea
             id="Description"
             name="Description"
+            aria-label="Description"
+            aria-required="false"
+            aria-multiline="true"
             rows={3}
             defaultValue={defaultDescription}
             placeholder="Let us know which theoretical subjects (M01–M10) or flight licence pathway (PPL/CPL) you are targeting..."
@@ -353,6 +387,9 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
           <button
             type="submit"
             id="formsubmit"
+            role="button"
+            aria-label="Submit"
+            title="Submit"
             className="btn btn--primary formsubmit zcwf_button"
             style={{ flex: 1, padding: '13px 22px' }}
           >
@@ -361,7 +398,10 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
           </button>
           <button
             type="reset"
-            className="btn btn--outline-white btn--sm"
+            role="button"
+            aria-label="Reset"
+            title="Reset"
+            className="btn btn--outline-white btn--sm zcwf_button"
             style={{ padding: '12px 16px' }}
           >
             Reset
@@ -370,7 +410,7 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: '0.75rem', color: '#94a3b8', marginTop: 4 }}>
           <CheckCircle2 size={13} style={{ color: 'var(--wa)' }} />
-          <span>Secure direct transmission to Zoho CRM (Stratosphere Aeronautics)</span>
+          <span>Secured by Fikrado Security</span>
         </div>
       </form>
     </div>

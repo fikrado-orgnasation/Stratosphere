@@ -99,6 +99,17 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  /* Pull-to-refresh and scroll chaining stay on for normal reading. The
+     drawer opts out explicitly via `body.nav-open` below. */
+  overscroll-behavior-y: auto;
+}
+
+/* Lock the page behind the mobile drawer. Header.tsx toggles this class on
+   document.body while the drawer is open; without this rule the page behind
+   the drawer still scrolls. */
+body.nav-open {
+  overflow: hidden;
+  overscroll-behavior: contain;
 }
 
 img { display: block; max-width: 100%; height: auto; }
@@ -112,10 +123,13 @@ ul, ol { list-style: none; }
   color: var(--navy);
 }
 
+/* The gold ring only clears 3:1 against the dark navy sections, and this site
+   is mostly light — so add a dark inner stroke. The pair reads on any surface. */
 :focus-visible {
   outline: 2px solid var(--gold-light);
   outline-offset: 3px;
   border-radius: 4px;
+  box-shadow: 0 0 0 2px var(--navy-deep);
 }
 
 /* ── 03 Layout Primitives ─────────────────────────────────────────────────── */
@@ -146,11 +160,6 @@ ul, ol { list-style: none; }
   margin: 0 auto clamp(40px, 5.5vw, 64px);
   position: relative;
 }
-.section-head--left {
-  text-align: left;
-  margin-inline: 0;
-}
-
 /* ── 04 Classical Authority Headings & Badges ────────────────────────────── */
 .badge {
   display: inline-flex;
@@ -396,8 +405,8 @@ ul, ol { list-style: none; }
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 84px;
-  gap: 24px;
+  height: 66px;
+  gap: 16px;
 }
 
 /* School Heraldic Brand Presentation — Only Circular Crest */
@@ -411,20 +420,20 @@ ul, ol { list-style: none; }
 
 /* ── Circular Glowing Crest Emblem ───────────────────────────────────────── */
 .circular-glowing-logo {
-  width: 58px;
-  height: 58px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   display: grid;
   place-items: center;
   background: radial-gradient(circle at 35% 35%, #183d7a 0%, #0c2044 50%, #050e20 100%);
-  border: 2px solid var(--gold-light);
-  padding: 4px;
+  border: 1.5px solid var(--gold-light);
+  padding: 3px;
   position: relative;
   box-shadow: 
-    0 0 0 2px rgba(223, 183, 67, 0.4),
-    0 0 18px rgba(223, 183, 67, 0.55),
-    0 0 35px rgba(29, 78, 216, 0.4),
-    inset 0 0 10px rgba(223, 183, 67, 0.25);
+    0 0 0 1.5px rgba(223, 183, 67, 0.4),
+    0 0 12px rgba(223, 183, 67, 0.5),
+    0 0 24px rgba(29, 78, 216, 0.35),
+    inset 0 0 8px rgba(223, 183, 67, 0.25);
   animation: logoOrbGlow 3.5s ease-in-out infinite alternate;
   transition: transform 0.4s var(--ease-spring), box-shadow 0.4s var(--ease);
   flex-shrink: 0;
@@ -433,38 +442,38 @@ ul, ol { list-style: none; }
 @keyframes logoOrbGlow {
   0% {
     box-shadow: 
-      0 0 0 2px rgba(223, 183, 67, 0.35),
-      0 0 15px rgba(223, 183, 67, 0.4),
-      0 0 28px rgba(29, 78, 216, 0.3),
-      inset 0 0 8px rgba(223, 183, 67, 0.2);
+      0 0 0 1.5px rgba(223, 183, 67, 0.35),
+      0 0 10px rgba(223, 183, 67, 0.4),
+      0 0 20px rgba(29, 78, 216, 0.3),
+      inset 0 0 6px rgba(223, 183, 67, 0.2);
     border-color: #dfb743;
   }
   50% {
     box-shadow: 
-      0 0 0 3px rgba(243, 211, 118, 0.8),
-      0 0 28px rgba(243, 211, 118, 0.75),
-      0 0 48px rgba(37, 99, 235, 0.6),
-      inset 0 0 16px rgba(243, 211, 118, 0.4);
+      0 0 0 2px rgba(243, 211, 118, 0.8),
+      0 0 20px rgba(243, 211, 118, 0.75),
+      0 0 34px rgba(37, 99, 235, 0.6),
+      inset 0 0 12px rgba(243, 211, 118, 0.4);
     border-color: #f3d376;
   }
   100% {
     box-shadow: 
-      0 0 0 2px rgba(223, 183, 67, 0.35),
-      0 0 18px rgba(223, 183, 67, 0.45),
-      0 0 32px rgba(29, 78, 216, 0.35),
-      inset 0 0 10px rgba(223, 183, 67, 0.25);
+      0 0 0 1.5px rgba(223, 183, 67, 0.35),
+      0 0 12px rgba(223, 183, 67, 0.45),
+      0 0 24px rgba(29, 78, 216, 0.35),
+      inset 0 0 8px rgba(223, 183, 67, 0.25);
     border-color: #dfb743;
   }
 }
 
 .circular-glowing-logo:hover,
 .school-brand:hover .circular-glowing-logo {
-  transform: scale(1.1) rotate(5deg);
+  transform: scale(1.08) rotate(5deg);
   box-shadow: 
-    0 0 0 3px #f3d376,
-    0 0 35px rgba(243, 211, 118, 0.9),
-    0 0 65px rgba(37, 99, 235, 0.75),
-    inset 0 0 20px rgba(243, 211, 118, 0.5);
+    0 0 0 2px #f3d376,
+    0 0 26px rgba(243, 211, 118, 0.9),
+    0 0 48px rgba(37, 99, 235, 0.75),
+    inset 0 0 16px rgba(243, 211, 118, 0.5);
 }
 
 .circular-glowing-logo img {
@@ -481,12 +490,12 @@ ul, ol { list-style: none; }
   gap: 6px;
 }
 .school-nav a {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   color: rgba(255, 255, 255, 0.8);
   transition: all 0.22s var(--ease);
   position: relative;
-  padding: 8px 15px;
+  padding: 6px 12px;
   border-radius: 9999px;
   border: 1px solid transparent;
   white-space: nowrap;
@@ -507,25 +516,28 @@ ul, ol { list-style: none; }
 .school-header__actions {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
 /* Bilingual Language Switcher */
 .lang-switcher {
   position: relative;
+  flex-shrink: 0;
 }
 .lang-switcher__btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 7px 12px;
+  gap: 5px;
+  padding: 6px 10px;
   border-radius: 9999px;
-  font-size: 0.8125rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: #ffffff;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid var(--gold-border);
   transition: all 0.2s var(--ease);
+  min-height: 34px;
 }
 .lang-switcher__btn:hover {
   background: rgba(255, 255, 255, 0.14);
@@ -755,14 +767,16 @@ ul, ol { list-style: none; }
   display: none;
   flex-direction: column;
   justify-content: center;
-  gap: 5px;
-  width: 42px;
-  height: 42px;
+  align-items: center;
+  gap: 4px;
+  width: 38px;
+  height: 38px;
   border-radius: var(--radius-sm);
   padding: 8px;
   cursor: pointer;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid var(--gold-border);
+  flex-shrink: 0;
 }
 .burger-btn span {
   display: block;
@@ -781,11 +795,14 @@ ul, ol { list-style: none; }
   z-index: 200;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s var(--ease);
+  /* opacity alone leaves the closed drawer's links in the tab order */
+  visibility: hidden;
+  transition: opacity 0.3s var(--ease), visibility 0.3s var(--ease);
 }
 .mobile-nav-drawer.is-open {
   opacity: 1;
   pointer-events: auto;
+  visibility: visible;
 }
 .mobile-nav-content {
   position: absolute;
@@ -823,6 +840,33 @@ ul, ol { list-style: none; }
 .mobile-nav-links a:hover {
   background: rgba(223, 183, 67, 0.12);
   border-color: var(--gold-border);
+  color: var(--gold-bright);
+}
+
+/* Quick contact block inside the drawer */
+.mobile-nav-contact {
+  display: grid;
+  gap: 10px;
+  padding: 16px 14px;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--gold-border-subtle);
+  margin-bottom: 18px;
+}
+.mobile-nav-contact a,
+.mobile-nav-contact span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 0.84rem;
+  color: #cbd5e1;
+  min-height: 24px;
+}
+.mobile-nav-contact svg {
+  color: var(--gold-light);
+  flex-shrink: 0;
+}
+.mobile-nav-contact a:hover {
   color: var(--gold-bright);
 }
 
@@ -915,15 +959,124 @@ ul, ol { list-style: none; }
   gap: 14px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
-.school-hero__overlay-badge b {
+.school-hero__overlay-badge > div:first-child > b {
   font-family: var(--font-serif);
   font-size: 1rem;
   color: #ffffff;
   display: block;
 }
-.school-hero__overlay-badge span {
+/* Scoped to the caption only — the rotating course card has its own typography */
+.school-hero__overlay-badge > div:first-child > span {
   font-size: 0.8125rem;
   color: #cbd5e1;
+}
+.school-hero__overlay-badge > div:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* ── Rotating Course Card inside the Hero Overlay ───────────────────────── */
+.hero-course-rotator {
+  --rot-h: 38px;
+  position: relative;
+  display: grid;
+  gap: 7px;
+  width: 206px;
+  flex-shrink: 0;
+  padding: 10px 13px 11px;
+  border-radius: var(--radius);
+  background: rgba(6, 17, 42, 0.72);
+  border: 1px solid var(--gold-border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  outline-offset: 3px;
+}
+.hero-course-rotator__label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #86efac;
+  white-space: nowrap;
+}
+.hero-course-rotator__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  flex-shrink: 0;
+  animation: heroCoursePulse 2s infinite ease-in-out;
+}
+@keyframes heroCoursePulse {
+  0%   { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.55); }
+  70%  { box-shadow: 0 0 0 7px rgba(34, 197, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+/* Viewport clips the track to exactly one course height */
+.hero-course-rotator__viewport {
+  height: var(--rot-h);
+  overflow: hidden;
+}
+.hero-course-rotator__track {
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.7s var(--ease);
+}
+.hero-course-rotator__slide {
+  height: var(--rot-h);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  min-width: 0;
+}
+.hero-course-rotator__code {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--gold-bright);
+  letter-spacing: 0.06em;
+}
+.hero-course-rotator__slide b {
+  font-family: var(--font-serif);
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #ffffff;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hero-course-rotator__progress {
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+}
+.hero-course-rotator__bar {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 2px;
+  background: var(--grad-gold);
+  animation-name: heroCourseProgress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+}
+.hero-course-rotator__bar.is-paused {
+  animation-play-state: paused;
+}
+@keyframes heroCourseProgress {
+  from { width: 0%; }
+  to   { width: 100%; }
 }
 
 @media (max-width: 900px) {
@@ -1047,13 +1200,6 @@ ul, ol { list-style: none; }
   gap: clamp(20px, 3vw, 32px);
 }
 .photo-feature-card {
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: #ffffff;
-  border: 1px solid var(--card-border);
-  box-shadow: var(--shadow-3d);
-  display: flex;
-  flex-direction: column;
   transition: all 0.35s var(--ease);
   position: relative;
 }
@@ -1110,17 +1256,10 @@ ul, ol { list-style: none; }
 /* ── 11 Course Curriculum 3D Cards ───────────────────────────────────────── */
 .courses-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
   gap: 28px;
 }
 .course-card {
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: #ffffff;
-  border: 1px solid var(--card-border);
-  box-shadow: var(--shadow-3d);
-  display: flex;
-  flex-direction: column;
   transition: all 0.32s var(--ease);
   position: relative;
 }
@@ -1216,13 +1355,6 @@ ul, ol { list-style: none; }
   gap: 28px;
 }
 .fleet-card {
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: #ffffff;
-  border: 1px solid var(--card-border);
-  box-shadow: var(--shadow-3d);
-  display: flex;
-  flex-direction: column;
   transition: all 0.32s var(--ease);
 }
 .fleet-card:hover {
@@ -1324,27 +1456,16 @@ ul, ol { list-style: none; }
     grid-template-columns: 1fr;
     text-align: center;
   }
-  .school-cta-card__actions {
-    flex-direction: row;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
+  /* Button stacking is handled in 21.9 below, which also sets width: 100%. */
 }
 
 /* ── 15 Books Catalog Cards ──────────────────────────────────────────────── */
 .book-cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
   gap: 28px;
 }
 .school-book-card {
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: #ffffff;
-  border: 1px solid var(--card-border);
-  box-shadow: var(--shadow-3d);
-  display: flex;
-  flex-direction: column;
   transition: all 0.32s var(--ease);
 }
 .school-book-card:hover {
@@ -1427,7 +1548,6 @@ ul, ol { list-style: none; }
 }
 .form-input:focus,
 .form-textarea:focus {
-  outline: none;
   border-color: var(--gold-light);
   box-shadow: 0 0 0 3px var(--gold-glow), inset 0 2px 4px rgba(0, 0, 0, 0.03);
 }
@@ -1440,49 +1560,6 @@ ul, ol { list-style: none; }
 }
 @media (max-width: 900px) {
   .register-layout { grid-template-columns: 1fr; }
-}
-
-/* ── 17 Floating WhatsApp Widget ─────────────────────────────────────────── */
-.whatsapp-float {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 90;
-  display: grid;
-  place-items: center;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(145deg, #2fe06f 0%, #1ea952 100%);
-  color: #ffffff;
-  border: 1px solid #3be779;
-  border-bottom: 3px solid #0f6c32;
-  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.45);
-  transition: all 0.28s var(--ease-spring);
-}
-.whatsapp-float:hover {
-  transform: translateY(-4px) scale(1.08);
-  box-shadow: 0 14px 32px rgba(37, 211, 102, 0.6);
-}
-.whatsapp-float__pulse {
-  position: relative;
-  display: grid;
-  place-items: center;
-}
-.whatsapp-float__dot {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #ffffff;
-  box-shadow: 0 0 8px #ffffff;
-  animation: pulseBeacon 2s infinite ease-in-out;
-}
-@keyframes pulseBeacon {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.6); opacity: 0.5; }
 }
 
 /* ── 18 School Footer ────────────────────────────────────────────────────── */
@@ -1541,7 +1618,9 @@ ul, ol { list-style: none; }
   flex-wrap: wrap;
   gap: 16px;
   font-size: 0.875rem;
-  color: #64748b;
+  /* #64748b on the #030814 footer is only 4.21:1 — below AA at this size.
+     The footer links one rule up use #94a3b8 (7.81:1); match them. */
+  color: #94a3b8;
 }
 
 .fikrado-powered {
@@ -1626,73 +1705,13 @@ ul, ol { list-style: none; }
   }
 }
 
-/* ── 19 Subject Class Picker & Interactive Selection (3D Depth) ─────────── */
-.class-picker-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 20px;
-}
-
-.class-card-item {
-  border-radius: var(--radius);
-  border: 1.5px solid var(--card-border);
-  background: #ffffff;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all 0.28s var(--ease);
-  display: flex;
-  flex-direction: column;
-  box-shadow: var(--shadow-3d-sm);
-  position: relative;
-}
-.class-card-item:hover {
-  border-color: var(--gold-border);
-  transform: translateY(-5px);
-  box-shadow: var(--shadow-3d-hover);
-}
-.class-card-item.is-selected {
-  border-color: var(--gold-light);
-  box-shadow: 0 0 0 2px var(--gold-light), 0 8px 24px var(--gold-glow);
-  background: linear-gradient(180deg, #ffffff 0%, var(--gold-pale) 100%);
-}
-.class-card-item__img {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
-  transition: transform 0.4s var(--ease);
-}
-.class-card-item:hover .class-card-item__img {
-  transform: scale(1.05);
-}
-.class-card-item__info {
-  padding: 18px;
-  display: grid;
-  gap: 10px;
-}
-.class-card-item__code {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--gold-deep);
-}
-.class-card-item__title {
-  font-family: var(--font-serif);
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: var(--navy);
-  line-height: 1.3;
-}
-
 /* Sticky Cart / Enrolment Summary 3D Card */
+/* Sticky enrolment summary. Composes the shared panel surface; only the
+   sticky offset, its own padding and the hover shadow are specific to it. */
 .cart-summary-card {
   position: sticky;
   top: 104px;
-  background: #ffffff;
-  border-radius: var(--radius-lg);
-  border: 1.5px solid var(--gold-border);
   padding: 30px;
-  box-shadow: var(--shadow-3d);
-  display: grid;
   gap: 20px;
   transition: all 0.3s var(--ease);
 }
@@ -1719,235 +1738,512 @@ ul, ol { list-style: none; }
   border: 1px solid var(--gold-light);
 }
 
-/* Gallery Grid */
-.gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 24px;
-}
-.gallery-item {
-  border-radius: var(--radius);
-  overflow: hidden;
-  aspect-ratio: 4 / 3;
-  box-shadow: var(--shadow-3d);
-  border: 1px solid var(--card-border);
-  transition: all 0.3s var(--ease);
-}
-.gallery-item:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: var(--shadow-3d-hover);
-  border-color: var(--gold-border);
-}
-.gallery-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s var(--ease);
-}
-.gallery-item:hover img {
-  transform: scale(1.06);
-}
-
-/* ── 20 Zoho CRM Form Integration ───────────────────────────────────────────── */
-.zoho-crm-form {
-  background: #ffffff;
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius-lg);
-  padding: clamp(28px, 4vw, 40px);
-  box-shadow: var(--shadow-3d);
-  transition: all 0.3s var(--ease);
-}
-.zoho-crm-form:hover {
-  box-shadow: var(--shadow-3d-hover);
-  border-color: var(--gold-border);
-}
-
-.zoho-form-header {
-  text-align: center;
-  margin-bottom: 32px;
-}
-.zoho-form-title {
-  font-family: var(--font-serif);
-  font-size: clamp(1.5rem, 2.5vw, 1.85rem);
-  font-weight: 700;
-  color: var(--navy);
-  margin-bottom: 10px;
-  letter-spacing: -0.01em;
-}
-.zoho-form-subtitle {
-  font-size: 0.975rem;
-  color: var(--text-muted);
-  line-height: 1.6;
-  max-width: 520px;
-  margin: 0 auto;
-}
-
-.zoho-form-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-bottom: 24px;
-}
-.zoho-field-group {
-  display: grid;
-  gap: 8px;
-}
-.zoho-field-group--full {
-  grid-column: 1 / -1;
-}
-
-.zoho-label {
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--navy);
-  letter-spacing: 0.01em;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.zoho-label.required::after {
-  content: '*';
-  color: var(--wa);
-  font-weight: 700;
-  margin-left: 2px;
-}
-.zoho-required {
-  color: var(--wa);
-  font-weight: 700;
-}
-
-.zoho-input {
-  width: 100%;
-  padding: 13px 16px;
-  border-radius: var(--radius);
-  border: 1.5px solid var(--card-border);
-  background: #ffffff;
-  color: var(--text-main);
-  font-size: 0.95rem;
-  font-family: var(--font-sans);
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03);
-  transition: all 0.2s var(--ease);
-}
-.zoho-input:focus {
-  outline: none;
-  border-color: var(--gold-light);
-  box-shadow: 0 0 0 3px var(--gold-glow), inset 0 2px 4px rgba(0, 0, 0, 0.03);
-}
-.zoho-input.has-error {
-  border-color: #ef4444;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15), inset 0 2px 4px rgba(0, 0, 0, 0.03);
-}
-.zoho-input.has-error:focus {
-  border-color: #ef4444;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25), inset 0 2px 4px rgba(0, 0, 0, 0.03);
-}
-.zoho-input::placeholder {
-  color: var(--text-faint);
-}
-
-textarea.zoho-input {
-  resize: vertical;
-  min-height: 110px;
-}
-
-.zoho-error {
-  font-size: 0.8125rem;
-  color: #ef4444;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.zoho-error::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #ef4444;
-  flex-shrink: 0;
-}
-
-.zoho-form-actions {
-  display: grid;
-  gap: 14px;
-  margin-top: 8px;
-}
-
-.zoho-submit-btn {
-  position: relative;
-}
-.zoho-spinner {
-  animation: spin 1s linear infinite;
-}
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-.zoho-form-note {
-  font-size: 0.8125rem;
-  color: var(--text-faint);
-  text-align: center;
-  line-height: 1.5;
-  margin: 0;
-}
-
-.zoho-form-alternative {
-  margin-top: 28px;
-  padding-top: 24px;
-  border-top: 1px solid var(--card-border);
-  text-align: center;
-}
-.zoho-alt-text {
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  margin-bottom: 14px;
-  font-weight: 500;
-}
-
-.zoho-toast {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
-  border-radius: var(--radius);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  margin-bottom: 24px;
-  width: 100%;
-  box-sizing: border-box;
-  animation: slideDown 0.3s var(--ease);
-}
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.zoho-toast.success {
-  background: #f0fdf4;
-  color: #15803d;
-  border: 1px solid #86efac;
-}
-.zoho-toast.error {
-  background: #fef2f2;
-  color: #dc2626;
-  border: 1px solid #fecaca;
-}
-.zoho-toast svg {
-  flex-shrink: 0;
-}
-
+/* ── 21.1 Compact Top Notice Bar (single scrollable row) ────────────────── */
 @media (max-width: 768px) {
-  .zoho-form-grid {
-    grid-template-columns: 1fr;
+  .top-notice-bar {
+    padding-block: 6px;
+    font-size: 0.75rem;
   }
-  .zoho-crm-form {
-    padding: 24px;
+  .top-notice-bar__in {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    gap: 16px;
+    padding-inline: 16px;
+  }
+  .top-notice-bar__in::-webkit-scrollbar {
+    display: none;
+  }
+  .top-notice-bar__left {
+    gap: 14px;
+    flex-shrink: 0;
+  }
+  .top-notice-bar__in > div:last-child {
+    gap: 14px;
+    flex-shrink: 0;
+  }
+  .top-notice-bar__item {
+    white-space: nowrap;
   }
 }
 
+/* ── 21.2 Header: logo, nav, buttons all fit the bar ───────────────────── */
+@media (max-width: 1080px) {
+  .site-header__in {
+    height: 62px;
+  }
+  .school-nav {
+    gap: 2px;
+  }
+  .school-nav a {
+    font-size: 0.78rem;
+    padding: 6px 9px;
+  }
+}
+
+@media (max-width: 960px) {
+  .shell {
+    padding-inline: 18px;
+  }
+  .site-header__in {
+    height: 58px;
+    gap: 10px;
+  }
+  .circular-glowing-logo {
+    width: 38px;
+    height: 38px;
+    padding: 2.5px;
+  }
+  .burger-btn {
+    display: flex;
+  }
+}
+
+@media (max-width: 430px) {
+  /* The Enroll CTA lives in the drawer + the sticky action bar on small phones */
+  .school-header__actions .btn--primary {
+    display: none;
+  }
+  .lang-switcher__btn {
+    padding: 6px 8px;
+  }
+  .lang-switcher__btn svg:first-child {
+    display: none;
+  }
+  .site-header__in {
+    height: 56px;
+  }
+}
+
+/* ── 21.3 Comfortable touch targets everywhere ──────────────────────────── */
+@media (max-width: 768px) {
+  .btn {
+    min-height: 46px;
+    padding: 12px 20px;
+  }
+  .btn--sm {
+    min-height: 42px;
+  }
+  .school-nav a,
+  .lang-switcher__btn,
+  .burger-btn {
+    min-height: 40px;
+  }
+  .mobile-nav-links a {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+  }
+  /* 16px inputs stop iOS Safari from zooming when a field is focused */
+  .form-input,
+  .form-textarea,
+  select {
+    font-size: 16px;
+  }
+}
+
+/* ── 21.4 Mobile Navigation Drawer ──────────────────────────────────────── */
+@media (max-width: 768px) {
+  .mobile-nav-content {
+    width: min(88vw, 340px);
+    padding: 20px 18px calc(20px + env(safe-area-inset-bottom, 0px));
+  }
+  .mobile-nav-links {
+    gap: 6px;
+    margin-block: 18px;
+  }
+  .mobile-nav-links a {
+    font-size: 1.05rem;
+    padding: 10px 14px;
+  }
+}
+
+/* ── 21.5 Section rhythm on phones ──────────────────────────────────────── */
+@media (max-width: 768px) {
+  .section {
+    padding-block: 48px;
+  }
+  .section-head {
+    margin-bottom: 32px;
+  }
+  .title-lg {
+    font-size: clamp(1.85rem, 8vw, 2.4rem);
+    line-height: 1.18;
+  }
+  .title-md {
+    font-size: clamp(1.5rem, 6.4vw, 1.9rem);
+  }
+  .desc-lg {
+    font-size: 1rem;
+    margin-top: 12px;
+  }
+  .badge {
+    font-size: 0.72rem;
+    padding: 5px 12px;
+    margin-bottom: 12px;
+  }
+}
+
+/* ── 21.6 Hero on phones ────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .school-hero {
+    min-height: 0;
+    padding-block: 44px 56px;
+  }
+  .school-hero__grid {
+    gap: 32px;
+  }
+}
+@media (max-width: 768px) {
+  .school-hero__actions {
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .school-hero__actions .btn {
+    width: 100%;
+  }
+  .school-hero__image {
+    height: 240px;
+  }
+  .school-hero__overlay-badge {
+    padding: 12px 14px;
+    font-size: 0.9rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .school-hero__overlay-badge > div:first-child > b {
+    font-size: 0.9rem;
+  }
+  .school-hero__overlay-badge > div:first-child > span {
+    font-size: 0.75rem;
+  }
+  .hero-course-rotator {
+    width: 100%;
+  }
+}
+
+/* ── 21.7 Accreditation & stats strips ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .accreditation-bar {
+    padding-block: 16px;
+  }
+  .accreditation-items {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .accreditation-badge {
+    padding: 10px 12px;
+    font-size: 0.75rem;
+    line-height: 1.3;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .accreditation-badge svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .stats-strip {
+    padding-block: 32px;
+  }
+  .stats-grid {
+    gap: 12px;
+  }
+  .stat-item {
+    padding: 18px 12px;
+  }
+  .stat-label {
+    font-size: 0.75rem;
+    margin-top: 6px;
+  }
+}
+
+/* ── 21.8 Cards ─────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .features-grid,
+  .fleet-grid {
+    gap: 18px;
+  }
+  .courses-grid,
+  .book-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .photo-feature-card__img-wrap,
+  .fleet-card__img {
+    height: 190px;
+  }
+  .course-card__image-wrap {
+    height: 168px;
+  }
+  .photo-feature-card__content,
+  .course-card__body,
+  .fleet-card__body,
+  .school-book-card__body {
+    padding: 18px;
+    gap: 10px;
+  }
+  .photo-feature-card__title,
+  .course-card__title,
+  .school-book-card__title {
+    font-size: 1.12rem;
+  }
+  .photo-feature-card__desc,
+  .course-card__topics {
+    font-size: 0.875rem;
+  }
+  .school-book-card__cover {
+    padding: 18px;
+    min-height: 120px;
+  }
+  .course-card__footer,
+  .school-book-card__foot {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .course-card__footer .btn {
+    flex: 1 1 auto;
+  }
+  .cart-summary-card {
+    position: static;
+    padding: 20px;
+    gap: 16px;
+  }
+}
+
+/* ── 21.9 CTA card, footer & form ───────────────────────────────────────── */
+@media (max-width: 860px) {
+  .school-cta-card {
+    padding: 26px 20px;
+    gap: 24px;
+  }
+  .school-cta-card__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .school-cta-card__actions .btn {
+    width: 100%;
+  }
+}
+@media (max-width: 768px) {
+  .school-footer {
+    padding-top: 44px;
+    padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+  .school-footer__top {
+    gap: 28px;
+    margin-bottom: 32px;
+  }
+  .school-footer__col h4 {
+    font-size: 1rem;
+    margin-bottom: 14px;
+  }
+  .school-footer__col a {
+    font-size: 0.9rem;
+  }
+  .school-footer__bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding-top: 20px;
+  }
+}
+
+/* ── 21.11 Sticky Mobile Action Bar (Call · WhatsApp · Enrol) ───────────── */
+.mobile-action-bar {
+  display: none;
+}
+@media (max-width: 768px) {
+  .mobile-action-bar {
+    display: grid;
+    grid-template-columns: 0.9fr 1.2fr 1.4fr;
+    gap: 8px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 95;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px));
+    background: rgba(3, 8, 20, 0.92);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-top: 1px solid var(--gold-border);
+    box-shadow: 0 -8px 28px rgba(0, 0, 0, 0.45);
+  }
+  .mobile-action-bar a {
+    min-height: 44px;
+    padding: 10px 6px;
+    border-radius: var(--radius-sm);
+    font-size: 0.78rem;
+    font-weight: 700;
+    gap: 5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    border: 1px solid transparent;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mobile-action-bar__call {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    border-color: var(--gold-border) !important;
+  }
+  .mobile-action-bar__call:active {
+    background: rgba(223, 183, 67, 0.2);
+  }
+}
+
+/* ── 21.12 Landscape phones ─────────────────────────────────────────────── */
+@media (max-height: 480px) and (orientation: landscape) {
+  .site-header__in {
+    height: 52px;
+  }
+  .top-notice-bar {
+    display: none;
+  }
+  .school-hero {
+    min-height: 0;
+    padding-block: 32px;
+  }
+}
+
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   22 REDUCED MOTION
+   The two WebGL/JS effects (hero scene, course rotator) already check this
+   preference in JS. Everything below is CSS-driven and was running regardless:
+   four infinite loops, the modal entrance, the progress bar, smooth scrolling
+   and every hover transition.
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  /* Stop the looping ambient pulses rather than merely shortening them. */
+  .circular-glowing-logo,
+  .lang-switcher__btn--glowing,
+  .hero-course-rotator__dot {
+    animation: none !important;
+  }
+
+  /* Entrances still appear, they just stop moving. */
+  .lang-welcome-overlay,
+  .lang-welcome-card {
+    animation: none !important;
+  }
+
+  .hero-course-rotator__track {
+    transition: none !important;
+  }
+
+  /* Collapse the many hover/active transitions to an instant state change. */
+  .btn,
+  .site-header,
+  .school-nav a,
+  .lang-switcher__btn,
+  .lang-switcher__item,
+  .mobile-nav-links a,
+  .mobile-nav-content,
+  .mobile-nav-drawer,
+  .accreditation-badge,
+  .stat-item,
+  .course-card,
+  .course-card__image,
+  .photo-feature-card,
+  .school-book-card,
+  .fleet-card,
+  .cart-summary-card,
+  .is-blurred-welcome,
+  .is-unblurred,
+  .fikrado-powered,
+  .card-3d-wrap {
+    transition-duration: 0.01ms !important;
+  }
+
+  /* The 3D tilt is pointer-driven motion; opt out of it entirely. */
+  .card-3d-wrap {
+    transform: none !important;
+  }
+
+  .card-3d-glare {
+    display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   23 SHARED PANEL
+   One definition for the white card that appears across every page: hero
+   steps, values, career roles, accreditation rows, study packs, contact
+   details and the course manual. Was duplicated as an inline style object in
+   fourteen places with only padding and radius varying.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.panel {
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-3d);
+  padding: 28px;
+  display: grid;
+  gap: 12px;
+  height: 100%;
+}
+
+.panel--tight {
+  padding: 20px;
+  gap: 10px;
+}
+
+.panel--roomy {
+  padding: 36px;
+  gap: 16px;
+}
+
+.panel--lg {
+  border-radius: var(--radius-lg);
+}
+
+/* Image cards: the photo bleeds to the edge, so the panel supplies no padding. */
+.panel--flush {
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Media cards (photo feature, course, fleet, book) stack an image over a text
+   body. Shares .panel's surface and --flush's bleed, then goes column-flex. */
+.photo-feature-card,
+.course-card,
+.fleet-card,
+.school-book-card {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow-3d);
+  display: flex;
+  flex-direction: column;
+}
+
+.panel--gold {
+  border: 1.5px solid var(--gold-border);
+}
+
+.panel--flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.panel--col {
+  flex-direction: column;
+  align-items: stretch;
+}

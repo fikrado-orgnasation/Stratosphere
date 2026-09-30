@@ -1,5 +1,6 @@
 import Shell, { PageHead } from '../components/Shell';
 import ZohoLeadForm from '../components/ZohoLeadForm';
+import { CONTACT } from '../data/site';
 
 export default function Register() {
   return (
@@ -34,7 +35,7 @@ export default function Register() {
             Prefer a faster response? Contact our Hargeisa admissions team directly on WhatsApp.
           </p>
           <a
-            href="https://wa.me/252634429782"
+            href={CONTACT.whatsapp}
             target="_blank"
             rel="noreferrer"
             className="btn btn--whatsapp"

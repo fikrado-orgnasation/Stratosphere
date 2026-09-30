@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   ArrowRight, CheckCircle2, ChevronRight, GraduationCap, MessageCircle
@@ -6,6 +7,65 @@ import Shell, { Ask, Filings } from '../components/Shell';
 import CinematicAtmosphere from '../components/CinematicAtmosphere';
 import TiltCard from '../components/TiltCard';
 import { CONTACT, FLEET, FLEET_PHOTOS, STUDENT_JOURNEY, SUBJECTS, SUBJECT_PHOTOS } from '../data/site';
+
+/* ── Rotating Course Card for the Hero Overlay ──────────────────────────── */
+const ROTATE_MS = 3600;
+
+function HeroCourseRotator() {
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    if (paused) return;
+    // Respect users who ask for reduced motion — hold on the first course
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const id = window.setInterval(
+      () => setIndex((i) => (i + 1) % SUBJECTS.length),
+      ROTATE_MS
+    );
+    return () => window.clearInterval(id);
+  }, [paused]);
+
+  return (
+    <div
+      className="hero-course-rotator"
+      tabIndex={0}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={() => setPaused(false)}
+      aria-label="Courses currently open for enrolment"
+    >
+      <span className="hero-course-rotator__label">
+        <span className="hero-course-rotator__dot" />
+        Active Enrolment
+      </span>
+
+      <div className="hero-course-rotator__viewport" aria-live="polite">
+        <div
+          className="hero-course-rotator__track"
+          style={{ transform: `translateY(-${(index * 100) / SUBJECTS.length}%)` }}
+        >
+          {SUBJECTS.map((s) => (
+            <div className="hero-course-rotator__slide" key={s.code}>
+              <span className="hero-course-rotator__code">{s.code}</span>
+              <b>{s.title}</b>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="hero-course-rotator__progress" aria-hidden="true">
+        <span
+          key={index}
+          className={`hero-course-rotator__bar ${paused ? 'is-paused' : ''}`}
+          style={{ animationDuration: `${ROTATE_MS}ms` }}
+        />
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
@@ -72,7 +132,7 @@ export default function Home() {
                 <b>1-on-1 Instruction, Always</b>
                 <span>Every subject taught privately at your own pace.</span>
               </div>
-              <span className="badge badge--green" style={{ margin: 0 }}>Active Enrolment</span>
+              <HeroCourseRotator />
             </div>
           </TiltCard>
         </div>
@@ -205,7 +265,7 @@ export default function Home() {
                 <div className="course-card__image-wrap">
                   <img
                     src={SUBJECT_PHOTOS[s.code]}
-                    alt={s.title}
+                    alt=""
                     className="course-card__image"
                     loading="lazy"
                   />
@@ -283,20 +343,12 @@ export default function Home() {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 24 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(240px, 100%), 1fr))', gap: 24 }}>
             {STUDENT_JOURNEY.map((step) => (
               <TiltCard
                 key={step.code}
                 maxTilt={5}
-                style={{
-                  padding: 28,
-                  borderRadius: 'var(--radius)',
-                  border: '1px solid var(--card-border)',
-                  background: '#ffffff',
-                  boxShadow: 'var(--shadow-3d)',
-                  display: 'grid',
-                  gap: 12,
-                }}
+                className="panel"
               >
                 <span style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', fontWeight: 700, color: 'var(--gold-deep)' }}>
                   {step.code}
