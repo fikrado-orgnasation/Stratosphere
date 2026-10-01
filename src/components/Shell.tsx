@@ -240,7 +240,7 @@ function Header({ isGlowingTranslate }: { isGlowingTranslate?: boolean }) {
             </Link>
             <button
               type="button"
-              className="burger-btn"
+              className={`burger-btn ${isOpen ? 'is-open' : ''}`}
               onClick={() => setIsOpen(true)}
               aria-label="Open mobile menu"
             >
@@ -258,26 +258,35 @@ function Header({ isGlowingTranslate }: { isGlowingTranslate?: boolean }) {
         onClick={() => setIsOpen(false)}
       >
         <div className="mobile-nav-content" onClick={(e) => e.stopPropagation()} ref={drawerRef}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--navy)' }}>
-              {t.menu}
-            </span>
+          <div className="mobile-nav-header">
+            <div className="mobile-nav-header__brand">
+              <div className="circular-glowing-logo" style={{ width: 34, height: 34 }}>
+                <img src="/logo-removebg-preview.png" alt="" />
+              </div>
+              <div>
+                <b>Stratosphere</b>
+                <span>Aeronautics</span>
+              </div>
+            </div>
             <button
               type="button"
+              className="mobile-nav-close"
               onClick={() => setIsOpen(false)}
               aria-label="Close menu"
-              style={{ padding: 6 }}
             >
-              <X size={24} />
+              <X size={20} />
             </button>
           </div>
 
           <div className="mobile-nav-links">
-            {NAV_LINKS.map((item) => (
-              <Link key={item.to} to={item.to}>
-                {t.nav[item.key]}
-              </Link>
-            ))}
+            {NAV_LINKS.map((item) => {
+              const active = pathname === item.to || (item.to !== '/' && pathname.startsWith(item.to));
+              return (
+                <Link key={item.to} to={item.to} aria-current={active ? 'page' : undefined}>
+                  {t.nav[item.key]}
+                </Link>
+              );
+            })}
           </div>
 
           <div className="mobile-nav-contact">
@@ -295,7 +304,7 @@ function Header({ isGlowingTranslate }: { isGlowingTranslate?: boolean }) {
             </span>
           </div>
 
-          <div style={{ marginTop: 'auto', display: 'grid', gap: 10 }}>
+          <div className="mobile-nav-cta">
             <a
               href={CONTACT.whatsapp}
               target="_blank"
@@ -320,9 +329,8 @@ function MobileActionBar() {
   const { t } = useLang();
   return (
     <nav className="mobile-action-bar" aria-label="Quick contact">
-      <a href={CONTACT.phones[0].href} className="mobile-action-bar__call">
-        <Phone size={17} />
-        {t.call}
+      <a href={CONTACT.phones[0].href} className="mobile-action-bar__call" aria-label={t.call}>
+        <Phone size={20} />
       </a>
       <a
         href={CONTACT.whatsapp}
