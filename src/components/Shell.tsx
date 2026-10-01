@@ -544,100 +544,12 @@ export function Footer() {
   );
 }
 
-/* ── Language Welcome Spotlight Modal ────────────────────────────────────── */
-function LanguageWelcomeModal({
-  isOpen,
-  onSelect,
-  onClose,
-}: {
-  isOpen: boolean;
-  onSelect: (lang: Lang) => void;
-  onClose: () => void;
-}) {
-  const { lang } = useLang();
-  const cardRef = useFocusTrap(isOpen, onClose);
-
-  if (!isOpen) return null;
-
-  return (
-    <div
-      className="lang-welcome-overlay"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Select Language"
-    >
-      <div className="lang-welcome-card" onClick={(e) => e.stopPropagation()} ref={cardRef}>
-        {/* Heraldic Circular Crest with Glowing Aura */}
-        <div className="circular-glowing-logo" style={{ width: 72, height: 72, margin: '0 auto 16px' }}>
-          <img src="/logo-removebg-preview.png" alt="Stratosphere Crest" />
-        </div>
-
-        <span className="badge badge--gold" style={{ margin: '0 auto 10px' }}>
-          Aviation Ground School · Hargeisa
-        </span>
-
-        <h2 className="lang-welcome-card__title">
-          Stratosphere Aeronautics
-        </h2>
-
-        <p className="lang-welcome-card__sub">
-          School of Theoretical Knowledge Instruction
-        </p>
-
-        <p className="lang-welcome-card__prompt">
-          Select your preferred language / Fadlan dooro luqaddaada:
-        </p>
-
-        <div className="lang-welcome-card__grid">
-          <button
-            type="button"
-            className={`lang-welcome-choice ${lang === 'en' ? 'is-active' : ''}`}
-            onClick={() => onSelect('en')}
-          >
-            <span className="lang-welcome-choice__flag">🇬🇧</span>
-            <div className="lang-welcome-choice__meta">
-              <strong>English</strong>
-              <small>ICAO Aviation Standard</small>
-            </div>
-            {lang === 'en' && <Check size={18} className="lang-welcome-choice__check" />}
-          </button>
-
-          <button
-            type="button"
-            className={`lang-welcome-choice ${lang === 'so' ? 'is-active' : ''}`}
-            onClick={() => onSelect('so')}
-          >
-            <span className="lang-welcome-choice__flag">🇸🇴</span>
-            <div className="lang-welcome-choice__meta">
-              <strong>Soomaali</strong>
-              <small>Af-Soomaali</small>
-            </div>
-            {lang === 'so' && <Check size={18} className="lang-welcome-choice__check" />}
-          </button>
-        </div>
-
-        <button
-          type="button"
-          className="btn btn--primary lang-welcome-enter"
-          onClick={onClose}
-        >
-          Enter Website / Gal Websaytka
-          <ArrowRight size={16} />
-        </button>
-      </div>
-    </div>
-  );
-}
-
 /* ── Primary Shell ───────────────────────────────────────────────────────── */
 export default function Shell({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation();
-  const { setLang } = useLang();
 
-  // Read during the first render, not in an effect: setting this from an effect
-  // meant the page painted once unblurred and interactive behind the modal
-  // before the blur was applied.
+  // Show the blur + glowing language button on first visit only.
+  // Auto-dismiss after a few seconds; the language button stays clickable.
   const [showWelcome, setShowWelcome] = useState(
     () => !readWelcomeFlag()
   );
@@ -646,33 +558,32 @@ export default function Shell({ children }: { children: React.ReactNode }) {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  const dismissWelcome = useCallback(() => {
+  useEffect(() => {
+    if (!showWelcome) return;
     writeWelcomeFlag();
+    const timer = window.setTimeout(() => setShowWelcome(false), 4000);
+    return () => window.clearTimeout(timer);
+  }, [showWelcome]);
+
+  const dismissWelcome = useCallback(() => {
     setShowWelcome(false);
   }, []);
-
-  const handleSelectLang = (selectedLang: Lang) => {
-    setLang(selectedLang);
-    dismissWelcome();
-  };
 
   return (
     <>
       <TopBar />
       <Header isGlowingTranslate={showWelcome} />
-      <main id="main" className={showWelcome ? 'is-blurred-welcome' : 'is-unblurred'}>
+      <main
+        id="main"
+        className={showWelcome ? 'is-blurred-welcome' : 'is-unblurred'}
+        onClick={showWelcome ? dismissWelcome : undefined}
+      >
         {children}
       </main>
       <div className={showWelcome ? 'is-blurred-welcome' : 'is-unblurred'}>
         <Footer />
       </div>
       {!showWelcome && <MobileActionBar />}
-
-      <LanguageWelcomeModal
-        isOpen={showWelcome}
-        onSelect={handleSelectLang}
-        onClose={dismissWelcome}
-      />
     </>
   );
 }
