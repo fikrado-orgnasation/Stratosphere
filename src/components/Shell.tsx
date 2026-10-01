@@ -234,7 +234,7 @@ function Header({ isGlowingTranslate }: { isGlowingTranslate?: boolean }) {
 
           {/* Header Action Button */}
           <div className="school-header__actions">
-            <Link to="/register" className="btn btn--primary btn--sm">
+            <Link to="/register" className="btn btn--primary btn--sm btn--enroll-glow">
               {t.enrollNow}
               <ArrowRight size={15} />
             </Link>

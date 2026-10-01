@@ -307,6 +307,24 @@ ul, ol { list-style: none; }
   box-shadow: 0 2px 6px rgba(197, 155, 39, 0.3);
 }
 
+/* Always-on glow pulse for the header Enroll Now button */
+.btn--enroll-glow {
+  animation: enrollGlowPulse 2.5s ease-in-out infinite;
+}
+@keyframes enrollGlowPulse {
+  0%, 100% {
+    box-shadow: 0 4px 14px rgba(197, 155, 39, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.45),
+      0 0 0 0 rgba(223, 183, 67, 0.5);
+  }
+  50% {
+    box-shadow: 0 6px 18px rgba(223, 183, 67, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.6),
+      0 0 16px 4px rgba(243, 211, 118, 0.35);
+  }
+}
+.btn--enroll-glow:hover {
+  animation: enrollGlowPulse 2.5s ease-in-out infinite;
+}
+
 /* Secondary 3D Navy Button */
 .btn--secondary {
   background: linear-gradient(145deg, #10244c 0%, #06112a 100%);
@@ -2183,6 +2201,7 @@ ul, ol { list-style: none; }
   /* Stop the looping ambient pulses rather than merely shortening them. */
   .circular-glowing-logo,
   .lang-switcher__btn--glowing,
+  .btn--enroll-glow,
   .hero-course-rotator__dot {
     animation: none !important;
   }
