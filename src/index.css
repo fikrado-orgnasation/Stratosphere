@@ -1364,6 +1364,270 @@ ul, ol { list-style: none; }
   transform: translateX(3px);
 }
 
+/* ── 11.5 Training Programs — Search, Filters, Grid & Cards ─────────────── */
+.training-search-bar {
+  position: relative;
+  max-width: 560px;
+  margin: 0 auto 28px;
+}
+.training-search-bar__icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+.training-search-bar__input {
+  width: 100%;
+  padding: 14px 18px 14px 48px;
+  border-radius: 9999px;
+  border: 1.5px solid var(--card-border);
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+  color: var(--text-main);
+  font-size: 0.95rem;
+  box-shadow: var(--shadow-3d-sm);
+  transition: all 0.2s var(--ease);
+}
+.training-search-bar__input:focus {
+  outline: none;
+  border-color: var(--gold-light);
+  box-shadow: 0 0 0 4px var(--gold-glow), var(--shadow-3d-sm);
+  background: #ffffff;
+}
+.training-search-bar__input::placeholder {
+  color: var(--text-faint);
+}
+
+.training-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.training-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+  box-shadow: var(--shadow-3d-sm);
+  cursor: pointer;
+  transition: all 0.22s var(--ease);
+  white-space: nowrap;
+}
+.training-chip:hover {
+  border-color: var(--gold-border);
+  color: var(--navy);
+  transform: translateY(-2px);
+}
+.training-chip.is-active {
+  background: var(--grad-navy);
+  color: #ffffff;
+  border-color: var(--navy-deep);
+  box-shadow: 0 4px 14px rgba(6, 17, 42, 0.25);
+}
+.training-chip__count {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.15);
+}
+.training-chip:not(.is-active) .training-chip__count {
+  background: var(--bg-subtle);
+  color: var(--text-faint);
+}
+
+.training-results-count {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+  font-weight: 600;
+}
+
+.training-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.training-card {
+  background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-3d);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: all 0.3s var(--ease);
+  min-height: 100%;
+}
+.training-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-3d-hover);
+  border-color: var(--gold-border);
+}
+
+.training-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.category-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%;
+}
+.category-badge--blue {
+  background: rgba(37, 99, 235, 0.1);
+  color: #1e40af;
+  border: 1px solid rgba(37, 99, 235, 0.2);
+}
+.category-badge--red {
+  background: rgba(220, 38, 38, 0.1);
+  color: #991b1b;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+.category-badge--green {
+  background: rgba(22, 163, 74, 0.1);
+  color: #166534;
+  border: 1px solid rgba(22, 163, 74, 0.2);
+}
+.category-badge--gold {
+  background: rgba(197, 155, 39, 0.12);
+  color: var(--gold-deep);
+  border: 1px solid var(--gold-border);
+}
+
+.level-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.level-tag--green {
+  background: #dcfce7;
+  color: #166534;
+}
+.level-tag--amber {
+  background: #fef3c7;
+  color: #92400e;
+}
+.level-tag--red {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.training-card__title {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.3;
+}
+
+.training-card__desc {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  flex: 1;
+}
+
+.training-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 12px;
+  border-top: 1px solid #f1f5f9;
+}
+.training-card__meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.training-card__meta-item svg {
+  color: var(--gold-deep);
+}
+.training-card__meta-divider {
+  width: 1px;
+  height: 14px;
+  background: #e2e8f0;
+}
+
+.training-card__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 4px;
+}
+.training-card__details-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--blue-azure);
+  transition: color 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.training-card__details-link:hover {
+  color: var(--gold-deep);
+  transform: translateX(3px);
+}
+
+.training-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--text-muted);
+}
+.training-empty svg {
+  color: var(--text-faint);
+}
+
+@media (max-width: 1100px) {
+  .training-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  .training-grid {
+    grid-template-columns: 1fr;
+  }
+  .training-filter-chips {
+    gap: 8px;
+  }
+  .training-chip {
+    padding: 7px 12px;
+    font-size: 0.78rem;
+  }
+}
+
 /* ── 12 Training Fleet Showcase ──────────────────────────────────────────── */
 .fleet-grid {
   display: grid;

@@ -1,70 +1,153 @@
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, MessageCircle } from 'lucide-react';
+import { ArrowRight, MessageCircle, Search, Clock, BarChart3 } from 'lucide-react';
 import Shell, { Filings, PageHead } from '../components/Shell';
 import TiltCard from '../components/TiltCard';
-import { CONTACT, SUBJECTS, SUBJECT_PHOTOS } from '../data/site';
+import { CONTACT, COURSE_CATEGORIES, TRAINING_COURSES, type CourseCategory } from '../data/site';
 
 const LOGISTICS = [
-  { title: 'Separate Assessment', body: 'Each of the ten subjects is examined individually. You pass on its own terms without having to repeat others.' },
+  { title: 'Separate Assessment', body: 'Each program is examined and certificated individually. You progress on its own terms without having to repeat others.' },
   { title: '1-on-1 Instruction', body: 'Taught privately or in small cohorts of your choosing. Your questions are answered thoroughly.' },
-  { title: 'Custom Pace', body: 'Morning, evening, or weekend sessions designed around your employment or flight commitments.' },
-  { title: 'Licence Prerequisite', body: 'This theoretical knowledge satisfies the written prerequisite for both PPL and CPL licences.' },
+  { title: 'Custom Pace', body: 'Morning, evening, or weekend sessions designed around your employment or operational commitments.' },
+  { title: 'Career Pathway', body: 'From entry-level ramp roles to advanced management — build a sequential career in aviation operations.' },
 ];
 
+const CATEGORY_COLORS: Record<CourseCategory, string> = {
+  'Flight & Ramp Operations': 'category-badge--blue',
+  'Safety & Compliance': 'category-badge--red',
+  'Air Traffic & Navigation': 'category-badge--green',
+  'Management & Quality': 'category-badge--gold',
+};
+
+const LEVEL_COLORS: Record<string, string> = {
+  'Entry Level': 'level-tag--green',
+  'Intermediate': 'level-tag--amber',
+  'Advanced': 'level-tag--red',
+};
+
 export default function Training() {
+  const [search, setSearch] = useState('');
+  const [activeCategory, setActiveCategory] = useState<CourseCategory | 'All'>('All');
+
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return TRAINING_COURSES.filter((c) => {
+      const matchesCategory = activeCategory === 'All' || c.category === activeCategory;
+      const matchesSearch =
+        q === '' ||
+        c.title.toLowerCase().includes(q) ||
+        c.description.toLowerCase().includes(q) ||
+        c.category.toLowerCase().includes(q);
+      return matchesCategory && matchesSearch;
+    });
+  }, [search, activeCategory]);
+
+  const chips: (CourseCategory | 'All')[] = ['All', ...COURSE_CATEGORIES];
+
   return (
     <Shell>
       <PageHead
-        kicker="Curriculum"
-        title="Theoretical Knowledge Syllabus"
-        lede="Ten comprehensive aviation subjects built on ICAO Doc 7192 and the ERNAM instructional framework. Study individually or complete the full course."
+        kicker="Training Programs"
+        title="Aviation Training Programs"
+        lede="Thirty-four specialized aviation courses covering flight operations, safety compliance, air traffic services, and quality management — aligned to ICAO standards and taught at our Hargeisa campus."
       />
 
       <Filings />
 
-      {/* ── 01 Course Cards Grid ───────────────────────────────────────────── */}
+      {/* ── 01 Search, Filters & Course Grid ────────────────────────────────── */}
       <section className="section">
         <div className="shell">
           <div className="section-head">
-            <span className="badge">All 10 Subjects</span>
-            <h2 className="title-md">Explore the Ground School Courses</h2>
+            <span className="badge">All 34 Programs</span>
+            <h2 className="title-md">Explore Aviation Training Courses</h2>
             <p className="desc-md">
-              Click any module to read its full topics breakdown, learning objectives,
-              and recommended textbook.
+              Search by title or keyword, filter by category, and click any course for details and enrollment.
             </p>
           </div>
 
-          <div className="courses-grid">
-            {SUBJECTS.map((s, i) => (
-              <TiltCard key={s.code} maxTilt={6} className="course-card">
-                <div className="course-card__image-wrap">
-                  <img
-                    src={SUBJECT_PHOTOS[s.code]}
-                    alt=""
-                    className="course-card__image"
-                    loading="lazy"
-                  />
-                  <span className="course-card__code">{s.code} · ICAO</span>
-                </div>
-                <div className="course-card__body">
-                  <h3 className="course-card__title">{s.title}</h3>
-                  <div className="course-card__topics">
-                    {s.topics.map((t) => (
-                      <span key={t} className="course-card__topic-tag">{t}</span>
-                    ))}
-                  </div>
-                  <div className="course-card__footer">
-                    <Link to={`/training/${i + 1}`} className="course-card__link">
-                      Detailed Syllabus <ArrowRight size={14} />
-                    </Link>
-                    <Link to="/register" className="btn btn--sm btn--primary">
-                      Enroll
-                    </Link>
-                  </div>
-                </div>
-              </TiltCard>
+          {/* Search bar */}
+          <div className="training-search-bar">
+            <Search size={18} className="training-search-bar__icon" />
+            <input
+              type="text"
+              className="training-search-bar__input"
+              placeholder="Search courses by title or keyword..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              aria-label="Search training courses"
+            />
+          </div>
+
+          {/* Category filter chips */}
+          <div className="training-filter-chips">
+            {chips.map((chip) => (
+              <button
+                key={chip}
+                type="button"
+                className={`training-chip ${activeCategory === chip ? 'is-active' : ''}`}
+                onClick={() => setActiveCategory(chip)}
+              >
+                {chip}
+                {chip !== 'All' && (
+                  <span className="training-chip__count">
+                    {TRAINING_COURSES.filter((c) => c.category === chip).length}
+                  </span>
+                )}
+              </button>
             ))}
           </div>
+
+          {/* Results count */}
+          <p className="training-results-count">
+            {filtered.length} {filtered.length === 1 ? 'course' : 'courses'} found
+          </p>
+
+          {/* Course grid */}
+          {filtered.length > 0 ? (
+            <div className="training-grid">
+              {filtered.map((course) => (
+                <TiltCard key={course.id} maxTilt={5} className="training-card">
+                  <div className="training-card__top">
+                    <span className={`category-badge ${CATEGORY_COLORS[course.category]}`}>
+                      {course.category}
+                    </span>
+                    <span className={`level-tag ${LEVEL_COLORS[course.level]}`}>
+                      {course.level}
+                    </span>
+                  </div>
+                  <h3 className="training-card__title">{course.title}</h3>
+                  <p className="training-card__desc">{course.description}</p>
+                  <div className="training-card__meta">
+                    <span className="training-card__meta-item">
+                      <Clock size={14} />
+                      {course.duration}
+                    </span>
+                    <span className="training-card__meta-divider" />
+                    <span className="training-card__meta-item">
+                      <BarChart3 size={14} />
+                      {course.level}
+                    </span>
+                  </div>
+                  <div className="training-card__actions">
+                    <Link
+                      to={`/training/${course.id}`}
+                      className="training-card__details-link"
+                    >
+                      View Course Details <ArrowRight size={14} />
+                    </Link>
+                    <Link to="/register" className="btn btn--sm btn--primary btn--enroll-glow">
+                      Enroll Now
+                    </Link>
+                  </div>
+                </TiltCard>
+              ))}
+            </div>
+          ) : (
+            <div className="training-empty">
+              <Search size={36} />
+              <p>No courses match your search. Try a different keyword or category.</p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -73,7 +156,7 @@ export default function Training() {
         <div className="shell">
           <div className="section-head">
             <span className="badge badge--gold">Course Delivery</span>
-            <h2 className="title-md">How Our Ground School Operates</h2>
+            <h2 className="title-md">How Our Training Programs Operate</h2>
             <p className="desc-md">
               Structured for serious progress, high exam pass rates, and lasting aviation mastery.
             </p>
@@ -98,7 +181,7 @@ export default function Training() {
 
           <div style={{ textAlign: 'center', marginTop: 40, display: 'flex', justifyContent: 'center', gap: 14, flexWrap: 'wrap' }}>
             <Link to="/register" className="btn btn--primary">
-              Enroll for Ground School
+              Enroll for Training
               <ArrowRight size={16} />
             </Link>
             <a

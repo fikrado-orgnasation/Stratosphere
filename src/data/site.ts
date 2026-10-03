@@ -44,6 +44,66 @@ export const SUBJECTS = [
   { code: 'M10', title: 'Language Proficiency', topics: ['ICAO requirements', 'Operational level testing', 'Proficiency', 'Examination preparation'] },
 ] as const;
 
+/* ── Aviation Training Programs (34 courses) ────────────────────────────── */
+export type CourseCategory =
+  | 'Flight & Ramp Operations'
+  | 'Safety & Compliance'
+  | 'Air Traffic & Navigation'
+  | 'Management & Quality';
+
+export type TrainingCourse = {
+  id: number;
+  title: string;
+  category: CourseCategory;
+  duration: string;
+  level: 'Entry Level' | 'Intermediate' | 'Advanced';
+  description: string;
+};
+
+export const COURSE_CATEGORIES: CourseCategory[] = [
+  'Flight & Ramp Operations',
+  'Safety & Compliance',
+  'Air Traffic & Navigation',
+  'Management & Quality',
+];
+
+export const TRAINING_COURSES: TrainingCourse[] = [
+  { id: 1, title: 'Flight Dispatcher', category: 'Flight & Ramp Operations', duration: '8 Weeks', level: 'Advanced', description: 'Flight planning, fuel calculation, and operational dispatch procedures aligned to ICAO Annex 6.' },
+  { id: 2, title: 'Loadmaster', category: 'Flight & Ramp Operations', duration: '6 Weeks', level: 'Intermediate', description: 'Aircraft loading, cargo restraint, and weight distribution for safe and efficient operations.' },
+  { id: 3, title: 'Weight and Balance Officer', category: 'Flight & Ramp Operations', duration: '4 Weeks', level: 'Intermediate', description: 'Precision mass and balance calculations ensuring aircraft operate within certified limits.' },
+  { id: 4, title: 'Safety Officer', category: 'Safety & Compliance', duration: '6 Weeks', level: 'Advanced', description: 'Safety Management Systems implementation, hazard identification, and risk mitigation on the ramp.' },
+  { id: 5, title: 'Regulatory Compliance Coordinator', category: 'Safety & Compliance', duration: '5 Weeks', level: 'Intermediate', description: 'Aviation regulation interpretation and audit readiness aligned to ICAO and national authority standards.' },
+  { id: 6, title: 'Air Traffic Controller', category: 'Air Traffic & Navigation', duration: '12 Weeks', level: 'Advanced', description: 'Airspace management, separation standards, and traffic flow control for tower and approach environments.' },
+  { id: 7, title: 'Flight Information Briefing Officer', category: 'Air Traffic & Navigation', duration: '4 Weeks', level: 'Entry Level', description: 'Aeronautical information services, NOTAM preparation, and pre-flight briefing for operating crews.' },
+  { id: 8, title: 'Technical Record Specialist', category: 'Flight & Ramp Operations', duration: '4 Weeks', level: 'Entry Level', description: 'Aircraft maintenance logbook management, defect tracking, and airworthiness documentation.' },
+  { id: 9, title: 'Air Traffic Control Assistant (ATCA)', category: 'Air Traffic & Navigation', duration: '8 Weeks', level: 'Entry Level', description: 'Foundational ATC procedures, phraseology, and coordination support for licensed controllers.' },
+  { id: 10, title: 'Meteorological Associate', category: 'Air Traffic & Navigation', duration: '4 Weeks', level: 'Entry Level', description: 'Aviation meteorology fundamentals, METAR/TAF interpretation, and weather briefing support.' },
+  { id: 11, title: 'Crew Scheduler', category: 'Flight & Ramp Operations', duration: '4 Weeks', level: 'Entry Level', description: 'Flight crew rostering, duty time compliance, and fatigue management under ICAO Annex 11.' },
+  { id: 12, title: 'Pathway to Licensing (PPL & CPL)', category: 'Flight & Ramp Operations', duration: '16 Weeks', level: 'Intermediate', description: 'Complete theoretical knowledge pathway covering all PPL and CPL written examination subjects.' },
+  { id: 13, title: 'Turnaround Coordinator', category: 'Flight & Ramp Operations', duration: '3 Weeks', level: 'Entry Level', description: 'On-stand coordination of all ground services to achieve safe and on-time aircraft turnarounds.' },
+  { id: 14, title: 'Ramp Coordinator', category: 'Flight & Ramp Operations', duration: '3 Weeks', level: 'Entry Level', description: 'Ramp activity sequencing, equipment positioning, and ground service team supervision.' },
+  { id: 15, title: 'Ramp Supervisor', category: 'Flight & Ramp Operations', duration: '5 Weeks', level: 'Intermediate', description: 'Team leadership on the ramp, safety enforcement, and performance management of ground handlers.' },
+  { id: 16, title: 'Galley Loading Supervisor', category: 'Flight & Ramp Operations', duration: '3 Weeks', level: 'Intermediate', description: 'Catering loading supervision, equipment compatibility checks, and galley weight compliance.' },
+  { id: 17, title: 'Technical Safety', category: 'Safety & Compliance', duration: '4 Weeks', level: 'Intermediate', description: 'Aircraft technical hazard identification, fire safety procedures, and emergency response on the ramp.' },
+  { id: 18, title: 'Fuelling Supervisor', category: 'Flight & Ramp Operations', duration: '4 Weeks', level: 'Intermediate', description: 'Into-plane fuelling operations, quality control, and fuel system safety management.' },
+  { id: 19, title: 'Turnaround Coordinator Manager', category: 'Management & Quality', duration: '6 Weeks', level: 'Advanced', description: 'Oversight of turnaround operations across multiple stands, KPI management, and service level enforcement.' },
+  { id: 20, title: 'Airside Operations', category: 'Flight & Ramp Operations', duration: '6 Weeks', level: 'Intermediate', description: 'Airside driving, apron management, and low-visibility operations procedures.' },
+  { id: 21, title: 'Flight Operations Officer Planner', category: 'Flight & Ramp Operations', duration: '8 Weeks', level: 'Advanced', description: 'Flight plan filing, route optimisation, and operational control support for dispatch teams.' },
+  { id: 22, title: 'Crew Scheduler / Crew Handling Specialist', category: 'Flight & Ramp Operations', duration: '5 Weeks', level: 'Intermediate', description: 'Combined crew rostering and ground handling coordination for seamless crew transitions.' },
+  { id: 23, title: 'Aviation Security Officer', category: 'Safety & Compliance', duration: '6 Weeks', level: 'Intermediate', description: 'Passenger and baggage screening, access control, and threat response per ICAO Annex 17.' },
+  { id: 24, title: 'Ramp Agent / Ground Handling Specialist', category: 'Flight & Ramp Operations', duration: '4 Weeks', level: 'Entry Level', description: 'Baggage handling, aircraft marshalling basics, and ground service equipment operation.' },
+  { id: 25, title: 'Passenger Service Agent / Check-in Agent', category: 'Flight & Ramp Operations', duration: '3 Weeks', level: 'Entry Level', description: 'Check-in procedures, boarding management, and passenger assistance at the terminal.' },
+  { id: 26, title: 'Marshaller / Wing Walker', category: 'Flight & Ramp Operations', duration: '2 Weeks', level: 'Entry Level', description: 'Aircraft parking guidance, marshalling signals, and wingtip clearance during pushback.' },
+  { id: 27, title: 'Air Cargo Specialist', category: 'Flight & Ramp Operations', duration: '5 Weeks', level: 'Intermediate', description: 'Dangerous goods handling, cargo build-up, and ULD management for freight operations.' },
+  { id: 28, title: 'Catering Coordinator', category: 'Flight & Ramp Operations', duration: '3 Weeks', level: 'Entry Level', description: 'Catering order management, loading sequencing, and galley equipment reconciliation.' },
+  { id: 29, title: 'Fuelling Technician', category: 'Flight & Ramp Operations', duration: '4 Weeks', level: 'Entry Level', description: 'Hands-on into-plane fuelling, defuelling procedures, and fuel quality testing.' },
+  { id: 30, title: 'Station Manager', category: 'Management & Quality', duration: '8 Weeks', level: 'Advanced', description: 'Overall station operations oversight, staff management, and airline relationship management.' },
+  { id: 31, title: 'Aviation Safety Auditor', category: 'Safety & Compliance', duration: '6 Weeks', level: 'Advanced', description: 'Safety audit planning, compliance verification, and corrective action tracking across operations.' },
+  { id: 32, title: 'Quality Assurance Manager (Aviation)', category: 'Management & Quality', duration: '8 Weeks', level: 'Advanced', description: 'Quality management system design, process auditing, and continuous improvement for aviation operations.' },
+  { id: 33, title: 'Aerodrome Inspector', category: 'Safety & Compliance', duration: '6 Weeks', level: 'Advanced', description: 'Aerodrome compliance inspections, pavement evaluation, and obstacle limitation surface monitoring.' },
+  { id: 34, title: 'Flight Data Analyst', category: 'Air Traffic & Navigation', duration: '6 Weeks', level: 'Advanced', description: 'Flight data monitoring, trend analysis, and safety performance reporting from FDM programmes.' },
+];
+
 export const FLEET = [
   { type: 'Cessna 172', role: 'Primary trainer', tail: 'N428' },
   { type: 'Diamond DA40', role: 'Primary trainer', tail: 'N540' },
