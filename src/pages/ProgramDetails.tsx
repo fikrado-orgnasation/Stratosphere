@@ -114,7 +114,7 @@ export default function ProgramDetails() {
                   </div>
 
                   <Link
-                    to="/register"
+                    to={`/register?courses=${trainingCourse.id}`}
                     className="btn btn--primary btn--enroll-glow"
                     style={{ width: '100%', padding: '14px 20px' }}
                   >

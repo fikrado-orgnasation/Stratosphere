@@ -1,13 +1,34 @@
+import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import Shell, { PageHead } from '../components/Shell';
 import ZohoLeadForm from '../components/ZohoLeadForm';
 import { CONTACT } from '../data/site';
 
 export default function Register() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedIds, setSelectedIds] = useState<number[]>(() => {
+    const raw = searchParams.get('courses');
+    if (!raw) return [];
+    return raw.split(',').map(Number).filter((n) => n > 0);
+  });
+
+  const handleRemoveCourse = (id: number) => {
+    setSelectedIds((prev) => {
+      const next = prev.filter((c) => c !== id);
+      if (next.length > 0) {
+        setSearchParams({ courses: next.join(',') }, { replace: true });
+      } else {
+        setSearchParams({}, { replace: true });
+      }
+      return next;
+    });
+  };
+
   return (
     <Shell>
       <PageHead
         kicker="Course Enrolment"
-        title="Register for Aviation Ground School"
+        title="Register for Aviation Training"
         lede="Submit your official enquiry directly into our registrar database. We will reply within 24 hours."
       />
 
@@ -18,14 +39,19 @@ export default function Register() {
               Official Admissions Application
             </span>
             <h2 className="title-md" style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(1.75rem, 4vw, 2.25rem)' }}>
-              Ground School Enrolment Desk
+              Aviation Training Enrolment Desk
             </h2>
             <p className="desc-md" style={{ marginTop: 12, maxWidth: 560, marginLeft: 'auto', marginRight: 'auto' }}>
-              Fill in your details below and our admissions team will send your timetable and fee quote within 24 hours.
+              {selectedIds.length > 0
+                ? `You have selected ${selectedIds.length} ${selectedIds.length === 1 ? 'course' : 'courses'} to enroll in. Complete the form below and our admissions team will send your timetable and fee quote within 24 hours.`
+                : 'Fill in your details below and our admissions team will send your timetable and fee quote within 24 hours. You can also browse our training programs and select multiple courses to enroll in at once.'}
             </p>
           </div>
 
-          <ZohoLeadForm />
+          <ZohoLeadForm
+            selectedCourseIds={selectedIds}
+            onRemoveCourse={handleRemoveCourse}
+          />
         </div>
       </section>
 

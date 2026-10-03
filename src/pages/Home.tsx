@@ -293,7 +293,7 @@ export default function Home() {
                   <Link to={`/training/${course.id}`} className="training-card__details-link">
                     View Course Details <ArrowRight size={14} />
                   </Link>
-                  <Link to="/register" className="btn btn--sm btn--primary btn--enroll-glow">
+                  <Link to={`/register?courses=${course.id}`} className="btn btn--sm btn--primary btn--enroll-glow">
                     Enroll Now
                   </Link>
                 </div>

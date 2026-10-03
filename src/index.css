@@ -1644,6 +1644,190 @@ ul, ol { list-style: none; }
   color: var(--text-faint);
 }
 
+/* ── Multi-Select Course Selection ───────────────────────────────────────── */
+.course-select-check {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 2px solid var(--card-border);
+  background: rgba(255, 255, 255, 0.9);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  z-index: 5;
+  color: var(--text-faint);
+  transition: all 0.2s var(--ease);
+  backdrop-filter: blur(4px);
+}
+.course-select-check:hover {
+  border-color: var(--gold-light);
+  color: var(--gold-deep);
+  transform: scale(1.08);
+}
+.course-select-check.is-checked {
+  background: var(--grad-gold);
+  border-color: var(--gold-deep);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(223, 183, 67, 0.3);
+}
+
+.training-card--selected {
+  border-color: var(--gold-light) !important;
+  box-shadow: 0 0 0 2px rgba(223, 183, 67, 0.25), var(--shadow-3d) !important;
+}
+
+.selected-count-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 12px;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  background: var(--gold-pale);
+  color: var(--gold-deep);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  border: 1px solid var(--gold-border);
+}
+
+/* ── Floating Enrollment Bar ─────────────────────────────────────────────── */
+.enroll-floating-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  max-width: 900px;
+  width: calc(100% - 32px);
+  padding: 16px 24px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(6, 17, 42, 0.95) 0%, rgba(10, 25, 56, 0.95) 100%);
+  border: 1.5px solid var(--gold-border);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  animation: enrollBarSlideUp 0.4s var(--ease-spring);
+}
+@keyframes enrollBarSlideUp {
+  from { opacity: 0; transform: translate(-50%, 100%); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+.enroll-floating-bar__info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.enroll-floating-bar__count {
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.01em;
+}
+.enroll-floating-bar__chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  overflow: hidden;
+}
+.enroll-floating-bar__chip {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(223, 183, 67, 0.2);
+  white-space: nowrap;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.enroll-floating-bar__chip--more {
+  background: rgba(223, 183, 67, 0.15);
+  border-color: rgba(223, 183, 67, 0.3);
+  color: var(--gold-light);
+}
+.enroll-floating-bar__actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-shrink: 0;
+}
+@media (max-width: 640px) {
+  .enroll-floating-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 14px 16px;
+  }
+  .enroll-floating-bar__actions {
+    justify-content: space-between;
+  }
+  .enroll-floating-bar__chip {
+    max-width: 120px;
+  }
+}
+
+/* ── Selected Courses Box (on Registration form) ─────────────────────────── */
+.selected-courses-box {
+  margin-bottom: 20px;
+  padding: 16px 18px;
+  border-radius: var(--radius);
+  background: rgba(223, 183, 67, 0.08);
+  border: 1px solid rgba(223, 183, 67, 0.25);
+}
+.selected-courses-box__label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--gold-light);
+  margin-bottom: 10px;
+}
+.selected-courses-box__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.course-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(223, 183, 67, 0.3);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+.course-chip__remove {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: #cbd5e1;
+  cursor: pointer;
+  transition: all 0.15s var(--ease);
+}
+.course-chip__remove:hover {
+  background: rgba(239, 68, 68, 0.5);
+  color: #ffffff;
+}
+
 @media (max-width: 1100px) {
   .training-grid {
     grid-template-columns: repeat(2, 1fr);

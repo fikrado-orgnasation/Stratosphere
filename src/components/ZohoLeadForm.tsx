@@ -1,7 +1,10 @@
-import { useEffect, useRef } from 'react';
-import { Send, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { useEffect, useMemo, useRef } from 'react';
+import { Send, ShieldCheck, CheckCircle2, X } from 'lucide-react';
+import { TRAINING_COURSES, type TrainingCourse } from '../data/site';
 
 interface ZohoLeadFormProps {
+  selectedCourseIds?: number[];
+  onRemoveCourse?: (id: number) => void;
   defaultDescription?: string;
 }
 
@@ -55,8 +58,22 @@ function RequiredMark() {
   return <span style={{ color: 'var(--gold-light)' }} aria-hidden="true">*</span>;
 }
 
-export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormProps) {
+export default function ZohoLeadForm({ selectedCourseIds = [], onRemoveCourse, defaultDescription = '' }: ZohoLeadFormProps) {
   const formRef = useRef<HTMLFormElement>(null);
+
+  const selectedCourses = useMemo<TrainingCourse[]>(
+    () => selectedCourseIds.map((id) => TRAINING_COURSES.find((c) => c.id === id)).filter(Boolean) as TrainingCourse[],
+    [selectedCourseIds]
+  );
+
+  const courseListText = useMemo(
+    () => selectedCourses.length > 0
+      ? `I am interested in enrolling for the following training program(s):\n${selectedCourses.map((c) => `• ${c.title} (${c.duration}, ${c.level})`).join('\n')}`
+      : '',
+    [selectedCourses]
+  );
+
+  const effectiveDescription = courseListText || defaultDescription;
 
   useEffect(() => {
     // Inject Zoho Web Form Analytics script safely
@@ -209,12 +226,36 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
             lineHeight: 1.25,
           }}
         >
-          Ground School Enrolment Desk
+          Aviation Training Enrolment Desk
         </h3>
         <p style={{ color: '#cbd5e1', fontSize: '0.875rem', marginTop: 6, lineHeight: 1.5 }}>
           Submit your official inquiry directly into our registrar database. We will reply within 24 hours.
         </p>
       </div>
+
+      {/* Selected courses display */}
+      {selectedCourses.length > 0 && (
+        <div className="selected-courses-box" style={{ position: 'relative', zIndex: 1 }}>
+          <span className="selected-courses-box__label">Selected Courses ({selectedCourses.length})</span>
+          <div className="selected-courses-box__chips">
+            {selectedCourses.map((course) => (
+              <span key={course.id} className="course-chip">
+                {course.title}
+                {onRemoveCourse && (
+                  <button
+                    type="button"
+                    className="course-chip__remove"
+                    onClick={() => onRemoveCourse(course.id)}
+                    aria-label={`Remove ${course.title}`}
+                  >
+                    <X size={13} />
+                  </button>
+                )}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
 
       <form
         ref={formRef}
@@ -369,8 +410,8 @@ export default function ZohoLeadForm({ defaultDescription = '' }: ZohoLeadFormPr
             aria-required="false"
             aria-multiline="true"
             rows={3}
-            defaultValue={defaultDescription}
-            placeholder="Let us know which theoretical subjects (M01–M10) or flight licence pathway (PPL/CPL) you are targeting..."
+            defaultValue={effectiveDescription}
+            placeholder="Let us know which training programs you are interested in, or any questions you have..."
             className="form-textarea"
             style={{
               background: 'rgba(255, 255, 255, 0.08)',
