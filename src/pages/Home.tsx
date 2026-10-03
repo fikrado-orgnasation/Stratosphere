@@ -1,15 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  ArrowRight, CheckCircle2, ChevronRight, GraduationCap, MessageCircle
+  ArrowRight, CheckCircle2, ChevronRight, GraduationCap, MessageCircle, Clock, BarChart3
 } from 'lucide-react';
 import Shell, { Ask, Filings } from '../components/Shell';
 import CinematicAtmosphere from '../components/CinematicAtmosphere';
 import TiltCard from '../components/TiltCard';
-import { CONTACT, FLEET, FLEET_PHOTOS, STUDENT_JOURNEY, SUBJECTS, SUBJECT_PHOTOS } from '../data/site';
+import { CONTACT, FLEET, FLEET_PHOTOS, STUDENT_JOURNEY, TRAINING_COURSES, type CourseCategory } from '../data/site';
 
 /* ── Rotating Course Card for the Hero Overlay ──────────────────────────── */
 const ROTATE_MS = 3600;
+
+const CATEGORY_COLORS: Record<CourseCategory, string> = {
+  'Flight & Ramp Operations': 'category-badge--blue',
+  'Safety & Compliance': 'category-badge--red',
+  'Air Traffic & Navigation': 'category-badge--green',
+  'Management & Quality': 'category-badge--gold',
+};
 
 function HeroCourseRotator() {
   const [index, setIndex] = useState(0);
@@ -17,11 +24,10 @@ function HeroCourseRotator() {
 
   useEffect(() => {
     if (paused) return;
-    // Respect users who ask for reduced motion — hold on the first course
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     const id = window.setInterval(
-      () => setIndex((i) => (i + 1) % SUBJECTS.length),
+      () => setIndex((i) => (i + 1) % TRAINING_COURSES.length),
       ROTATE_MS
     );
     return () => window.clearInterval(id);
@@ -45,12 +51,12 @@ function HeroCourseRotator() {
       <div className="hero-course-rotator__viewport" aria-live="polite">
         <div
           className="hero-course-rotator__track"
-          style={{ transform: `translateY(-${(index * 100) / SUBJECTS.length}%)` }}
+          style={{ transform: `translateY(-${(index * 100) / TRAINING_COURSES.length}%)` }}
         >
-          {SUBJECTS.map((s) => (
-            <div className="hero-course-rotator__slide" key={s.code}>
-              <span className="hero-course-rotator__code">{s.code}</span>
-              <b>{s.title}</b>
+          {TRAINING_COURSES.map((c) => (
+            <div className="hero-course-rotator__slide" key={c.id}>
+              <span className={`hero-course-rotator__code ${CATEGORY_COLORS[c.category]}`}>{c.duration}</span>
+              <b>{c.title}</b>
             </div>
           ))}
         </div>
@@ -77,22 +83,22 @@ export default function Home() {
           <div className="school-hero__content">
             <span className="badge badge--white">
               <GraduationCap size={15} style={{ color: 'var(--gold-light)' }} />
-              Aviation Ground School · Hargeisa, Somaliland
+              Aviation Training Academy · Hargeisa, Somaliland
             </span>
 
             <h1 className="title-lg">
-              Stratosphere Aeronautics Theoretical Knowledge Instruction.
+              Stratosphere Aeronautics Aviation Training Programs.
             </h1>
 
             <p className="desc-lg" style={{ color: '#e2e8f0' }}>
-              Somaliland's premier aviation ground school. Ten ICAO-aligned subjects
-              taught one to one by ERNAM-trained instructors. Start with one subject
-              or complete the full course.
+              Somaliland's premier aviation training academy. Thirty-four specialized
+              programs covering flight operations, safety, air traffic, and management —
+              taught one to one by ERNAM-trained instructors.
             </p>
 
             <div className="school-hero__actions">
               <Link to="/register" className="btn btn--primary">
-                Enroll for a Subject
+                Enroll for a Course
                 <ArrowRight size={17} />
               </Link>
               <a
@@ -105,14 +111,14 @@ export default function Home() {
                 Chat on WhatsApp
               </a>
               <Link to="/training" className="btn btn--outline-white">
-                View Full Syllabus
+                View All Programs
               </Link>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 20, marginTop: 12, fontSize: '0.875rem', color: '#cbd5e1', flexWrap: 'wrap' }}>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                 <CheckCircle2 size={16} style={{ color: 'var(--wa)' }} />
-                No prior flight experience required
+                No prior aviation experience required
               </span>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
                 <CheckCircle2 size={16} style={{ color: 'var(--wa)' }} />
@@ -130,7 +136,7 @@ export default function Home() {
             <div className="school-hero__overlay-badge">
               <div>
                 <b>1-on-1 Instruction, Always</b>
-                <span>Every subject taught privately at your own pace.</span>
+                <span>Every course taught privately at your own pace.</span>
               </div>
               <HeroCourseRotator />
             </div>
@@ -146,16 +152,16 @@ export default function Home() {
         <div className="shell">
           <div className="stats-grid">
             <div className="stat-item">
-              <span className="stat-val">10</span>
-              <span className="stat-label">ICAO Theoretical Subjects</span>
+              <span className="stat-val">34</span>
+              <span className="stat-label">Aviation Training Programs</span>
             </div>
             <div className="stat-item">
               <span className="stat-val">1:1</span>
               <span className="stat-label">Private Personal Instruction</span>
             </div>
             <div className="stat-item">
-              <span className="stat-val">100%</span>
-              <span className="stat-label">Textbooks Kept in Stock</span>
+              <span className="stat-val">4</span>
+              <span className="stat-label">Career Category Pathways</span>
             </div>
             <div className="stat-item">
               <span className="stat-val">ERNAM</span>
@@ -172,7 +178,7 @@ export default function Home() {
             <span className="badge">Why Study With Us</span>
             <h2 className="title-md">Designed for Serious Aviation Careers.</h2>
             <p className="desc-md">
-              Aviation ground school is the foundation of every aviation professional,
+              Aviation training is the foundation of every aviation professional,
               flight dispatcher, and safety officer. Here is how we make sure you master it.
             </p>
           </div>
@@ -217,7 +223,7 @@ export default function Home() {
                   The certificate you earn travels with you to any academy abroad.
                 </p>
                 <Link to="/training" className="course-card__link" style={{ marginTop: 'auto' }}>
-                  Explore the 10 subjects <ChevronRight size={15} />
+                  Explore all 34 programs <ChevronRight size={15} />
                 </Link>
               </div>
             </TiltCard>
@@ -247,45 +253,49 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── 05 Ground School Courses Preview ───────────────────────────────── */}
+      {/* ── 05 Training Programs Preview ───────────────────────────────────── */}
       <section className="section">
         <div className="shell">
           <div className="section-head">
-            <span className="badge">Curriculum</span>
-            <h2 className="title-md">The Ten Theoretical Knowledge Subjects.</h2>
+            <span className="badge">Training Programs</span>
+            <h2 className="title-md">Thirty-Four Aviation Training Programs.</h2>
             <p className="desc-md">
-              Everything the written requirement for an aviation licence asks you to master.
-              Enroll in individual subjects or complete the full programme.
+              From entry-level ramp operations to advanced safety management —
+              find the course that fits your aviation career path.
             </p>
           </div>
 
-          <div className="courses-grid">
-            {SUBJECTS.slice(0, 6).map((s, i) => (
-              <TiltCard key={s.code} maxTilt={6} className="course-card">
-                <div className="course-card__image-wrap">
-                  <img
-                    src={SUBJECT_PHOTOS[s.code]}
-                    alt=""
-                    className="course-card__image"
-                    loading="lazy"
-                  />
-                  <span className="course-card__code">{s.code}</span>
+          <div className="training-grid">
+            {TRAINING_COURSES.slice(0, 6).map((course) => (
+              <TiltCard key={course.id} maxTilt={5} className="training-card">
+                <div className="training-card__top">
+                  <span className={`category-badge ${CATEGORY_COLORS[course.category]}`}>
+                    {course.category}
+                  </span>
+                  <span className={`level-tag ${course.level === 'Entry Level' ? 'level-tag--green' : course.level === 'Intermediate' ? 'level-tag--amber' : 'level-tag--red'}`}>
+                    {course.level}
+                  </span>
                 </div>
-                <div className="course-card__body">
-                  <h3 className="course-card__title">{s.title}</h3>
-                  <div className="course-card__topics">
-                    {s.topics.slice(0, 3).map((t) => (
-                      <span key={t} className="course-card__topic-tag">{t}</span>
-                    ))}
-                  </div>
-                  <div className="course-card__footer">
-                    <Link to={`/training/${i + 1}`} className="course-card__link">
-                      Syllabus & Exam <ArrowRight size={14} />
-                    </Link>
-                    <Link to="/register" className="btn btn--sm btn--primary">
-                      Enroll
-                    </Link>
-                  </div>
+                <h3 className="training-card__title">{course.title}</h3>
+                <p className="training-card__desc">{course.description}</p>
+                <div className="training-card__meta">
+                  <span className="training-card__meta-item">
+                    <Clock size={14} />
+                    {course.duration}
+                  </span>
+                  <span className="training-card__meta-divider" />
+                  <span className="training-card__meta-item">
+                    <BarChart3 size={14} />
+                    {course.level}
+                  </span>
+                </div>
+                <div className="training-card__actions">
+                  <Link to={`/training/${course.id}`} className="training-card__details-link">
+                    View Course Details <ArrowRight size={14} />
+                  </Link>
+                  <Link to="/register" className="btn btn--sm btn--primary btn--enroll-glow">
+                    Enroll Now
+                  </Link>
                 </div>
               </TiltCard>
             ))}
@@ -293,7 +303,7 @@ export default function Home() {
 
           <div style={{ textAlign: 'center', marginTop: 40 }}>
             <Link to="/training" className="btn btn--secondary">
-              View All 10 Subjects with Exam Details
+              View All 34 Training Programs
               <ArrowRight size={16} />
             </Link>
           </div>
@@ -374,7 +384,7 @@ export default function Home() {
 
       {/* ── 08 School Ask Banner with Green WhatsApp ───────────────────────── */}
       <Ask
-        title="Ready to Start Your Ground School in Hargeisa?"
+        title="Ready to Start Your Aviation Training in Hargeisa?"
         body="Message our admissions team on WhatsApp or submit an enquiry. We will give you a real schedule, genuine advice, and answer all questions within 24 hours."
       />
     </Shell>
