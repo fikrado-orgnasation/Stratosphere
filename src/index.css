@@ -877,6 +877,19 @@ ul, ol { list-style: none; }
   display: flex;
   align-items: center;
 }
+/* Smooth fade from the hero's navy into the accreditation strip below,
+   replacing the hard horizontal cut with a soft gradient dissolve. */
+.school-hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(180deg, transparent 0%, #06112a 60%, #0b1a36 100%);
+  pointer-events: none;
+  z-index: 3;
+}
 
 .cinematic-atmosphere {
   position: absolute;
@@ -906,6 +919,8 @@ ul, ol { list-style: none; }
   flex-wrap: wrap;
   align-items: center;
   margin-top: 10px;
+  position: relative;
+  z-index: 4;
 }
 
 /* 3D Elevated Hero Cockpit Card */
@@ -935,19 +950,25 @@ ul, ol { list-style: none; }
 }
 .school-hero__overlay-badge {
   position: absolute;
-  bottom: 16px;
-  left: 16px;
-  right: 16px;
-  background: rgba(6, 17, 42, 0.88);
-  border: 1px solid var(--gold-border);
-  backdrop-filter: blur(14px);
-  padding: 14px 18px;
-  border-radius: var(--radius);
+  bottom: 18px;
+  left: 18px;
+  right: 18px;
+  background: linear-gradient(135deg, rgba(6, 17, 42, 0.72) 0%, rgba(10, 25, 56, 0.65) 100%);
+  border: 1px solid rgba(223, 183, 67, 0.22);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  padding: 16px 20px;
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.school-hero__overlay-badge:hover {
+  border-color: rgba(223, 183, 67, 0.4);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 .school-hero__overlay-badge > div:first-child > b {
   font-family: var(--font-serif);
@@ -1082,12 +1103,24 @@ ul, ol { list-style: none; }
 
 /* ── 08 Accreditation Strip ──────────────────────────────────────────────── */
 .accreditation-bar {
-  background: linear-gradient(180deg, #06112a 0%, #0b1a36 100%);
-  border-top: 1px solid var(--gold-border-subtle);
-  border-bottom: 1px solid var(--gold-border-subtle);
-  padding-block: 24px;
+  background: linear-gradient(180deg, #0b1a36 0%, #0e1f3f 50%, #0b1a36 100%);
+  border-top: none;
+  border-bottom: none;
+  padding-block: 28px;
   position: relative;
   z-index: 5;
+}
+/* Soft fade into the white stats strip below, replacing the hard dark-to-white edge. */
+.accreditation-bar::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: linear-gradient(180deg, transparent 0%, rgba(248, 250, 252, 0.15) 50%, rgba(248, 250, 252, 0.5) 100%);
+  pointer-events: none;
+  z-index: 1;
 }
 .accreditation-items {
   display: flex;
@@ -1123,10 +1156,11 @@ ul, ol { list-style: none; }
 
 /* ── 09 Statistics & Metrics Strip ───────────────────────────────────────── */
 .stats-strip {
-  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 40%, #f8fafc 100%);
   padding-block: clamp(40px, 5vw, 60px);
   border-bottom: 1px solid var(--card-border);
   position: relative;
+  z-index: 6;
 }
 .stats-grid {
   display: grid;
