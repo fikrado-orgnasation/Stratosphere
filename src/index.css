@@ -2227,6 +2227,344 @@ ul, ol { list-style: none; }
   }
 }
 
+/* ── Social Media Icons in Header ─────────────────────────────────────────── */
+.header-social {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.header-social__link {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(223, 183, 67, 0.18);
+  transition: all 0.25s var(--ease);
+}
+.header-social__link:hover {
+  color: #ffffff;
+  background: rgba(223, 183, 67, 0.12);
+  border-color: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(223, 183, 67, 0.15);
+}
+@media (max-width: 960px) {
+  .header-social { display: none; }
+}
+
+/* ── Social Media Icons in Footer ─────────────────────────────────────────── */
+.footer-social {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+.footer-social__link {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(223, 183, 67, 0.18);
+  transition: all 0.25s var(--ease);
+}
+.footer-social__link:hover {
+  color: #ffffff;
+  background: rgba(223, 183, 67, 0.12);
+  border-color: var(--gold-light);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(223, 183, 67, 0.15);
+}
+.footer-social__link--wa:hover {
+  background: rgba(37, 211, 102, 0.12);
+  border-color: #25d366;
+  color: #25d366;
+  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.15);
+}
+
+/* ── Mobile Nav Social Icons ──────────────────────────────────────────────── */
+.mobile-nav-social {
+  display: flex;
+  gap: 12px;
+  padding-top: 6px;
+}
+.mobile-nav-social a {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(223, 183, 67, 0.18);
+  transition: all 0.2s var(--ease);
+}
+.mobile-nav-social a:hover {
+  color: #ffffff;
+  background: rgba(223, 183, 67, 0.12);
+  border-color: var(--gold-light);
+}
+
+/* ── Facebook Videos Grid (Home Page) ─────────────────────────────────────── */
+.fb-videos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr));
+  gap: clamp(20px, 3vw, 32px);
+}
+.fb-video-card {
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-3d-sm);
+  transition: all 0.3s var(--ease);
+  display: flex;
+  flex-direction: column;
+}
+.fb-video-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-3d-hover);
+  border-color: var(--gold-light);
+}
+.fb-video-card__frame-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #06112a;
+  overflow: hidden;
+}
+.fb-video-card__frame {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+.fb-video-card__link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 18px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--blue-azure);
+  text-decoration: none;
+  border-top: 1px solid var(--card-border);
+  transition: all 0.2s var(--ease);
+}
+.fb-video-card__link:hover {
+  color: var(--gold-deep);
+  background: var(--gold-pale);
+}
+@media (max-width: 600px) {
+  .fb-video-card__frame-wrap {
+    aspect-ratio: 1 / 1;
+  }
+}
+
+/* ── Community Page ───────────────────────────────────────────────────────── */
+.community-cta {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  align-items: center;
+  gap: 32px;
+  padding: clamp(28px, 4vw, 44px);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(145deg, #0a1f44 0%, #06112a 50%, #040c1d 100%);
+  border: 1.5px solid var(--gold-border);
+  box-shadow: var(--shadow-3d-dark);
+  position: relative;
+  overflow: hidden;
+}
+.community-cta::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -15%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(45, 112, 255, 0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.community-cta__text {
+  position: relative;
+  z-index: 1;
+}
+.community-cta__text h2 {
+  color: #ffffff;
+}
+.community-cta__text p {
+  color: #94a3b8;
+}
+.community-cta__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  z-index: 1;
+}
+@media (max-width: 800px) {
+  .community-cta {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  .community-cta__actions {
+    align-items: center;
+  }
+}
+
+/* ── Facebook Post Cards ──────────────────────────────────────────────────── */
+.community-posts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(440px, 100%), 1fr));
+  gap: clamp(20px, 3vw, 32px);
+}
+.fb-post-card {
+  background: #ffffff;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-3d-sm);
+  transition: all 0.3s var(--ease);
+  display: flex;
+  flex-direction: column;
+}
+.fb-post-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-3d-hover);
+  border-color: var(--gold-light);
+}
+.fb-post-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--card-border);
+}
+.fb-post-card__page-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.fb-post-card__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 3px;
+  border: 1px solid var(--card-border);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.fb-post-card__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.fb-post-card__page-info b {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--navy);
+}
+.fb-post-card__page-info span {
+  font-size: 0.75rem;
+  color: var(--text-faint);
+}
+.fb-post-card__open-link {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  color: var(--text-muted);
+  transition: all 0.2s var(--ease);
+}
+.fb-post-card__open-link:hover {
+  color: var(--blue-azure);
+  background: rgba(45, 112, 255, 0.08);
+}
+.fb-post-card__embed {
+  width: 100%;
+  background: #f1f5f9;
+  min-height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.fb-post-card__frame {
+  width: 100%;
+  min-height: 350px;
+  border: none;
+  display: block;
+}
+.fb-post-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--card-border);
+  flex-wrap: wrap;
+}
+.fb-like-btn,
+.fb-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  border: 1px solid var(--card-border);
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+  text-decoration: none;
+}
+.fb-like-btn:hover,
+.fb-action-btn:hover {
+  border-color: var(--gold-light);
+  background: var(--gold-pale);
+  color: var(--gold-deep);
+}
+.fb-like-btn.is-liked {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  border-color: #1d4ed8;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+}
+.fb-like-btn.is-liked:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+}
+.fb-like-btn__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.25);
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+/* ── Badge variant: blue ──────────────────────────────────────────────────── */
+.badge--blue {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  border: 1px solid #1d4ed8;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
 /* Sticky Cart / Enrolment Summary 3D Card */
 /* Sticky enrolment summary. Composes the shared panel surface; only the
    sticky offset, its own padding and the hover shadow are specific to it. */

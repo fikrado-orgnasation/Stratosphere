@@ -8,6 +8,7 @@ import Training from './pages/Training';
 import ProgramDetails from './pages/ProgramDetails';
 import Careers from './pages/Careers';
 import Contact from './pages/Contact';
+import Community from './pages/Community';
 import { SUBJECTS } from './data/site';
 
 const SITE = 'Stratosphere Aeronautics';
@@ -21,6 +22,7 @@ const TITLES: Record<string, string> = {
   '/books': `Books and study packs | ${SITE}`,
   '/about': `About the school | ${SITE}`,
   '/training': `Full syllabus — ten ICAO subjects | ${SITE}`,
+  '/community': `Facebook Community | ${SITE}`,
   '/careers': `Career pathways | ${SITE}`,
   '/contact': `Contact | ${SITE}`,
 };
@@ -71,6 +73,7 @@ export default function App() {
         <Route path="/training" element={<Training />} />
         <Route path="/training/:id" element={<ProgramDetails />} />
         <Route path="/careers" element={<Careers />} />
+        <Route path="/community" element={<Community />} />
         <Route path="/contact" element={<Contact />} />
 
         <Route path="/admissions" element={<Navigate to="/register" replace />} />

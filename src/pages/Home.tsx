@@ -6,7 +6,7 @@ import {
 import Shell, { Ask, Filings } from '../components/Shell';
 import CinematicAtmosphere from '../components/CinematicAtmosphere';
 import TiltCard from '../components/TiltCard';
-import { CONTACT, FLEET, FLEET_PHOTOS, STUDENT_JOURNEY, TRAINING_COURSES, type CourseCategory } from '../data/site';
+import { CONTACT, FLEET, FLEET_PHOTOS, STUDENT_JOURNEY, TRAINING_COURSES, FACEBOOK_VIDEOS, type CourseCategory } from '../data/site';
 
 /* ── Rotating Course Card for the Hero Overlay ──────────────────────────── */
 const ROTATE_MS = 3600;
@@ -382,7 +382,53 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── 08 School Ask Banner with Green WhatsApp ───────────────────────── */}
+      {/* ── 08 Facebook Videos Showcase ─────────────────────────────────────── */}
+      <section className="section section--subtle">
+        <div className="shell">
+          <div className="section-head">
+            <span className="badge badge--gold">Watch Us on Facebook</span>
+            <h2 className="title-md">See Our Academy in Action.</h2>
+            <p className="desc-md">
+              Get a glimpse of life at Stratosphere Aeronautics — our campus, our training, and our students.
+            </p>
+          </div>
+
+          <div className="fb-videos-grid">
+            {FACEBOOK_VIDEOS.map((video) => (
+              <div key={video.id} className="fb-video-card">
+                <div className="fb-video-card__frame-wrap">
+                  <iframe
+                    src={video.embedUrl}
+                    title={video.title}
+                    className="fb-video-card__frame"
+                    scrolling="no"
+                    frameBorder={0}
+                    allowFullScreen
+                    loading="lazy"
+                  />
+                </div>
+                <a
+                  href={video.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="fb-video-card__link"
+                >
+                  Watch on Facebook <ArrowRight size={14} />
+                </a>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: 36 }}>
+            <Link to="/community" className="btn btn--secondary">
+              View Our Facebook Community
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 09 School Ask Banner with Green WhatsApp ───────────────────────── */}
       <Ask
         title="Ready to Start Your Aviation Training in Hargeisa?"
         body="Message our admissions team on WhatsApp or submit an enquiry. We will give you a real schedule, genuine advice, and answer all questions within 24 hours."

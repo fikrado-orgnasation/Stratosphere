@@ -19,7 +19,19 @@ export const CONTACT = {
     'abdirahman.dahir@stratosphereaeronautics.com',
   ],
   whatsapp: 'https://wa.me/252634482830',
+  linkedin: 'https://www.linkedin.com/company/119254042',
+  facebook: 'https://www.facebook.com/Stratosphere1/',
 } as const;
+
+export const FACEBOOK_VIDEOS = [
+  { id: 'fb-video-1', url: 'https://www.facebook.com/share/v/1SaEkAMfkY/', embedUrl: 'https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fv%2F1SaEkAMfkY%2F&show_text=false&autoplay=false', title: 'Stratosphere Aeronautics — Campus Video' },
+  { id: 'fb-video-2', url: 'https://www.facebook.com/share/v/1T9aUCyT83/', embedUrl: 'https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fv%2F1T9aUCyT83%2F&show_text=false&autoplay=false', title: 'Stratosphere Aeronautics — Training Video' },
+] as const;
+
+export const FACEBOOK_POSTS = [
+  { id: 'fb-post-1', url: 'https://www.facebook.com/share/v/1SaEkAMfkY/', embedUrl: 'https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fv%2F1SaEkAMfkY%2F&show_text=true&width=500', title: 'Campus Video Post' },
+  { id: 'fb-post-2', url: 'https://www.facebook.com/share/v/1T9aUCyT83/', embedUrl: 'https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fv%2F1T9aUCyT83%2F&show_text=true&width=500', title: 'Training Video Post' },
+] as const;
 
 export const ACCREDITATION = [
   'ICAO — International Civil Aviation Organization',
