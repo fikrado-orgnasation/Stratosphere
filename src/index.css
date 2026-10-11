@@ -1846,6 +1846,494 @@ ul, ol { list-style: none; }
   }
 }
 
+/* ── 11B Master Program: Hero, Tables, Accordion ─────────────────────────── */
+
+/* Hero Section */
+.mp-hero {
+  background: var(--navy);
+  background-image: var(--grad-navy);
+  color: #ffffff;
+  padding-block: clamp(56px, 8vw, 96px);
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--gold-border);
+}
+.mp-hero__content {
+  max-width: 820px;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.mp-hero__title {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 5.5vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  color: #ffffff;
+}
+.mp-hero__subtitle {
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  line-height: 1.6;
+  color: #cbd5e1;
+  max-width: 640px;
+}
+.mp-hero__metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 8px;
+}
+.mp-metric {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-radius: var(--radius);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(223, 183, 67, 0.18);
+  backdrop-filter: blur(6px);
+}
+.mp-metric__icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: var(--gold-pale);
+  color: var(--gold-deep);
+  border: 1px solid var(--gold-border);
+  flex-shrink: 0;
+}
+.mp-metric__value {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.2;
+}
+.mp-metric__label {
+  display: block;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+.mp-hero__actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+@media (max-width: 640px) {
+  .mp-hero__actions .btn { width: 100%; }
+  .mp-metric { width: 100%; }
+}
+
+/* One-course summary */
+.mp-course-summary-section {
+  padding-top: 32px;
+  padding-bottom: 24px;
+}
+.mp-course-summary {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 22px 26px;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, #06112a 0%, #0b1a36 100%);
+  border: 1px solid var(--gold-border);
+  box-shadow: var(--shadow-3d-dark);
+}
+.mp-course-summary__mark {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  color: var(--gold-light);
+  background: rgba(223, 183, 67, 0.12);
+  border: 1px solid var(--gold-border);
+  flex: 0 0 auto;
+}
+.mp-course-summary__content {
+  flex: 1;
+  min-width: 0;
+}
+.mp-course-summary__eyebrow {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--gold-light);
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.mp-course-summary h2 {
+  color: #ffffff;
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  line-height: 1.25;
+  margin-bottom: 5px;
+}
+.mp-course-summary p {
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.mp-course-summary .btn {
+  flex: 0 0 auto;
+}
+@media (max-width: 760px) {
+  .mp-course-summary {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 20px;
+  }
+  .mp-course-summary .btn {
+    width: 100%;
+  }
+}
+
+/* Controls (search + level tabs) */
+.mp-controls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.mp-search-bar {
+  flex: 1 1 320px;
+  min-width: 200px;
+}
+.mp-level-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mp-level-tab {
+  padding: 9px 18px;
+  border-radius: 9999px;
+  border: 1.5px solid var(--card-border);
+  background: #ffffff;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+}
+.mp-level-tab:hover {
+  border-color: var(--gold-light);
+  color: var(--gold-deep);
+}
+.mp-level-tab.is-active {
+  background: var(--grad-gold);
+  border-color: var(--gold-deep);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(223, 183, 67, 0.2);
+}
+
+/* Results bar */
+.mp-results-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--card-border);
+}
+.mp-results-count {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+.mp-results-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.mp-expand-btn {
+  background: none;
+  border: none;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--blue-azure);
+  cursor: pointer;
+  transition: color 0.2s var(--ease);
+}
+.mp-expand-btn:hover { color: var(--gold-deep); }
+.mp-expand-divider {
+  width: 1px;
+  height: 16px;
+  background: var(--card-border);
+}
+
+/* Tables Container */
+.mp-tables-container {
+  display: grid;
+  gap: 22px;
+}
+
+/* Accordion Card */
+.mp-table-card {
+  background: #ffffff;
+  border: 1.5px solid var(--card-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-3d-sm);
+  transition: all 0.3s var(--ease);
+}
+.mp-table-card.is-open {
+  border-color: rgba(223, 183, 67, 0.3);
+  box-shadow: 0 8px 24px -4px rgba(6, 17, 42, 0.08), 0 0 0 1px rgba(223, 183, 67, 0.12);
+}
+.mp-table-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  padding: 22px 26px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.25s var(--ease);
+}
+.mp-table-card__header:hover {
+  background: linear-gradient(135deg, #fef9ec 0%, #f5f0e0 100%);
+}
+.mp-table-card__header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.mp-table-card__icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: var(--navy);
+  color: var(--gold-bright);
+  border: 1px solid var(--gold-border);
+  flex-shrink: 0;
+}
+.mp-table-card__title {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.3;
+}
+.mp-table-card__desc {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: 3px;
+  max-width: 560px;
+}
+.mp-table-card__header-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+.mp-table-card__count {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--gold-deep);
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: var(--gold-pale);
+  border: 1px solid var(--gold-border);
+  white-space: nowrap;
+}
+.mp-table-card__chevron {
+  color: var(--text-muted);
+  transition: transform 0.3s var(--ease);
+}
+.mp-table-card__chevron.is-flipped {
+  transform: rotate(180deg);
+}
+
+/* Table Body */
+.mp-table-card__body {
+  animation: mpAccordionOpen 0.3s var(--ease);
+}
+@keyframes mpAccordionOpen {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.mp-table-scroll {
+  overflow-x: auto;
+}
+.mp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.mp-table thead {
+  background: var(--navy);
+}
+.mp-table thead th {
+  text-align: left;
+  padding: 14px 18px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #e2e8f0;
+  white-space: nowrap;
+}
+.mp-table thead th:first-child { padding-left: 26px; }
+.mp-table tbody td {
+  padding: 16px 18px;
+  vertical-align: top;
+  border-bottom: 1px solid #f1f5f9;
+}
+.mp-table tbody td:first-child { padding-left: 26px; }
+.mp-row-alt {
+  background: #f8fafc;
+}
+.mp-module-link {
+  font-family: var(--font-serif);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--navy);
+  text-decoration: none;
+  transition: color 0.2s var(--ease);
+}
+.mp-module-link:hover {
+  color: var(--gold-deep);
+}
+
+/* Level Pills */
+.mp-level-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.mp-level-pill--green {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #86efac;
+}
+.mp-level-pill--blue {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #93c5fd;
+}
+.mp-level-pill--indigo {
+  background: #e0e7ff;
+  color: #5b21b6;
+  border: 1px solid #c4b5fd;
+}
+
+.mp-duration-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.mp-competency-text {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  max-width: 380px;
+}
+
+.mp-table-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-faint);
+}
+.mp-table-empty svg { color: var(--text-faint); }
+
+/* Mobile table → card layout */
+@media (max-width: 720px) {
+  .mp-table-card__header {
+    padding: 16px 18px;
+  }
+  .mp-table-card__desc { display: none; }
+  .mp-table-card__count { display: none; }
+  .mp-table-card__title { font-size: 1.05rem; }
+
+  .mp-table thead { display: none; }
+  .mp-table, .mp-table tbody, .mp-table tr, .mp-table td {
+    display: block;
+    width: 100%;
+  }
+  .mp-table tr {
+    padding: 16px 18px;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .mp-row-alt { background: #f8fafc; }
+  .mp-table tbody td {
+    padding: 6px 0;
+    border: none;
+  }
+  .mp-table tbody td:first-child { padding-left: 0; }
+  .mp-table tbody td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-faint);
+    margin-bottom: 3px;
+  }
+  .mp-competency-text { max-width: 100%; }
+}
+
+/* Highlights Grid */
+.mp-highlights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 24px;
+}
+.mp-highlight-icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--gold-pale);
+  color: var(--gold-deep);
+  border: 1px solid var(--gold-border);
+  margin-bottom: 16px;
+}
+.mp-highlights-grid h4 {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+.mp-highlights-grid p {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
 /* ── 12 Training Fleet Showcase ──────────────────────────────────────────── */
 .fleet-grid {
   display: grid;

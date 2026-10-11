@@ -63,7 +63,7 @@ export default function Community() {
           <div className="community-cta">
             <div className="community-cta__text">
               <span className="badge badge--blue" style={{ marginBottom: 12 }}>
-                <Facebook size={14} />
+                <FacebookIcon size={14} />
                 Follow Us
               </span>
               <h2 className="title-md">Join Our Facebook Community</h2>
@@ -79,7 +79,7 @@ export default function Community() {
                 rel="noreferrer"
                 className="btn btn--primary"
               >
-                <Facebook size={18} />
+                <FacebookIcon size={18} />
                 Visit Our Facebook Page
                 <ExternalLink size={15} />
               </a>
