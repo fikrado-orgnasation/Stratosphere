@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import Home from './pages/Home';
 import Register from './pages/Register';
 import Books from './pages/Books';
@@ -82,6 +83,7 @@ export default function App() {
 
         <Route path="*" element={<Home />} />
       </Routes>
+      <SpeedInsights />
     </>
   );
 }
