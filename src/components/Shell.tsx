@@ -100,7 +100,6 @@ function useFocusTrap(isOpen: boolean, onEscape?: () => void) {
 
 export const NAV_LINKS = [
   { to: '/', key: 'home' as const },
-  { to: '/training', key: 'training' as const },
   { to: '/register', key: 'enroll' as const },
   { to: '/books', key: 'books' as const },
   { to: '/community', key: 'community' as const },
@@ -512,15 +511,11 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Col 2: Academic Programs */}
+          {/* Col 2: Master Course */}
           <div className="school-footer__col">
-            <h4>{t.courses}</h4>
+            <h4>Master Course</h4>
             <ul>
-              <li><Link to="/training">{t.allSubjects}</Link></li>
-              <li><Link to="/training/1">Air Law (M01)</Link></li>
-              <li><Link to="/training/2">Principles of Flight (M02)</Link></li>
-              <li><Link to="/training/3">Meteorology (M03)</Link></li>
-              <li><Link to="/training/4">Navigation & Planning (M04)</Link></li>
+              <li><Link to="/register">Enroll in the master course</Link></li>
               <li><Link to="/books">{t.textbooks}</Link></li>
             </ul>
           </div>

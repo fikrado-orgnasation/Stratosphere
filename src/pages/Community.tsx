@@ -192,8 +192,8 @@ export default function Community() {
             Start your aviation career today. Enroll in one or more of our 34 training programs.
           </p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 14, flexWrap: 'wrap' }}>
-            <Link to="/training" className="btn btn--secondary">
-              Browse Training Programs
+            <Link to="/register" className="btn btn--secondary">
+              Enroll in the Master Course
               <ArrowRight size={16} />
             </Link>
             <Link to="/register" className="btn btn--primary btn--enroll-glow">

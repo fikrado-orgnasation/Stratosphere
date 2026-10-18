@@ -4,12 +4,9 @@ import Home from './pages/Home';
 import Register from './pages/Register';
 import Books from './pages/Books';
 import About from './pages/About';
-import Training from './pages/Training';
-import ProgramDetails from './pages/ProgramDetails';
 import Careers from './pages/Careers';
 import Contact from './pages/Contact';
 import Community from './pages/Community';
-import { SUBJECTS } from './data/site';
 
 const SITE = 'Stratosphere Aeronautics';
 const DESC =
@@ -21,7 +18,6 @@ const TITLES: Record<string, string> = {
   '/register': `Register for a subject | ${SITE}`,
   '/books': `Books and study packs | ${SITE}`,
   '/about': `About the school | ${SITE}`,
-  '/training': `Full syllabus — ten ICAO subjects | ${SITE}`,
   '/community': `Facebook Community | ${SITE}`,
   '/careers': `Career pathways | ${SITE}`,
   '/contact': `Contact | ${SITE}`,
@@ -33,9 +29,7 @@ function Seo() {
   useEffect(() => {
     const canonical = pathname === '/admissions' ? '/register' : pathname;
 
-    const detail = canonical.match(/^\/training\/(\d+)$/);
-    const subject = detail ? SUBJECTS[Number(detail[1]) - 1] : undefined;
-    const title = subject ? `${subject.title} — Syllabus | ${SITE}` : TITLES[canonical] ?? `${SITE} Theoretical Knowledge Instruction`;
+    const title = TITLES[canonical] ?? `${SITE} Theoretical Knowledge Instruction`;
 
     document.title = title;
 
@@ -70,8 +64,8 @@ export default function App() {
         <Route path="/books" element={<Books />} />
         <Route path="/about" element={<About />} />
 
-        <Route path="/training" element={<Training />} />
-        <Route path="/training/:id" element={<ProgramDetails />} />
+        <Route path="/training" element={<Navigate to="/register" replace />} />
+        <Route path="/training/:id" element={<Navigate to="/register" replace />} />
         <Route path="/careers" element={<Careers />} />
         <Route path="/community" element={<Community />} />
         <Route path="/contact" element={<Contact />} />
