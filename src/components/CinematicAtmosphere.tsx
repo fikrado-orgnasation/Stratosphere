@@ -8,6 +8,12 @@ export default function CinematicAtmosphere() {
     const container = containerRef.current;
     if (!container) return;
 
+    // Skip the heavy WebGL scene on small / touch-only screens — it causes
+    // noticeable jank and battery drain on mobile. A static CSS gradient
+    // background (set on .cinematic-atmosphere) covers those cases.
+    const isMobile = window.matchMedia('(max-width: 768px)').matches;
+    if (isMobile) return;
+
     let renderer: THREE.WebGLRenderer;
     try {
       renderer = new THREE.WebGLRenderer({
@@ -26,7 +32,7 @@ export default function CinematicAtmosphere() {
     camera.position.set(0, 0, 15);
 
     // ── 01 Stratospheric Particle Starfield & Atmospheric Motes ──────────────
-    const particleCount = 750;
+    const particleCount = 450;
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
 
@@ -101,7 +107,7 @@ export default function CinematicAtmosphere() {
     const vectorsGroup = new THREE.Group();
     scene.add(vectorsGroup);
 
-    for (let v = 0; v < 8; v++) {
+    for (let v = 0; v < 5; v++) {
       const vGeom = new THREE.BufferGeometry();
       const startX = (Math.random() - 0.5) * 26;
       const startY = (Math.random() - 0.5) * 32;
@@ -228,7 +234,7 @@ export default function CinematicAtmosphere() {
       opacity: 0.14,
     });
 
-    for (let c = 0; c < 9; c++) {
+    for (let c = 0; c < 6; c++) {
       const cluster = new THREE.Group();
       const count = 3 + Math.floor(Math.random() * 3);
       for (let p = 0; p < count; p++) {
@@ -273,7 +279,7 @@ export default function CinematicAtmosphere() {
     const resize = () => {
       const width = container.clientWidth || window.innerWidth;
       const height = container.clientHeight || window.innerHeight;
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
       renderer.setSize(width, height);
       camera.aspect = width / height;
       camera.updateProjectionMatrix();

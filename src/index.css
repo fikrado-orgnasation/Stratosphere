@@ -3424,17 +3424,17 @@ ul, ol { list-style: none; }
 @media (max-width: 768px) {
   .mobile-action-bar {
     display: grid;
-    grid-template-columns: auto 1fr 1fr;
-    gap: 8px;
+    grid-template-columns: 44px minmax(0, 1fr) minmax(0, 1fr);
+    gap: 7px;
     position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 95;
-    padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
-    background: rgba(3, 8, 20, 0.94);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px));
+    background: #030814;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     border-top: 1px solid var(--gold-border);
     box-shadow: 0 -10px 36px rgba(0, 0, 0, 0.55);
   }
@@ -3626,4 +3626,135 @@ ul, ol { list-style: none; }
 .panel--col {
   flex-direction: column;
   align-items: stretch;
+}
+
+@media (max-width: 768px) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    overflow-x: clip;
+  }
+
+  .shell {
+    padding-inline: 16px;
+  }
+
+  .top-notice-bar__in {
+    padding-inline: 16px;
+  }
+
+  .site-header__in {
+    gap: 8px;
+  }
+
+  .header-social {
+    display: none;
+  }
+
+  .lang-switcher {
+    margin-left: auto;
+  }
+
+  .school-hero {
+    padding-block: 36px 44px;
+  }
+
+  .school-hero__grid {
+    gap: 28px;
+  }
+
+  .school-hero__content {
+    gap: 14px;
+  }
+
+  .school-hero__actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .school-hero__image-card {
+    width: 100%;
+    border-radius: var(--radius-lg);
+  }
+
+  .school-hero__overlay-badge {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .cinematic-atmosphere {
+    background:
+      radial-gradient(circle at 85% 18%, rgba(56, 189, 248, 0.12), transparent 34%),
+      radial-gradient(circle at 15% 80%, rgba(223, 183, 67, 0.1), transparent 34%);
+  }
+
+  .accreditation-items {
+    grid-template-columns: 1fr;
+  }
+
+  .accreditation-badge {
+    width: 100%;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .panel,
+  .photo-feature-card,
+  .course-card,
+  .fleet-card,
+  .school-book-card,
+  .cart-summary-card {
+    box-shadow: 0 8px 24px rgba(6, 17, 42, 0.1);
+  }
+
+  .mobile-nav-drawer {
+    background: rgba(3, 8, 20, 0.96);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .mobile-nav-content {
+    width: min(90vw, 340px);
+    box-shadow: -10px 0 24px rgba(0, 0, 0, 0.55);
+  }
+
+  .mobile-action-bar a {
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .mobile-action-bar .btn--whatsapp,
+  .mobile-action-bar .btn--primary {
+    padding-inline: 8px;
+    font-size: 0.74rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .shell {
+    padding-inline: 14px;
+  }
+
+  .school-hero__image {
+    height: 210px;
+  }
+
+  .mobile-action-bar {
+    gap: 5px;
+    padding-inline: 8px;
+  }
+
+  .mobile-action-bar__call {
+    width: 42px;
+  }
+
+  .mobile-action-bar .btn--whatsapp,
+  .mobile-action-bar .btn--primary {
+    font-size: 0.68rem;
+  }
 }
