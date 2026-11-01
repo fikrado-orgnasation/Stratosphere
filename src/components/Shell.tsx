@@ -598,7 +598,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   );
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo(0, document.body.scrollHeight);
   }, [pathname]);
 
   useEffect(() => {
