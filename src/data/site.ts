@@ -24,13 +24,13 @@ export const CONTACT = {
 } as const;
 
 export const FACEBOOK_VIDEOS = [
-  { id: 'fb-video-1', url: 'https://www.facebook.com/share/v/1SaEkAMfkY/', embedUrl: 'https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fv%2F1SaEkAMfkY%2F&show_text=false&autoplay=false', title: 'Stratosphere Aeronautics — Campus Video' },
-  { id: 'fb-video-2', url: 'https://www.facebook.com/share/v/1T9aUCyT83/', embedUrl: 'https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fv%2F1T9aUCyT83%2F&show_text=false&autoplay=false', title: 'Stratosphere Aeronautics — Training Video' },
+  { id: 'fb-video-1', url: 'https://www.facebook.com/reel/27635365946068943', embedUrl: 'https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F27635365946068943%2F&show_text=false&autoplay=false', title: 'Stratosphere Aeronautics — Campus Video' },
+  { id: 'fb-video-2', url: 'https://www.facebook.com/reel/1901856524064441', embedUrl: 'https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1901856524064441%2F&show_text=false&autoplay=false', title: 'Stratosphere Aeronautics — Training Video' },
 ] as const;
 
 export const FACEBOOK_POSTS = [
-  { id: 'fb-post-1', url: 'https://www.facebook.com/share/v/1SaEkAMfkY/', embedUrl: 'https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fv%2F1SaEkAMfkY%2F&show_text=true&width=500', title: 'Campus Video Post' },
-  { id: 'fb-post-2', url: 'https://www.facebook.com/share/v/1T9aUCyT83/', embedUrl: 'https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fv%2F1T9aUCyT83%2F&show_text=true&width=500', title: 'Training Video Post' },
+  { id: 'fb-post-1', url: 'https://www.facebook.com/reel/27635365946068943', embedUrl: 'https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F27635365946068943%2F&show_text=true&width=500', title: 'Campus Video Post' },
+  { id: 'fb-post-2', url: 'https://www.facebook.com/reel/1901856524064441', embedUrl: 'https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Freel%2F1901856524064441%2F&show_text=true&width=500', title: 'Training Video Post' },
 ] as const;
 
 export const ACCREDITATION = [
