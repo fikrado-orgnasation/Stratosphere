@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import {
   ArrowRight, CheckCircle2, ChevronRight, GraduationCap, MessageCircle
 } from 'lucide-react';
@@ -8,6 +9,12 @@ import TiltCard from '../components/TiltCard';
 import { CONTACT, FLEET, FLEET_PHOTOS, STUDENT_JOURNEY, FACEBOOK_VIDEOS } from '../data/site';
 
 export default function Home() {
+  useEffect(() => {
+    if (window.FB) {
+      window.FB.XFBML.parse();
+    }
+  }, []);
+
   return (
     <Shell>
       {/* ── 01 School Hero Banner with 3D Aviation Background ─────────────── */}
@@ -270,14 +277,12 @@ export default function Home() {
             {FACEBOOK_VIDEOS.map((video) => (
               <div key={video.id} className="fb-video-card">
                 <div className="fb-video-card__frame-wrap">
-                  <iframe
-                    src={video.embedUrl}
-                    title={video.title}
-                    className="fb-video-card__frame"
-                    scrolling="no"
-                    frameBorder={0}
-                    allowFullScreen
-                    loading="lazy"
+                  <div
+                    className="fb-video"
+                    data-href={video.url}
+                    data-show-text="false"
+                    data-autoplay="false"
+                    data-allowfullscreen="true"
                   />
                 </div>
                 <a
